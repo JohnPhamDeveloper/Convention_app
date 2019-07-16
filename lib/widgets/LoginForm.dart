@@ -7,6 +7,25 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(_printText);
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _printText() {
+    print('${_emailController.text}');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,21 +34,28 @@ class _LoginFormState extends State<LoginForm> {
       child: Column(
         children: <Widget>[
           IconFormField(
-              hintText: "Email",
-              invalidText: "Invalid Email",
-              icon: Icons.email),
+            hintText: "Email",
+            invalidText: "Invalid Email",
+            icon: Icons.email,
+            controller: _emailController,
+          ),
           IconFormField(
             hintText: "Password",
             invalidText: "Invalid Password",
             icon: Icons.lock,
             obscureText: true,
+            controller: _passwordController,
           ),
           RaisedButton(
             child: Text("Login"),
             onPressed: () {
               if (_formKey.currentState.validate()) {
-                Scaffold.of(context)
-                    .showSnackBar(SnackBar(content: Text('Processing Data')));
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                        'Processing Data for ${_emailController.text} of ${_passwordController.text}'),
+                  ),
+                );
               }
             },
           ),
@@ -39,30 +65,40 @@ class _LoginFormState extends State<LoginForm> {
   }
 }
 
-class IconFormField extends StatelessWidget {
+class IconFormField extends StatefulWidget {
+  IconFormField({
+    Key key,
+    @required this.hintText,
+    @required this.invalidText,
+    this.icon,
+    this.obscureText = false,
+    this.controller,
+  }) : super(key: key);
+
   final hintText;
   final invalidText;
   final icon;
   final obscureText;
+  final controller;
 
-  IconFormField(
-      {@required this.hintText,
-      @required this.invalidText,
-      this.icon,
-      this.obscureText = false});
+  @override
+  _IconFormFieldState createState() => _IconFormFieldState();
+}
 
+class _IconFormFieldState extends State<IconFormField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      obscureText: obscureText,
+      obscureText: widget.obscureText,
+      controller: widget.controller,
       decoration: InputDecoration(
-        hintText: hintText,
-        labelText: hintText,
-        prefixIcon: Icon(icon),
+        hintText: widget.hintText,
+        labelText: widget.hintText,
+        prefixIcon: Icon(widget.icon),
       ),
       validator: (value) {
         if (value.isEmpty) {
-          return invalidText;
+          return widget.invalidText;
         }
         return null; // No errors
       },
