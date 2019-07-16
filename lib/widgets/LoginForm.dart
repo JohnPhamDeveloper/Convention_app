@@ -15,8 +15,14 @@ class _LoginFormState extends State<LoginForm> {
       child: Column(
         children: <Widget>[
           IconFormField(
-            hintText: "Email",
-            invalidText: "Invalid Email",
+              hintText: "Email",
+              invalidText: "Invalid Email",
+              icon: Icons.email),
+          IconFormField(
+            hintText: "Password",
+            invalidText: "Invalid Password",
+            icon: Icons.lock,
+            obscureText: true,
           ),
           RaisedButton(
             child: Text("Login"),
@@ -36,13 +42,24 @@ class _LoginFormState extends State<LoginForm> {
 class IconFormField extends StatelessWidget {
   final hintText;
   final invalidText;
+  final icon;
+  final obscureText;
 
-  IconFormField({@required this.hintText, @required this.invalidText});
+  IconFormField(
+      {@required this.hintText,
+      @required this.invalidText,
+      this.icon,
+      this.obscureText = false});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      decoration: InputDecoration(hintText: hintText, labelText: hintText),
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        hintText: hintText,
+        labelText: hintText,
+        prefixIcon: Icon(icon),
+      ),
       validator: (value) {
         if (value.isEmpty) {
           return invalidText;
