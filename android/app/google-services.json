@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "442195356346",
+    "firebase_url": "https://cosplay-app-17a91.firebaseio.com",
+    "project_id": "cosplay-app-17a91",
+    "storage_bucket": "cosplay-app-17a91.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:442195356346:android:6fc2e3a00130ef69",
+        "android_client_info": {
+          "package_name": "com.cosplaymeetupapp.cosplay_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "442195356346-8vum5pcoj517cr0usuec0equgma8hu8j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBj4P-6G0w9kCTLbOBJipXCZQpLEOjlx4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "442195356346-8vum5pcoj517cr0usuec0equgma8hu8j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

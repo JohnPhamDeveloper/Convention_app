@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cosplay_app/widgets/LoginForm.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -8,6 +9,6 @@ class LoginScreen extends StatefulWidget {
 class _State extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return LoginForm();
   }
 }
