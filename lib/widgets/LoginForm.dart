@@ -18,7 +18,6 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void initState() {
     super.initState();
-    _emailController.addListener(_printText);
   }
 
   @override
@@ -26,10 +25,6 @@ class _LoginFormState extends State<LoginForm> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
-  }
-
-  void _printText() {
-    print('${_emailController.text}');
   }
 
   @override
@@ -84,18 +79,20 @@ class _LoginFormState extends State<LoginForm> {
           ),
           SizedBox(height: kBoxGap),
           SuperButton(
-              text: "LOG IN",
-              validated: () {
-                return _formKey.currentState.validate();
-              },
-              onPress: () {
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                        'Processing Data for ${_emailController.text} of ${_passwordController.text}'),
-                  ),
-                );
-              }),
+            text: "LOG IN",
+            validated: () {
+              return _formKey.currentState.validate();
+            },
+            onPress: () {
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                      'Processing Data for ${_emailController.text} of ${_passwordController.text}'),
+                ),
+              );
+              //Navigator.pushNamed(context, '/main');
+            },
+          ),
           SizedBox(height: kBoxGap + 20.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
