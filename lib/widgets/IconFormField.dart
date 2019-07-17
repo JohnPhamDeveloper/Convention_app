@@ -8,6 +8,8 @@ class IconFormField extends StatefulWidget {
     this.icon,
     this.obscureText = false,
     this.controller,
+    this.textInputType,
+    this.validator,
   }) : super(key: key);
 
   final hintText;
@@ -15,6 +17,8 @@ class IconFormField extends StatefulWidget {
   final icon;
   final obscureText;
   final controller;
+  final textInputType;
+  final validator;
 
   @override
   _IconFormFieldState createState() => _IconFormFieldState();
@@ -24,6 +28,7 @@ class _IconFormFieldState extends State<IconFormField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      keyboardType: widget.textInputType,
       obscureText: widget.obscureText,
       controller: widget.controller,
       decoration: InputDecoration(
@@ -32,10 +37,7 @@ class _IconFormFieldState extends State<IconFormField> {
         prefixIcon: Icon(widget.icon),
       ),
       validator: (value) {
-        if (value.isEmpty) {
-          return widget.invalidText;
-        }
-        return null; // No errors
+        return widget.validator(value);
       },
     );
   }

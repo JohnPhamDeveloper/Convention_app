@@ -34,6 +34,7 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
+      autovalidate: false,
       key: _formKey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -43,6 +44,10 @@ class _LoginFormState extends State<LoginForm> {
             invalidText: "Invalid Email",
             icon: Icons.email,
             controller: _emailController,
+            textInputType: TextInputType.emailAddress,
+            validator: (value) {
+              return validateEmail(value);
+            },
           ),
           IconFormField(
             hintText: "Password",
@@ -50,6 +55,10 @@ class _LoginFormState extends State<LoginForm> {
             icon: Icons.lock,
             obscureText: true,
             controller: _passwordController,
+            textInputType: TextInputType.text,
+            validator: (value) {
+              validatePassword(value);
+            },
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,4 +91,24 @@ class _LoginFormState extends State<LoginForm> {
       ),
     );
   }
+}
+
+String validatePassword(String value) {
+  if (value.isEmpty) {
+    return "Please enter your password";
+  } else if (value.length < 6) {
+    return "Password must be greater than 5 characters";
+  } else {
+    return null;
+  }
+}
+
+String validateEmail(String value) {
+  Pattern pattern =
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  RegExp regex = new RegExp(pattern);
+  if (!regex.hasMatch(value))
+    return 'Enter Valid Email';
+  else
+    return null;
 }
