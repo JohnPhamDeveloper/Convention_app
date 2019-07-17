@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'HyperButton.dart';
 import 'IconFormField.dart';
 import 'SuperButton.dart';
+import 'package:cosplay_app/constants.dart';
 
 class LoginForm extends StatefulWidget {
   @override
@@ -12,7 +13,7 @@ class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _bRememberMe = false;
+  bool _bRememberMe = true;
 
   @override
   void initState() {
@@ -37,7 +38,7 @@ class _LoginFormState extends State<LoginForm> {
       autovalidate: false,
       key: _formKey,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           IconFormField(
             hintText: "Email",
@@ -49,6 +50,7 @@ class _LoginFormState extends State<LoginForm> {
               return validateEmail(value);
             },
           ),
+          SizedBox(height: kBoxGap),
           IconFormField(
             hintText: "Password",
             invalidText: "Invalid Password",
@@ -60,20 +62,27 @@ class _LoginFormState extends State<LoginForm> {
               validatePassword(value);
             },
           ),
+          SizedBox(height: kBoxGap),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Switch(
-                value: _bRememberMe,
-                onChanged: (value) {
-                  setState(() {
-                    _bRememberMe = !_bRememberMe;
-                  });
-                },
+              Row(
+                children: <Widget>[
+                  Switch(
+                    value: _bRememberMe,
+                    onChanged: (value) {
+                      setState(() {
+                        _bRememberMe = !_bRememberMe;
+                      });
+                    },
+                  ),
+                  Text("Remember Me"),
+                ],
               ),
-              HyperButton(),
+              HyperButton(text: "Forgot Password?"),
             ],
           ),
+          SizedBox(height: kBoxGap),
           SuperButton(
               text: "LOG IN",
               validated: () {
@@ -87,6 +96,14 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                 );
               }),
+          SizedBox(height: kBoxGap + 20.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("New user? "),
+              HyperButton(text: "Sign Up"),
+            ],
+          ),
         ],
       ),
     );
@@ -108,7 +125,7 @@ String validateEmail(String value) {
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
   RegExp regex = new RegExp(pattern);
   if (!regex.hasMatch(value))
-    return 'Enter Valid Email';
+    return 'Enter a valid email';
   else
     return null;
 }
