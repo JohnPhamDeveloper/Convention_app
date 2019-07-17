@@ -26,13 +26,39 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  AnimationController _controllerOpacity;
+  AnimationController _controllerScale;
+  Animation _animationOpacity;
+  Animation<double> _animationScale;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _controllerOpacity = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 5),
+    );
+    _animationOpacity = Tween(begin: 0.0, end: 1.0).animate(_controllerOpacity);
+    _controllerOpacity.forward();
+
+    _controllerScale = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    );
+    _animationScale =
+        Tween<double>(begin: 0.8, end: 1.0).animate(_controllerScale)
+          ..addListener(() {
+            setState(() {});
+          });
+    _controllerScale.forward();
+  }
+
+  @override
+  void dispose() {
+    _controllerOpacity.dispose();
+    _controllerScale.dispose();
+    super.dispose();
   }
 
   @override

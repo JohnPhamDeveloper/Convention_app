@@ -14,6 +14,9 @@ class SuperButton extends StatelessWidget {
       minWidth: double.infinity,
       height: 50.0,
       child: RaisedButton(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
+        elevation: 5,
         child: Container(
           child: Text(
             text,
