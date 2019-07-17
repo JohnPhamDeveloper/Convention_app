@@ -71,14 +71,14 @@ class ShapesPainter extends CustomPainter {
     var center = Offset(size.width / 2, size.height / 2);
 
     Path path = Path();
-    path.lineTo(0, 150);
+    path.lineTo(0, size.height - 500);
     path.lineTo(size.width, 0);
     // close the path to form a bounded shape
     path.close();
     canvas.drawPath(path, paint);
 
     final initDistance = size.width - 200;
-    final initDistanceY = 120.0;
+    final initDistanceY = size.height - 550;
 
     canvas.drawCircle(Offset(initDistance + 50, initDistanceY), 20.0, paint);
     canvas.drawCircle(Offset(initDistance + 100, initDistanceY), 20.0, paint);
