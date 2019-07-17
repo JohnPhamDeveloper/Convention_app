@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cosplay_app/screens/login_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/main_screen.dart';
+import 'screens/question_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,6 +16,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => LoginScreen(),
+        '/question': (context) => QuestionScreen(),
+        '/main': (context) => MainScreen(),
       },
     );
   }
