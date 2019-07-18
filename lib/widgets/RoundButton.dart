@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 
 class RoundButton extends StatelessWidget {
   final icon;
+  final onTap;
 
-  RoundButton({@required this.icon});
+  RoundButton({@required this.icon, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return RawMaterialButton(
-      onPressed: () {},
+      onPressed: () {
+        onTap();
+      },
       child: new Icon(
         icon,
         color: Theme.of(context).primaryColor,

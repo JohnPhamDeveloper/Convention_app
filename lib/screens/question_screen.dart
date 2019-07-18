@@ -8,8 +8,59 @@ class QuestionScreen extends StatefulWidget {
 }
 
 class _QuestionScreenState extends State<QuestionScreen> {
+  int currentQuestionIndex = 0;
+  List<List<TextSpan>> questions = new List<List<TextSpan>>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void initQuestions(context) {
+    questions.clear();
+    final q1 = <TextSpan>[
+      TextSpan(text: 'Are you a '),
+      TextSpan(
+        text: 'Cosplayer',
+        style: kTextStyleImportant(context),
+      ),
+      TextSpan(
+        text: '?',
+      ),
+    ];
+    questions.add(q1);
+    final q2 = <TextSpan>[
+      TextSpan(text: 'Are you a '),
+      TextSpan(
+        text: 'Photographer',
+        style: kTextStyleImportant(context),
+      ),
+      TextSpan(
+        text: '?',
+      ),
+    ];
+    questions.add(q2);
+  }
+
+  List<TextSpan> getQuestion(int index) {
+    if (questions.isEmpty || index >= questions.length) {
+      return questions[questions.length - 1];
+    } else {
+      return questions[index];
+    }
+  }
+
+  void incrementQuestionIndex() {
+    setState(() {
+      if (currentQuestionIndex < questions.length) {
+        currentQuestionIndex++;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    initQuestions(context);
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -32,48 +83,38 @@ class _QuestionScreenState extends State<QuestionScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                child: Container(child: QuestionDisplay()),
+                padding: const EdgeInsets.only(left: 22.0, right: 22.0),
+                child: Container(
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontSize: 40.0,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.white,
+                      ),
+                      children: getQuestion(currentQuestionIndex),
+                    ),
+                  ),
+                ),
               ),
-              SizedBox(height: kBoxGap),
+              SizedBox(height: kBoxGap + 50.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[RoundButton(icon: Icons.check)],
+                children: <Widget>[
+                  RoundButton(icon: Icons.clear),
+                  SizedBox(width: kBoxGap + 20.0),
+                  RoundButton(
+                    icon: Icons.check,
+                    onTap: () {
+                      incrementQuestionIndex();
+                    },
+                  ),
+                ],
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class QuestionDisplay extends StatelessWidget {
-  // Store how many cosplayers and photographers went on site
-
-  @override
-  Widget build(BuildContext context) {
-    return RichText(
-      textAlign: TextAlign.center,
-      text: TextSpan(
-        style: TextStyle(
-          fontSize: 40.0,
-          fontWeight: FontWeight.w300,
-          color: Colors.white,
-        ),
-        children: <TextSpan>[
-          TextSpan(text: 'Are you a '),
-          TextSpan(
-            text: 'Cosplayer ',
-            style: kTextStyleImportant(context),
-          ),
-          TextSpan(text: 'or '),
-          TextSpan(
-            text: 'Photographer',
-            style: kTextStyleImportant(context),
-          ),
-          TextSpan(text: '?')
-        ],
       ),
     );
   }

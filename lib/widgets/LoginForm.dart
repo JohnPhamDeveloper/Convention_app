@@ -64,6 +64,7 @@ class _LoginFormState extends State<LoginForm> {
               Row(
                 children: <Widget>[
                   Switch(
+                    activeColor: Theme.of(context).primaryColor,
                     value: _bRememberMe,
                     onChanged: (value) {
                       setState(() {
