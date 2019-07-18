@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cosplay_app/constants.dart';
+import 'package:cosplay_app/widgets/RoundButton.dart';
 
 class QuestionScreen extends StatefulWidget {
   @override
@@ -37,20 +38,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
               SizedBox(height: kBoxGap),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  RawMaterialButton(
-                    onPressed: () {},
-                    child: new Icon(
-                      Icons.pause,
-                      color: Colors.blue,
-                      size: 35.0,
-                    ),
-                    shape: new CircleBorder(),
-                    elevation: 3,
-                    fillColor: Colors.white,
-                    padding: const EdgeInsets.all(15.0),
-                  )
-                ],
+                children: <Widget>[RoundButton(icon: Icons.check)],
               ),
             ],
           ),
@@ -77,12 +65,12 @@ class QuestionDisplay extends StatelessWidget {
           TextSpan(text: 'Are you a '),
           TextSpan(
             text: 'Cosplayer ',
-            style: kTextStyleImportant,
+            style: kTextStyleImportant(context),
           ),
           TextSpan(text: 'or '),
           TextSpan(
             text: 'Photographer',
-            style: kTextStyleImportant,
+            style: kTextStyleImportant(context),
           ),
           TextSpan(text: '?')
         ],
