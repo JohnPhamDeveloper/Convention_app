@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cosplay_app/constants.dart';
 import 'package:cosplay_app/widgets/RoundButton.dart';
+import 'package:cosplay_app/questions.dart';
+import 'package:numberpicker/numberpicker.dart';
 
 class QuestionScreen extends StatefulWidget {
   @override
@@ -8,7 +10,11 @@ class QuestionScreen extends StatefulWidget {
 }
 
 class _QuestionScreenState extends State<QuestionScreen> {
-  int currentQuestionIndex = 0;
+  int _currentQuestionIndex = 0;
+  int _currentYearPicker = 1;
+  int _currentMonthPicker = 0;
+  bool _showNumberPicker = true;
+  bool _showYearText = true;
   List<List<TextSpan>> questions = new List<List<TextSpan>>();
 
   @override
@@ -18,28 +24,11 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
   void initQuestions(context) {
     questions.clear();
-    final q1 = <TextSpan>[
-      TextSpan(text: 'Are you a '),
-      TextSpan(
-        text: 'Cosplayer',
-        style: kTextStyleImportant(context),
-      ),
-      TextSpan(
-        text: '?',
-      ),
-    ];
-    questions.add(q1);
-    final q2 = <TextSpan>[
-      TextSpan(text: 'Are you a '),
-      TextSpan(
-        text: 'Photographer',
-        style: kTextStyleImportant(context),
-      ),
-      TextSpan(
-        text: '?',
-      ),
-    ];
-    questions.add(q2);
+
+    // Questions are from questions.dart
+    questions.add(q1(context));
+    questions.add(q2(context));
+    questions.add(q3(context));
   }
 
   List<TextSpan> getQuestion(int index) {
@@ -52,10 +41,38 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
   void incrementQuestionIndex() {
     setState(() {
-      if (currentQuestionIndex < questions.length) {
-        currentQuestionIndex++;
+      if (_currentQuestionIndex < questions.length - 1) {
+        _currentQuestionIndex++;
       }
     });
+  }
+
+  // Show number picker widget only on questions that need it
+  Widget showNumberPicker() {
+    if (_currentQuestionIndex == 2) {
+      return NumberPicker.integer(
+        listViewWidth: 50.0,
+        itemExtent: 40.0,
+        initialValue: _currentYearPicker,
+        minValue: 0,
+        maxValue: 100,
+        onChanged: (newValue) =>
+            setState(() => {_currentYearPicker = newValue}),
+      );
+    } else {
+      return Container(); // Return a container since number picker shouldnt be displayed
+    }
+  }
+
+  Widget showYearText() {
+    if (_currentQuestionIndex == 2) {
+      return Text(
+        "Select year(s)",
+        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w300),
+      );
+    } else {
+      return Container();
+    }
   }
 
   @override
@@ -93,7 +110,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
                         fontWeight: FontWeight.w300,
                         color: Colors.white,
                       ),
-                      children: getQuestion(currentQuestionIndex),
+                      children: getQuestion(_currentQuestionIndex),
                     ),
                   ),
                 ),
@@ -112,6 +129,14 @@ class _QuestionScreenState extends State<QuestionScreen> {
                   ),
                 ],
               ),
+              SizedBox(height: kBoxGap + 50.0),
+              Column(
+                children: <Widget>[
+                  showYearText(),
+                  SizedBox(height: 20.0),
+                  showNumberPicker(),
+                ],
+              )
             ],
           ),
         ),

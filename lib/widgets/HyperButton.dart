@@ -19,6 +19,7 @@ class HyperButton extends StatelessWidget {
         child: Text(
           text,
           style: TextStyle(color: Colors.blue),
+          textAlign: TextAlign.center,
         ),
       ),
     );

@@ -15,12 +15,12 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.cyan,
         accentColor: Colors.limeAccent[200],
         textTheme: TextTheme(
-          headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+          headline: TextStyle(fontSize: 35.0, fontWeight: FontWeight.bold),
           title: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-          body1: TextStyle(fontSize: 14.0),
+          body1: TextStyle(fontSize: 16.0, color: Colors.white),
         ),
       ),
-      initialRoute: '/',
+      initialRoute: '/question',
       routes: {
         '/': (context) => LoginScreen(),
         '/question': (context) => QuestionScreen(),
