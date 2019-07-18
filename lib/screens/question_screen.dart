@@ -52,7 +52,6 @@ class _QuestionScreenState extends State<QuestionScreen> {
                   )
                 ],
               ),
-              // todo: Cosplayer and photographer text needs to be different more bold (see pic)
             ],
           ),
         ),
@@ -63,19 +62,30 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
 class QuestionDisplay extends StatelessWidget {
   // Store how many cosplayers and photographers went on site
-  final _questions = ["Are you a Cosplayer or Photographer?"];
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        _questions[0],
-        textAlign: TextAlign.center,
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
         style: TextStyle(
           fontSize: 40.0,
           fontWeight: FontWeight.w300,
           color: Colors.white,
         ),
+        children: <TextSpan>[
+          TextSpan(text: 'Are you a '),
+          TextSpan(
+            text: 'Cosplayer ',
+            style: kTextStyleImportant,
+          ),
+          TextSpan(text: 'or '),
+          TextSpan(
+            text: 'Photographer',
+            style: kTextStyleImportant,
+          ),
+          TextSpan(text: '?')
+        ],
       ),
     );
   }
