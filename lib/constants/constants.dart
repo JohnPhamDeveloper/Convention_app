@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 
 // Used for my custom animations
-class AnimationDirection {
+class REMOVE2 {
   static const FROM_LEFT = 1;
   static const FROM_RIGHT = -1;
+}
+
+enum AnimationDirection {
+  FROM_LEFT,
+  FROM_RIGHT,
+  FROM_TOP,
+  FROM_BOTTOM,
 }
 
 const kBoxGap = 15.0; // Gaps between each elements

@@ -4,8 +4,8 @@ import 'IconFormField.dart';
 import 'SuperButton.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:flutter/animation.dart';
-import "package:cosplay_app/AnimateIn.dart";
-import "package:cosplay_app/AnimationBounceIn.dart";
+import "package:cosplay_app/animations/AnimateIn.dart";
+import "package:cosplay_app/animations/AnimationBounceIn.dart";
 
 class LoginForm extends StatefulWidget {
   @override
@@ -21,6 +21,7 @@ class _LoginFormState extends State<LoginForm>
   Animation animationRememberMe;
   Animation animationLogIn;
   Animation animationOpacity;
+  Animation animationSignUp;
   AnimationController animationController;
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
@@ -44,11 +45,7 @@ class _LoginFormState extends State<LoginForm>
         createTransformAnimationAtStart(0.3, Curves.easeInOutCubic);
     animationRememberMe =
         createTransformAnimationAtStart(0.4, Curves.easeInOutCubic);
-    animationLogIn = Tween(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-          parent: animationController,
-          curve: Interval(0.6, 1.0, curve: Curves.easeInOutCubic)),
-    );
+    animationSignUp = createTransformAnimationAtStart(0.5, Curves.easeOutCirc);
 
     animationController.forward();
   }
@@ -165,12 +162,17 @@ class _LoginFormState extends State<LoginForm>
             ),
           ),
           SizedBox(height: kBoxGap + 20.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text("New user? ", style: kTextStyleNotImportant()),
-              HyperButton(text: "Sign Up"),
-            ],
+          AnimateIn(
+            animationOpacity: animationOpacity,
+            animationTransform: animationSignUp,
+            direction: AnimationDirection.FROM_BOTTOM,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("New user? ", style: kTextStyleNotImportant()),
+                HyperButton(text: "Sign Up"),
+              ],
+            ),
           ),
         ],
       ),
