@@ -129,7 +129,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
                     textAlign: TextAlign.center,
                     text: TextSpan(
                       style: TextStyle(
-                        fontSize: 40.0,
+                        fontSize: 30.0,
                         fontWeight: FontWeight.w300,
                         color: Colors.white,
                       ),

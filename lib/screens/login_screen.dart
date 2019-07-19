@@ -21,7 +21,6 @@ class _State extends State<LoginScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(height: 150.0),
                     LoginForm(),
                   ],
                 ),
