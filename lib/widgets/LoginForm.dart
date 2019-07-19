@@ -3,13 +3,20 @@ import 'HyperButton.dart';
 import 'IconFormField.dart';
 import 'SuperButton.dart';
 import 'package:cosplay_app/constants/constants.dart';
+import 'package:flutter/animation.dart';
+import "package:cosplay_app/AnimateLeftIn.dart";
 
 class LoginForm extends StatefulWidget {
   @override
   _LoginFormState createState() => _LoginFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class _LoginFormState extends State<LoginForm>
+    with SingleTickerProviderStateMixin {
+  Animation animationLeftInEmail;
+  Animation animationLeftInPassword;
+  Animation animationOpacity;
+  AnimationController animationController;
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -18,6 +25,26 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void initState() {
     super.initState();
+    animationController =
+        AnimationController(duration: Duration(seconds: 2), vsync: this);
+
+    animationLeftInEmail = Tween(begin: -1.0, end: 0.0).animate(
+      CurvedAnimation(
+          parent: animationController, curve: Curves.easeInOutCubic),
+    );
+    animationOpacity = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.linear),
+    );
+
+    animationLeftInEmail.addListener(() {
+      print(animationLeftInEmail.value);
+    });
+//    animationLeftInPassword = Tween(begin: -1.0, end: 0.0).animate(
+//      CurvedAnimation(
+//          parent: animationController, curve: Interval(0.4, 1.0, curve: Curves.easeInOutCubic),
+//    );
+
+    //animationController.forward();
   }
 
   @override
@@ -29,21 +56,29 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
+
     return Form(
       autovalidate: false,
       key: _formKey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          IconFormField(
-            hintText: "Email",
-            invalidText: "Invalid Email",
-            icon: Icons.email,
-            controller: _emailController,
-            textInputType: TextInputType.emailAddress,
-            validator: (value) {
-              return validateEmail(value);
-            },
+          AnimateLeftIn(
+            animationController: animationController,
+            animationTransform: animationLeftInEmail,
+            animationOpacity: animationOpacity,
+            direction: AnimationDirection.FROM_LEFT,
+            child: IconFormField(
+              hintText: "Email",
+              invalidText: "Invalid Email",
+              icon: Icons.email,
+              controller: _emailController,
+              textInputType: TextInputType.emailAddress,
+              validator: (value) {
+                return validateEmail(value);
+              },
+            ),
           ),
           SizedBox(height: kBoxGap),
           IconFormField(
@@ -72,7 +107,7 @@ class _LoginFormState extends State<LoginForm> {
                       });
                     },
                   ),
-                  Text("Remember Me"),
+                  Text("Remember Me", style: kTextStyleNotImportant()),
                 ],
               ),
               HyperButton(text: "Forgot Password?"),
@@ -98,7 +133,7 @@ class _LoginFormState extends State<LoginForm> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text("New user? "),
+              Text("New user? ", style: kTextStyleNotImportant()),
               HyperButton(text: "Sign Up"),
             ],
           ),
