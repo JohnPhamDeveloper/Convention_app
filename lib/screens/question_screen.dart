@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:cosplay_app/constants.dart';
+import 'package:cosplay_app/constants/constants.dart';
 import 'package:cosplay_app/widgets/RoundButton.dart';
-import 'package:cosplay_app/questions.dart';
+import 'package:cosplay_app/constants/questions.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:cosplay_app/classes/QuestionController.dart';
+import 'dart:collection';
 
 class QuestionScreen extends StatefulWidget {
   @override
@@ -10,11 +12,10 @@ class QuestionScreen extends StatefulWidget {
 }
 
 class _QuestionScreenState extends State<QuestionScreen> {
-  int _currentQuestionIndex = 0;
+  var userData = HashMap();
+  QuestionController questionController = QuestionController();
   int _currentYearPicker = 1;
-  int _currentMonthPicker = 0;
-  bool _showNumberPicker = true;
-  bool _showYearText = true;
+  int _currentMonthPicker = 1;
   List<List<TextSpan>> questions = new List<List<TextSpan>>();
 
   @override
@@ -23,41 +24,50 @@ class _QuestionScreenState extends State<QuestionScreen> {
   }
 
   void initQuestions(context) {
-    questions.clear();
+    // We need to clear the questions every build for context (should change this?)
+    questionController.clearQuestions();
 
     // Questions are from questions.dart
-    questions.add(q1(context));
-    questions.add(q2(context));
-    questions.add(q3(context));
+    questionController.addQuestion(q1(context));
+    questionController.addQuestion(q2(context));
+    questionController.addQuestion(q3(context));
+    questionController.addQuestion(q4(context));
   }
 
-  List<TextSpan> getQuestion(int index) {
-    if (questions.isEmpty || index >= questions.length) {
-      return questions[questions.length - 1];
-    } else {
-      return questions[index];
+  void saveCurrentQuestionData() {
+    switch (questionController.getCurrentQuestionIndex()) {
+      case 1:
+        userData['isCosplayer'] = true;
+        print(userData);
+        break;
+      case 2:
+        userData['isPhotographer'] = true;
+        print(userData);
+        break;
+      case 3:
+        userData['yearsCosplayed'] = _currentYearPicker;
+        userData['monthsCosplayed'] = _currentMonthPicker;
+        print(userData);
+        break;
+      case 4:
+        userData['yearsPhotographer'] = _currentYearPicker;
+        userData['monthsPhotographer'] = _currentMonthPicker;
+        print(userData);
+        break;
     }
   }
 
-  void incrementQuestionIndex() {
-    setState(() {
-      if (_currentQuestionIndex < questions.length - 1) {
-        _currentQuestionIndex++;
-      }
-    });
-  }
-
-  // Show number picker widget only on questions that need it
-  Widget showNumberPicker() {
-    if (_currentQuestionIndex == 2) {
+  // Displays year picker and a function that will set the state with the picker value
+  Widget showPicker(int currentValue, Function setCurrentValue) {
+    if (questionController.getCurrentQuestionIndex() == 2 ||
+        questionController.getCurrentQuestionIndex() == 3) {
       return NumberPicker.integer(
         listViewWidth: 50.0,
         itemExtent: 40.0,
-        initialValue: _currentYearPicker,
+        initialValue: currentValue,
         minValue: 0,
         maxValue: 100,
-        onChanged: (newValue) =>
-            setState(() => {_currentYearPicker = newValue}),
+        onChanged: (newValue) => setCurrentValue(newValue),
       );
     } else {
       return Container(); // Return a container since number picker shouldnt be displayed
@@ -65,9 +75,22 @@ class _QuestionScreenState extends State<QuestionScreen> {
   }
 
   Widget showYearText() {
-    if (_currentQuestionIndex == 2) {
+    if (questionController.getCurrentQuestionIndex() == 2 ||
+        questionController.getCurrentQuestionIndex() == 3) {
       return Text(
         "Select year(s)",
+        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w300),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget showMonthText() {
+    if (questionController.getCurrentQuestionIndex() == 2 ||
+        questionController.getCurrentQuestionIndex() == 3) {
+      return Text(
+        "Select month(s)",
         style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w300),
       );
     } else {
@@ -110,7 +133,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
                         fontWeight: FontWeight.w300,
                         color: Colors.white,
                       ),
-                      children: getQuestion(_currentQuestionIndex),
+                      children: questionController.getQuestion(),
                     ),
                   ),
                 ),
@@ -124,17 +147,42 @@ class _QuestionScreenState extends State<QuestionScreen> {
                   RoundButton(
                     icon: Icons.check,
                     onTap: () {
-                      incrementQuestionIndex();
+                      // Confirmed
+                      questionController.incrementQuestionIndex();
+                      setState(() {}); // Causes rebuild
+                      saveCurrentQuestionData();
                     },
                   ),
                 ],
               ),
               SizedBox(height: kBoxGap + 50.0),
-              Column(
+              SizedBox(height: 20.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  showYearText(),
-                  SizedBox(height: 20.0),
-                  showNumberPicker(),
+                  Column(
+                    children: <Widget>[
+                      showYearText(),
+                      SizedBox(height: kBoxGap),
+                      showPicker(_currentYearPicker, (newValue) {
+                        setState(() {
+                          _currentYearPicker = newValue;
+                        });
+                      })
+                    ],
+                  ),
+                  SizedBox(width: kBoxGap + 50.0),
+                  Column(
+                    children: <Widget>[
+                      showMonthText(),
+                      SizedBox(height: kBoxGap),
+                      showPicker(_currentMonthPicker, (newValue) {
+                        setState(() {
+                          _currentMonthPicker = newValue;
+                        });
+                      }),
+                    ],
+                  ),
                 ],
               )
             ],

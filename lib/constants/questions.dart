@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'constants.dart';
+import 'package:cosplay_app/constants/constants.dart';
 
 List<TextSpan> q1(BuildContext context) {
   return <TextSpan>[
@@ -36,6 +36,23 @@ List<TextSpan> q3(BuildContext context) {
     ),
     TextSpan(
       text: 'cosplaying',
+      style: kTextStyleImportant(context),
+    ),
+    TextSpan(
+      text: '?',
+    ),
+  ];
+}
+
+List<TextSpan> q4(BuildContext context) {
+  return <TextSpan>[
+    TextSpan(text: 'How '),
+    TextSpan(text: 'long '),
+    TextSpan(
+      text: 'have you been a ',
+    ),
+    TextSpan(
+      text: 'photographer',
       style: kTextStyleImportant(context),
     ),
     TextSpan(

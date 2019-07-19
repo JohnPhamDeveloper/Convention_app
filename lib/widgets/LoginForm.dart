@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'HyperButton.dart';
 import 'IconFormField.dart';
 import 'SuperButton.dart';
-import 'package:cosplay_app/constants.dart';
+import 'package:cosplay_app/constants/constants.dart';
 
 class LoginForm extends StatefulWidget {
   @override

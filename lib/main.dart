@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
           body1: TextStyle(fontSize: 16.0, color: Colors.white),
         ),
       ),
-      initialRoute: '/question',
+      initialRoute: '/',
       routes: {
         '/': (context) => LoginScreen(),
         '/question': (context) => QuestionScreen(),
