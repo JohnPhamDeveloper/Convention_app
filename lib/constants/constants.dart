@@ -13,12 +13,17 @@ enum AnimationDirection {
   FROM_BOTTOM,
 }
 
-const kBoxGap = 15.0; // Gaps between each elements
+const kBoxGap = 20.0; // Gaps between each elements
 
 TextStyle kTextStyleNotImportant() {
   return TextStyle(
     color: Colors.grey[600],
+    fontSize: 14.0,
   );
+}
+
+TextStyle kTextStyleHyper() {
+  return TextStyle(color: Colors.blue, fontSize: 14.0);
 }
 
 TextStyle kTextStyleImportant(BuildContext context) {

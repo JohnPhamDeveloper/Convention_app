@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cosplay_app/constants/constants.dart';
 
 class HyperButton extends StatelessWidget {
   final text;
@@ -18,7 +19,7 @@ class HyperButton extends StatelessWidget {
       child: Container(
         child: Text(
           text,
-          style: TextStyle(color: Colors.blue),
+          style: kTextStyleHyper(),
           textAlign: TextAlign.center,
         ),
       ),

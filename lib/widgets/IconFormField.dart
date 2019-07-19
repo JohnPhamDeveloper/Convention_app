@@ -12,13 +12,13 @@ class IconFormField extends StatefulWidget {
     this.validator,
   }) : super(key: key);
 
-  final hintText;
-  final invalidText;
-  final icon;
-  final obscureText;
-  final controller;
-  final textInputType;
-  final validator;
+  final String hintText;
+  final String invalidText;
+  final IconData icon;
+  final bool obscureText;
+  final TextEditingController controller;
+  final TextInputType textInputType;
+  final Function validator;
 
   @override
   _IconFormFieldState createState() => _IconFormFieldState();
