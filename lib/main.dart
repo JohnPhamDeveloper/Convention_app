@@ -2,18 +2,24 @@ import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
 import 'screens/main_screen.dart';
 import 'screens/question_screen.dart';
+import 'package:flutter/services.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.cyan,
-        primaryColor: Colors.cyan,
+        primaryColor: Colors.cyan[300],
         accentColor: Colors.limeAccent[200],
+        buttonColor: Colors.cyan[300],
         textTheme: TextTheme(
           headline: TextStyle(fontSize: 35.0, fontWeight: FontWeight.bold),
           title: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
