@@ -1,31 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/animation.dart';
+import 'package:cosplay_app/constants/constants.dart';
 
-class AnimateLeftIn extends StatefulWidget {
+class AnimateIn extends StatefulWidget {
   final Animation animationTransform;
   final Animation animationOpacity;
-  final AnimationController animationController;
   final int direction;
   final Widget child;
 
-  AnimateLeftIn(
+  AnimateIn(
       {@required this.animationTransform,
       @required this.animationOpacity,
-      @required this.animationController,
-      @required this.direction,
+      this.direction = AnimationDirection.FROM_LEFT,
       @required this.child});
 
   @override
-  _AnimateLeftInState createState() => _AnimateLeftInState();
+  _AnimateInState createState() => _AnimateInState();
 }
 
-class _AnimateLeftInState extends State<AnimateLeftIn> {
-  @override
-  void initState() {
-    super.initState();
-    widget.animationController.forward();
-  }
-
+class _AnimateInState extends State<AnimateIn> {
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;

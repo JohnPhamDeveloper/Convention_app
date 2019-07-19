@@ -62,8 +62,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
     if (questionController.getCurrentQuestionIndex() == 2 ||
         questionController.getCurrentQuestionIndex() == 3) {
       return NumberPicker.integer(
-        listViewWidth: 50.0,
-        itemExtent: 40.0,
+        listViewWidth: 150.0,
+        itemExtent: 60.0,
         initialValue: currentValue,
         minValue: 0,
         maxValue: 100,
@@ -171,7 +171,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
                       })
                     ],
                   ),
-                  SizedBox(width: kBoxGap + 50.0),
+                  SizedBox(width: kBoxGap),
                   Column(
                     children: <Widget>[
                       showMonthText(),
