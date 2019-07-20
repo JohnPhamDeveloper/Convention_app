@@ -9,6 +9,9 @@ import "package:cosplay_app/animations/AnimationBounceIn.dart";
 import 'package:cosplay_app/verification/verification.dart';
 
 class LoginForm extends StatefulWidget {
+  final Function onLoginPress;
+
+  LoginForm({this.onLoginPress});
   @override
   _LoginFormState createState() => _LoginFormState();
 }
@@ -151,13 +154,19 @@ class _LoginFormState extends State<LoginForm>
               validated: () {
                 return _formKey.currentState.validate();
               },
-              onPress: () {
+              onPress: () async {
+                widget.onLoginPress();
                 Scaffold.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
                         'Processing Data for ${_emailController.text} of ${_passwordController.text}'),
                   ),
                 );
+
+                // Dismiss keyboard
+                FocusScope.of(context).requestFocus(new FocusNode());
+
+                await Future.delayed(Duration(seconds: 5), () {});
                 Navigator.pushNamed(context, '/question');
               },
             ),
