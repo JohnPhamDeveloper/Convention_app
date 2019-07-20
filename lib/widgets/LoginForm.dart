@@ -166,7 +166,7 @@ class _LoginFormState extends State<LoginForm>
                 // Dismiss keyboard
                 FocusScope.of(context).requestFocus(new FocusNode());
 
-                await Future.delayed(Duration(seconds: 5), () {});
+                await Future.delayed(Duration(seconds: 2), () {});
                 Navigator.pushNamed(context, '/question');
               },
             ),

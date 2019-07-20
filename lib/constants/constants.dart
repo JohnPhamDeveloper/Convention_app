@@ -11,6 +11,7 @@ enum AnimationDirection {
   FROM_RIGHT,
   FROM_TOP,
   FROM_BOTTOM,
+  TO_LEFT,
 }
 
 const kBoxGap = 20.0; // Gaps between each elements
