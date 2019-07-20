@@ -3,9 +3,9 @@ import 'package:cosplay_app/constants/constants.dart';
 
 List<TextSpan> q1(BuildContext context) {
   return <TextSpan>[
-    TextSpan(text: 'Are you a '),
+    TextSpan(text: 'This is a test '),
     TextSpan(
-      text: 'cosplayer',
+      text: 'question',
       style: kTextStyleImportant(context),
     ),
     TextSpan(

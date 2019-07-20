@@ -5,7 +5,6 @@ import 'package:cosplay_app/constants/questions.dart';
 import 'package:cosplay_app/animations/AnimateOut.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:cosplay_app/classes/QuestionController.dart';
-import 'package:simple_animations/simple_animations.dart';
 import 'dart:collection';
 
 class QuestionScreen extends StatefulWidget {
@@ -14,22 +13,27 @@ class QuestionScreen extends StatefulWidget {
 }
 
 class _QuestionScreenState extends State<QuestionScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   var userData = HashMap();
   QuestionController questionController = QuestionController();
   int _currentYearPicker = 1;
   int _currentMonthPicker = 1;
-  List<List<TextSpan>> questions = new List<List<TextSpan>>();
+  List<List<TextSpan>> questions = List<List<TextSpan>>();
   AnimationController animationController;
-  Animation animationOpacity;
-  Animation animationTransformQuestion;
-  Animation animationTransformButtons;
+//  Animation animationOpacity;
+//  Animation animationTransformQuestion;
+//  Animation animationTransformButtons;
+  List<AnimationController> animationControllerList =
+      List<AnimationController>();
 
   @override
   void initState() {
     super.initState();
-    animationController =
-        AnimationController(duration: Duration(seconds: 1), vsync: this);
+    for (int i = 0; i < 5; i++) {
+      AnimationController controller =
+          AnimationController(duration: Duration(seconds: 1), vsync: this);
+      animationControllerList.add(controller);
+    }
   }
 
   @override
@@ -113,106 +117,186 @@ class _QuestionScreenState extends State<QuestionScreen>
     }
   }
 
-  Widget renderQuestion(List<TextSpan> question, BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        AnimateOut(
-          start: 0.0,
-          controller: animationController,
-          myChild: Padding(
-            padding: const EdgeInsets.only(left: 22.0, right: 22.0),
-            child: Container(
-              child: RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.white,
+//  Widget renderQuestion(List<TextSpan> question, BuildContext context,
+//      AnimationController controller) {
+//    return Column(
+//      mainAxisAlignment: MainAxisAlignment.center,
+//      crossAxisAlignment: CrossAxisAlignment.center,
+//      children: <Widget>[
+//        AnimateOut(
+//          start: 0.0,
+//          controller: animationController,
+//          myChild: Padding(
+//            padding: const EdgeInsets.only(left: 22.0, right: 22.0),
+//            child: Container(
+//              child: RichText(
+//                textAlign: TextAlign.center,
+//                text: TextSpan(
+//                  style: TextStyle(
+//                    fontSize: 30.0,
+//                    fontWeight: FontWeight.w300,
+//                    color: Colors.white,
+//                  ),
+//                  children: question,
+//                ),
+//              ),
+//            ),
+//          ),
+//        ),
+//        SizedBox(height: kBoxGap + 50.0),
+//        AnimateOut(
+//          start: 0.3,
+//          controller: animationController,
+//          myChild: Row(
+//            mainAxisAlignment: MainAxisAlignment.center,
+//            children: <Widget>[
+//              RoundButton(icon: Icons.clear),
+//              SizedBox(width: kBoxGap + 40.0),
+//              RoundButton(
+//                icon: Icons.check,
+//                onTap: () {
+//                  // Confirmed
+//                  animationController.forward();
+//                  questionController.incrementQuestionIndex();
+//                  setState(() {}); // Causes rebuild
+//                  saveCurrentQuestionData();
+//                },
+//              ),
+//            ],
+//          ),
+//        ),
+//        SizedBox(height: kBoxGap + 50.0),
+//        SizedBox(height: 20.0),
+//        AnimateOut(
+//          start: 0.5,
+//          controller: animationController,
+//          myChild: Row(
+//            mainAxisAlignment: MainAxisAlignment.center,
+//            children: <Widget>[
+//              Column(
+//                children: <Widget>[
+//                  renderYearText(),
+//                  SizedBox(height: kBoxGap),
+//                  renderPicker(_currentYearPicker, (newValue) {
+//                    setState(() {
+//                      _currentYearPicker = newValue;
+//                    });
+//                  })
+//                ],
+//              ),
+//              SizedBox(width: kBoxGap),
+//              Column(
+//                children: <Widget>[
+//                  renderMonthText(),
+//                  SizedBox(height: kBoxGap),
+//                  renderPicker(_currentMonthPicker, (newValue) {
+//                    setState(() {
+//                      _currentMonthPicker = newValue;
+//                    });
+//                  }),
+//                ],
+//              ),
+//            ],
+//          ),
+//        )
+//      ],
+//    );
+//  }
+
+  List<Widget> renderQuestions(BuildContext context) {
+    List<Widget> questionPages = List<Widget>();
+
+    for (int i = 0; i < questionController.getQuestionsLength(); i++) {
+      questionPages.add(Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          AnimateOut(
+            start: 0.0,
+            controller: animationControllerList[i],
+            myChild: Padding(
+              padding: const EdgeInsets.only(left: 22.0, right: 22.0),
+              child: Container(
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.w300,
+                      color: Colors.white,
+                    ),
+                    children: questionController.getQuestion(i),
                   ),
-                  children: question,
                 ),
               ),
             ),
           ),
-        ),
-        SizedBox(height: kBoxGap + 50.0),
-        AnimateOut(
-          start: 0.3,
-          controller: animationController,
-          myChild: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              RoundButton(icon: Icons.clear),
-              SizedBox(width: kBoxGap + 40.0),
-              RoundButton(
-                icon: Icons.check,
-                onTap: () {
-                  // Confirmed
-                  animationController.forward();
-                  questionController.incrementQuestionIndex();
-                  setState(() {}); // Causes rebuild
-                  saveCurrentQuestionData();
-                },
-              ),
-            ],
+          SizedBox(height: kBoxGap + 50.0),
+          AnimateOut(
+            start: 0.3,
+            controller: animationControllerList[i],
+            myChild: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RoundButton(icon: Icons.clear),
+                SizedBox(width: kBoxGap + 40.0),
+                RoundButton(
+                  icon: Icons.check,
+                  onTap: () {
+                    // Confirmed
+                    animationControllerList[i].forward();
+                    questionController.incrementQuestionIndex();
+                    setState(() {}); // Causes rebuild
+                    saveCurrentQuestionData();
+                  },
+                ),
+              ],
+            ),
           ),
-        ),
-        SizedBox(height: kBoxGap + 50.0),
-        SizedBox(height: 20.0),
-        AnimateOut(
-          start: 0.5,
-          controller: animationController,
-          myChild: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  renderYearText(),
-                  SizedBox(height: kBoxGap),
-                  renderPicker(_currentYearPicker, (newValue) {
-                    setState(() {
-                      _currentYearPicker = newValue;
-                    });
-                  })
-                ],
-              ),
-              SizedBox(width: kBoxGap),
-              Column(
-                children: <Widget>[
-                  renderMonthText(),
-                  SizedBox(height: kBoxGap),
-                  renderPicker(_currentMonthPicker, (newValue) {
-                    setState(() {
-                      _currentMonthPicker = newValue;
-                    });
-                  }),
-                ],
-              ),
-            ],
-          ),
-        )
-      ],
-    );
+          SizedBox(height: kBoxGap + 50.0),
+          SizedBox(height: 20.0),
+          AnimateOut(
+            start: 0.5,
+            controller: animationControllerList[i],
+            myChild: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    renderYearText(),
+                    SizedBox(height: kBoxGap),
+                    renderPicker(_currentYearPicker, (newValue) {
+                      setState(() {
+                        _currentYearPicker = newValue;
+                      });
+                    })
+                  ],
+                ),
+                SizedBox(width: kBoxGap),
+                Column(
+                  children: <Widget>[
+                    renderMonthText(),
+                    SizedBox(height: kBoxGap),
+                    renderPicker(_currentMonthPicker, (newValue) {
+                      setState(() {
+                        _currentMonthPicker = newValue;
+                      });
+                    }),
+                  ],
+                ),
+              ],
+            ),
+          )
+        ],
+      ));
+    }
+    questionPages.reversed;
+
+    return questionPages;
   }
 
   @override
   Widget build(BuildContext context) {
-//    final double width = MediaQuery.of(context).size.width;
-//    animationTransformQuestion = Tween(begin: 0.0, end: width * -1).animate(
-//      CurvedAnimation(
-//        parent: animationController,
-//        curve: Interval(0.0, 1.0, curve: Curves.easeInOutCubic),
-//      ),
-//    );
-//    animationTransformButtons = Tween(begin: 0.0, end: width * -1).animate(
-//      CurvedAnimation(
-//        parent: animationController,
-//        curve: Interval(0.2, 1.0, curve: Curves.easeInOutCubic),
-//      ),
-//    );
     //  Create questions; need context for theme
     initQuestions(context);
 
@@ -234,10 +318,7 @@ class _QuestionScreenState extends State<QuestionScreen>
             ),
           ),
           child: Stack(
-            children: <Widget>[
-              renderQuestion(q1(context), context),
-              //renderQuestion(q2(context)),
-            ],
+            children: renderQuestions(context),
           ),
         ),
       ),
