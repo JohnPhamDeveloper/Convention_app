@@ -18,7 +18,7 @@ class QuestionController {
     if (_questions.isEmpty || index < 0 || index >= _questions.length)
       return null;
 
-    return _questions[_currentQuestionIndex];
+    return _questions[index];
   }
 
   List<TextSpan> getCurrentQuestion() {

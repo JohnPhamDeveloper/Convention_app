@@ -206,7 +206,93 @@ class _QuestionScreenState extends State<QuestionScreen>
   List<Widget> renderQuestions(BuildContext context) {
     List<Widget> questionPages = List<Widget>();
 
-    for (int i = 0; i < questionController.getQuestionsLength(); i++) {
+    // First question won't need the animation in wrapped
+    Widget firstQuestion = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        AnimateOut(
+          start: 0.0,
+          controller: animationControllerList[0],
+          myChild: Padding(
+            padding: const EdgeInsets.only(left: 22.0, right: 22.0),
+            child: Container(
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: TextStyle(
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.white,
+                  ),
+                  children: questionController.getQuestion(0),
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: kBoxGap + 50.0),
+        AnimateOut(
+          start: 0.3,
+          controller: animationControllerList[0],
+          myChild: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              RoundButton(icon: Icons.clear),
+              SizedBox(width: kBoxGap + 40.0),
+              RoundButton(
+                icon: Icons.check,
+                onTap: () {
+                  // Confirmed
+                  animationControllerList[0].forward();
+                  questionController.incrementQuestionIndex();
+                  setState(() {}); // Causes rebuild
+                  saveCurrentQuestionData();
+                },
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: kBoxGap + 50.0),
+        SizedBox(height: 20.0),
+        AnimateOut(
+          start: 0.5,
+          controller: animationControllerList[0],
+          myChild: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  renderYearText(),
+                  SizedBox(height: kBoxGap),
+                  renderPicker(_currentYearPicker, (newValue) {
+                    setState(() {
+                      _currentYearPicker = newValue;
+                    });
+                  })
+                ],
+              ),
+              SizedBox(width: kBoxGap),
+              Column(
+                children: <Widget>[
+                  renderMonthText(),
+                  SizedBox(height: kBoxGap),
+                  renderPicker(_currentMonthPicker, (newValue) {
+                    setState(() {
+                      _currentMonthPicker = newValue;
+                    });
+                  }),
+                ],
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+    questionPages.add(firstQuestion);
+
+    // Wrap all questions after that with animationIn and animationOut
+    for (int i = 1; i < questionController.getQuestionsLength(); i++) {
       questionPages.add(Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -290,6 +376,8 @@ class _QuestionScreenState extends State<QuestionScreen>
         ],
       ));
     }
+
+    // Will be put on a stack so reverse to get correct question order
     questionPages.reversed;
 
     return questionPages;
