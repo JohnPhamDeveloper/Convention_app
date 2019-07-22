@@ -4,7 +4,7 @@ import 'IconFormField.dart';
 import 'SuperButton.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:flutter/animation.dart';
-import "package:cosplay_app/animations/AnimateIn.dart";
+import "package:cosplay_app/animations/AnimationWrapper.dart";
 import "package:cosplay_app/animations/AnimationBounceIn.dart";
 import 'package:cosplay_app/verification/verification.dart';
 
@@ -18,14 +18,6 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm>
     with SingleTickerProviderStateMixin {
-  Animation animationLeftInEmail;
-  Animation animationLeftInPassword;
-  Animation animationLeftInRememberMe;
-  Animation animationForgotPassword;
-  Animation animationRememberMe;
-  Animation animationLogIn;
-  Animation animationOpacity;
-  Animation animationSignUp;
   AnimationController animationController;
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
@@ -57,7 +49,7 @@ class _LoginFormState extends State<LoginForm>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          AnimateIn(
+          AnimationWrapper(
             controller: animationController,
             start: 0.0,
             child: IconFormField(
@@ -72,7 +64,7 @@ class _LoginFormState extends State<LoginForm>
             ),
           ),
           SizedBox(height: kBoxGap),
-          AnimateIn(
+          AnimationWrapper(
             controller: animationController,
             start: 0.1,
             child: IconFormField(
@@ -91,7 +83,7 @@ class _LoginFormState extends State<LoginForm>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              AnimateIn(
+              AnimationWrapper(
                 controller: animationController,
                 start: 0.3,
                 child: Row(
@@ -109,10 +101,10 @@ class _LoginFormState extends State<LoginForm>
                   ],
                 ),
               ),
-              AnimateIn(
+              AnimationWrapper(
                 controller: animationController,
                 start: 0.3,
-                direction: AnimationDirection.FROM_RIGHT,
+                direction: AnimationDirection.RIGHT,
                 child: HyperButton(text: "Forgot Password?"),
               ),
             ],
@@ -145,10 +137,10 @@ class _LoginFormState extends State<LoginForm>
             ),
           ),
           SizedBox(height: kBoxGap + 20.0),
-          AnimateIn(
+          AnimationWrapper(
             controller: animationController,
             start: 0.5,
-            direction: AnimationDirection.FROM_BOTTOM,
+            direction: AnimationDirection.BOTTOM,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[

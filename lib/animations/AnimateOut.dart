@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:cosplay_app/constants/constants.dart';
 
-class AnimateOut extends StatelessWidget {
+class AnimateWrapper extends StatelessWidget {
   final double start;
   final Widget myChild;
   final AnimationController controller;
+  final AnimationDirection direction;
   final bool shouldAnimateOpacity;
+  final bool isOut;
 
-  AnimateOut(
+  // CONSTRUCTOR
+  AnimateWrapper(
       {this.myChild,
       this.controller,
       this.start,
-      this.shouldAnimateOpacity = false});
+      this.shouldAnimateOpacity = false,
+      this.isOut = false,
+      this.direction = AnimationDirection.LEFT});
 
   @override
   Widget build(BuildContext context) {
-    // Width
     final double width = MediaQuery.of(context).size.width;
 
     // Opacity
@@ -33,9 +38,6 @@ class AnimateOut extends StatelessWidget {
         curve: Interval(start, 1.0, curve: Curves.easeInOutCubic),
       ),
     );
-
-    print(animationOpacity.value);
-    print(animationTransform.value);
 
     return AnimatedBuilder(
       animation: animationTransform,

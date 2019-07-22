@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cosplay_app/animations/AnimateOut.dart';
-import 'package:cosplay_app/animations/AnimateIn.dart';
+import 'package:cosplay_app/animations/AnimationWrapper.dart';
 
 class MyAnimation {
   AnimationController controller;
@@ -17,7 +17,7 @@ class MyAnimation {
       this.oStart = 0.0,
       this.shouldAnimateOpacity = false}) {
     nextAnimationToPlay =
-        AnimateOut(myChild: child, controller: controller, start: oStart);
+        AnimateWrapper(myChild: child, controller: controller, start: oStart);
   }
 
   void setNextAnimation() {

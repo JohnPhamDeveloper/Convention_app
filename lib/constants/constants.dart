@@ -7,11 +7,10 @@ class REMOVE2 {
 }
 
 enum AnimationDirection {
-  FROM_LEFT,
-  FROM_RIGHT,
-  FROM_TOP,
-  FROM_BOTTOM,
-  TO_LEFT,
+  LEFT,
+  RIGHT,
+  TOP,
+  BOTTOM,
 }
 
 const kBoxGap = 20.0; // Gaps between each elements
