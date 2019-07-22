@@ -25,6 +25,8 @@ class _QuestionScreenState extends State<QuestionScreen>
   List<AnimationDirection> animationDirectionList = List<AnimationDirection>();
   List<bool> animationIsOutList = List<bool>();
   List<bool> showPicker = List<bool>();
+  List<int> currentYearPickerList = List<int>();
+  List<int> currentMonthPickerList = List<int>();
 
   @override
   void initState() {
@@ -161,21 +163,7 @@ class _QuestionScreenState extends State<QuestionScreen>
               SizedBox(width: kBoxGap + 40.0),
               RoundButton(
                 icon: Icons.check,
-                onTap: () {
-                  // The next question should animate in
-                  setState(() {
-                    animationIsOutList[index] = true; // Animate out
-                    animationDirectionList[index] =
-                        AnimationDirection.LEFT; // Animate out to left
-                  });
-                  animationControllerList[index].reset();
-                  animationControllerList[index]
-                      .forward(); // Animate with new properties
-                  animationControllerList[index + 1].reset();
-                  animationControllerList[index + 1].forward();
-                  questionController.incrementQuestionIndex();
-                  saveCurrentQuestionData();
-                },
+                onTap: () => handleOnCheckClick(index),
               ),
             ],
           ),
@@ -218,6 +206,22 @@ class _QuestionScreenState extends State<QuestionScreen>
         )
       ],
     );
+  }
+
+  void handleOnCheckClick(int index) {
+    saveCurrentQuestionData();
+    setState(() {
+      animationIsOutList[index] = true; // Animate out
+      animationDirectionList[index] =
+          AnimationDirection.LEFT; // Animate out to left
+      _currentYearPicker = 1;
+      _currentMonthPicker = 1;
+    });
+    animationControllerList[index].reset();
+    animationControllerList[index].forward(); // Animate with new properties
+    animationControllerList[index + 1].reset();
+    animationControllerList[index + 1].forward();
+    questionController.incrementQuestionIndex(); // Is this needed?
   }
 
   List<Widget> renderQuestions(BuildContext context) {
