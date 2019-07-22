@@ -24,6 +24,7 @@ class _QuestionScreenState extends State<QuestionScreen>
       List<AnimationController>();
   List<AnimationDirection> animationDirectionList = List<AnimationDirection>();
   List<bool> animationIsOutList = List<bool>();
+  List<bool> showPicker = List<bool>();
 
   @override
   void initState() {
@@ -79,9 +80,8 @@ class _QuestionScreenState extends State<QuestionScreen>
   }
 
   // Displays year picker and a function that will set the state with the picker value
-  Widget renderPicker(int currentValue, Function setCurrentValue) {
-    if (questionController.getCurrentQuestionIndex() == 2 ||
-        questionController.getCurrentQuestionIndex() == 3) {
+  Widget renderPicker(int index, int currentValue, Function setCurrentValue) {
+    if (index == 2 || index == 3) {
       return NumberPicker.integer(
         listViewWidth: 150.0,
         itemExtent: 60.0,
@@ -91,13 +91,12 @@ class _QuestionScreenState extends State<QuestionScreen>
         onChanged: (newValue) => setCurrentValue(newValue),
       );
     } else {
-      return Container(); // Return a container since number picker shouldnt be displayed
+      return Container(); // Return a container since number picker shouldn't be displayed
     }
   }
 
-  Widget renderYearText() {
-    if (questionController.getCurrentQuestionIndex() == 2 ||
-        questionController.getCurrentQuestionIndex() == 3) {
+  Widget renderYearText(index) {
+    if (index == 2 || index == 3) {
       return Text(
         "Select year(s)",
         style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w300),
@@ -107,9 +106,8 @@ class _QuestionScreenState extends State<QuestionScreen>
     }
   }
 
-  Widget renderMonthText() {
-    if (questionController.getCurrentQuestionIndex() == 2 ||
-        questionController.getCurrentQuestionIndex() == 3) {
+  Widget renderMonthText(index) {
+    if (index == 2 || index == 3) {
       return Text(
         "Select month(s)",
         style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w300),
@@ -170,8 +168,10 @@ class _QuestionScreenState extends State<QuestionScreen>
                     animationDirectionList[index] =
                         AnimationDirection.LEFT; // Animate out to left
                   });
+                  animationControllerList[index].reset();
                   animationControllerList[index]
-                      .reset(); // Animate with new properties
+                      .forward(); // Animate with new properties
+                  animationControllerList[index + 1].reset();
                   animationControllerList[index + 1].forward();
                   questionController.incrementQuestionIndex();
                   saveCurrentQuestionData();
@@ -192,9 +192,9 @@ class _QuestionScreenState extends State<QuestionScreen>
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  renderYearText(),
+                  renderYearText(index),
                   SizedBox(height: kBoxGap),
-                  renderPicker(_currentYearPicker, (newValue) {
+                  renderPicker(index, _currentYearPicker, (newValue) {
                     setState(() {
                       _currentYearPicker = newValue;
                     });
@@ -204,9 +204,9 @@ class _QuestionScreenState extends State<QuestionScreen>
               SizedBox(width: kBoxGap),
               Column(
                 children: <Widget>[
-                  renderMonthText(),
+                  renderMonthText(index),
                   SizedBox(height: kBoxGap),
-                  renderPicker(_currentMonthPicker, (newValue) {
+                  renderPicker(index, _currentMonthPicker, (newValue) {
                     setState(() {
                       _currentMonthPicker = newValue;
                     });
