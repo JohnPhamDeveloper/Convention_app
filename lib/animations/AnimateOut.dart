@@ -4,8 +4,13 @@ class AnimateOut extends StatelessWidget {
   final double start;
   final Widget myChild;
   final AnimationController controller;
+  final bool shouldAnimateOpacity;
 
-  AnimateOut({this.myChild, this.controller, this.start});
+  AnimateOut(
+      {this.myChild,
+      this.controller,
+      this.start,
+      this.shouldAnimateOpacity = false});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +41,7 @@ class AnimateOut extends StatelessWidget {
       animation: animationTransform,
       builder: (BuildContext context, Widget child) {
         return Opacity(
-          opacity: animationOpacity.value,
+          opacity: shouldAnimateOpacity ? animationOpacity.value : 1,
           child: Transform(
             transform:
                 Matrix4.translationValues(animationTransform.value, 0.0, 0.0),

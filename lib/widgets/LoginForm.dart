@@ -38,39 +38,12 @@ class _LoginFormState extends State<LoginForm>
     animationController =
         AnimationController(duration: Duration(seconds: 2), vsync: this);
 
-    animationOpacity = createOpacityAnimationAtStart(0, Curves.linearToEaseOut);
-    animationLeftInEmail =
-        createTransformAnimationAtStart(0.0, Curves.easeInOutCubic);
-    animationLeftInPassword =
-        createTransformAnimationAtStart(0.1, Curves.easeInOutCubic);
-    animationLeftInRememberMe =
-        createTransformAnimationAtStart(0.3, Curves.easeInOutCubic);
-    animationForgotPassword =
-        createTransformAnimationAtStart(0.3, Curves.easeInOutCubic);
-    animationRememberMe =
-        createTransformAnimationAtStart(0.4, Curves.easeInOutCubic);
-    animationSignUp = createTransformAnimationAtStart(0.5, Curves.easeOutCirc);
-
     animationController.forward();
-  }
-
-  // Create the animation with a given start point in the animation (ex: start = 0.5 is 50%)
-  Animation createTransformAnimationAtStart(double start, Curve curve) {
-    return Tween(begin: -1.0, end: 0.0).animate(CurvedAnimation(
-      parent: animationController,
-      curve: Interval(start, 1.0, curve: curve),
-    ));
-  }
-
-  Animation createOpacityAnimationAtStart(double start, Curve curve) {
-    return Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-      parent: animationController,
-      curve: Interval(start, 1.0, curve: curve),
-    ));
   }
 
   @override
   void dispose() {
+    animationController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -85,8 +58,8 @@ class _LoginFormState extends State<LoginForm>
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           AnimateIn(
-            animationTransform: animationLeftInEmail,
-            animationOpacity: animationOpacity,
+            controller: animationController,
+            start: 0.0,
             child: IconFormField(
               hintText: "Email",
               invalidText: "Invalid Email",
@@ -100,8 +73,8 @@ class _LoginFormState extends State<LoginForm>
           ),
           SizedBox(height: kBoxGap),
           AnimateIn(
-            animationTransform: animationLeftInPassword,
-            animationOpacity: animationOpacity,
+            controller: animationController,
+            start: 0.1,
             child: IconFormField(
               hintText: "Password",
               invalidText: "Invalid Password",
@@ -119,8 +92,8 @@ class _LoginFormState extends State<LoginForm>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               AnimateIn(
-                animationTransform: animationLeftInRememberMe,
-                animationOpacity: animationOpacity,
+                controller: animationController,
+                start: 0.3,
                 child: Row(
                   children: <Widget>[
                     Switch(
@@ -137,8 +110,8 @@ class _LoginFormState extends State<LoginForm>
                 ),
               ),
               AnimateIn(
-                animationTransform: animationRememberMe,
-                animationOpacity: animationOpacity,
+                controller: animationController,
+                start: 0.3,
                 direction: AnimationDirection.FROM_RIGHT,
                 child: HyperButton(text: "Forgot Password?"),
               ),
@@ -173,8 +146,8 @@ class _LoginFormState extends State<LoginForm>
           ),
           SizedBox(height: kBoxGap + 20.0),
           AnimateIn(
-            animationOpacity: animationOpacity,
-            animationTransform: animationSignUp,
+            controller: animationController,
+            start: 0.5,
             direction: AnimationDirection.FROM_BOTTOM,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

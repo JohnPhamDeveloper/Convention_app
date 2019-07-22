@@ -39,6 +39,9 @@ class _QuestionScreenState extends State<QuestionScreen>
   @override
   void dispose() {
     animationController.dispose();
+    for (AnimationController animationController in animationControllerList) {
+      animationController.dispose();
+    }
     super.dispose();
   }
 
@@ -117,189 +120,17 @@ class _QuestionScreenState extends State<QuestionScreen>
     }
   }
 
-//  Widget renderQuestion(List<TextSpan> question, BuildContext context,
-//      AnimationController controller) {
-//    return Column(
-//      mainAxisAlignment: MainAxisAlignment.center,
-//      crossAxisAlignment: CrossAxisAlignment.center,
-//      children: <Widget>[
-//        AnimateOut(
-//          start: 0.0,
-//          controller: animationController,
-//          myChild: Padding(
-//            padding: const EdgeInsets.only(left: 22.0, right: 22.0),
-//            child: Container(
-//              child: RichText(
-//                textAlign: TextAlign.center,
-//                text: TextSpan(
-//                  style: TextStyle(
-//                    fontSize: 30.0,
-//                    fontWeight: FontWeight.w300,
-//                    color: Colors.white,
-//                  ),
-//                  children: question,
-//                ),
-//              ),
-//            ),
-//          ),
-//        ),
-//        SizedBox(height: kBoxGap + 50.0),
-//        AnimateOut(
-//          start: 0.3,
-//          controller: animationController,
-//          myChild: Row(
-//            mainAxisAlignment: MainAxisAlignment.center,
-//            children: <Widget>[
-//              RoundButton(icon: Icons.clear),
-//              SizedBox(width: kBoxGap + 40.0),
-//              RoundButton(
-//                icon: Icons.check,
-//                onTap: () {
-//                  // Confirmed
-//                  animationController.forward();
-//                  questionController.incrementQuestionIndex();
-//                  setState(() {}); // Causes rebuild
-//                  saveCurrentQuestionData();
-//                },
-//              ),
-//            ],
-//          ),
-//        ),
-//        SizedBox(height: kBoxGap + 50.0),
-//        SizedBox(height: 20.0),
-//        AnimateOut(
-//          start: 0.5,
-//          controller: animationController,
-//          myChild: Row(
-//            mainAxisAlignment: MainAxisAlignment.center,
-//            children: <Widget>[
-//              Column(
-//                children: <Widget>[
-//                  renderYearText(),
-//                  SizedBox(height: kBoxGap),
-//                  renderPicker(_currentYearPicker, (newValue) {
-//                    setState(() {
-//                      _currentYearPicker = newValue;
-//                    });
-//                  })
-//                ],
-//              ),
-//              SizedBox(width: kBoxGap),
-//              Column(
-//                children: <Widget>[
-//                  renderMonthText(),
-//                  SizedBox(height: kBoxGap),
-//                  renderPicker(_currentMonthPicker, (newValue) {
-//                    setState(() {
-//                      _currentMonthPicker = newValue;
-//                    });
-//                  }),
-//                ],
-//              ),
-//            ],
-//          ),
-//        )
-//      ],
-//    );
-//  }
-
-  List<Widget> renderQuestions(BuildContext context) {
-    List<Widget> questionPages = List<Widget>();
-
-    // First question won't need the animation in wrapped
-    Widget firstQuestion = Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        AnimateOut(
-          start: 0.0,
-          controller: animationControllerList[0],
-          myChild: Padding(
-            padding: const EdgeInsets.only(left: 22.0, right: 22.0),
-            child: Container(
-              child: RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.white,
-                  ),
-                  children: questionController.getQuestion(0),
-                ),
-              ),
-            ),
-          ),
-        ),
-        SizedBox(height: kBoxGap + 50.0),
-        AnimateOut(
-          start: 0.3,
-          controller: animationControllerList[0],
-          myChild: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              RoundButton(icon: Icons.clear),
-              SizedBox(width: kBoxGap + 40.0),
-              RoundButton(
-                icon: Icons.check,
-                onTap: () {
-                  // Confirmed
-                  animationControllerList[0].forward();
-                  questionController.incrementQuestionIndex();
-                  setState(() {}); // Causes rebuild
-                  saveCurrentQuestionData();
-                },
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: kBoxGap + 50.0),
-        SizedBox(height: 20.0),
-        AnimateOut(
-          start: 0.5,
-          controller: animationControllerList[0],
-          myChild: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  renderYearText(),
-                  SizedBox(height: kBoxGap),
-                  renderPicker(_currentYearPicker, (newValue) {
-                    setState(() {
-                      _currentYearPicker = newValue;
-                    });
-                  })
-                ],
-              ),
-              SizedBox(width: kBoxGap),
-              Column(
-                children: <Widget>[
-                  renderMonthText(),
-                  SizedBox(height: kBoxGap),
-                  renderPicker(_currentMonthPicker, (newValue) {
-                    setState(() {
-                      _currentMonthPicker = newValue;
-                    });
-                  }),
-                ],
-              ),
-            ],
-          ),
-        )
-      ],
-    );
-    questionPages.add(firstQuestion);
-
-    // Wrap all questions after that with animationIn and animationOut
-    for (int i = 1; i < questionController.getQuestionsLength(); i++) {
-      questionPages.add(Column(
+  Widget createQuestionWidget(int index,
+      {double x: 0.0, double y: 0.0, double z: 0.0}) {
+    return Transform(
+      transform: Matrix4.translationValues(x, y, z),
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           AnimateOut(
             start: 0.0,
-            controller: animationControllerList[i],
+            controller: animationControllerList[index],
             myChild: Padding(
               padding: const EdgeInsets.only(left: 22.0, right: 22.0),
               child: Container(
@@ -311,7 +142,7 @@ class _QuestionScreenState extends State<QuestionScreen>
                       fontWeight: FontWeight.w300,
                       color: Colors.white,
                     ),
-                    children: questionController.getQuestion(i),
+                    children: questionController.getQuestion(index),
                   ),
                 ),
               ),
@@ -320,7 +151,7 @@ class _QuestionScreenState extends State<QuestionScreen>
           SizedBox(height: kBoxGap + 50.0),
           AnimateOut(
             start: 0.3,
-            controller: animationControllerList[i],
+            controller: animationControllerList[index],
             myChild: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -330,7 +161,7 @@ class _QuestionScreenState extends State<QuestionScreen>
                   icon: Icons.check,
                   onTap: () {
                     // Confirmed
-                    animationControllerList[i].forward();
+                    animationControllerList[index].forward();
                     questionController.incrementQuestionIndex();
                     setState(() {}); // Causes rebuild
                     saveCurrentQuestionData();
@@ -343,7 +174,7 @@ class _QuestionScreenState extends State<QuestionScreen>
           SizedBox(height: 20.0),
           AnimateOut(
             start: 0.5,
-            controller: animationControllerList[i],
+            controller: animationControllerList[index],
             myChild: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -374,7 +205,21 @@ class _QuestionScreenState extends State<QuestionScreen>
             ),
           )
         ],
-      ));
+      ),
+    );
+  }
+
+  List<Widget> renderQuestions(BuildContext context) {
+    List<Widget> questionPages = List<Widget>();
+    double width = MediaQuery.of(context).size.width;
+
+    // First question won't need the animation in wrapped
+    questionPages.add(createQuestionWidget(0));
+
+    // Wrap all questions after that with animationIn and animationOut
+    for (int i = 1; i < questionController.getQuestionsLength(); i++) {
+      // Create button off screen to the right
+      questionPages.add(createQuestionWidget(i, x: width));
     }
 
     // Will be put on a stack so reverse to get correct question order
