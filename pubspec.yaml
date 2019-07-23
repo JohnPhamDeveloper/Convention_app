@@ -31,6 +31,7 @@ dev_dependencies:
   numberpicker: ^1.0.0
   simple_animations: ^1.3.3
   flutter_spinkit: ^3.1.0
+  curved_navigation_bar: ^0.3.0 #latest version
 
 
 # For information on the generic Dart part of this file, see the
@@ -43,7 +44,6 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
 #  assets:
 #    - assets/success.flr2d
 
