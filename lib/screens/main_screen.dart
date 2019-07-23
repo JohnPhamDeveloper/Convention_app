@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:cosplay_app/widgets/ScrollableTitle.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Theme.of(context).primaryColor,
         buttonBackgroundColor: Colors.pink,
@@ -20,15 +22,50 @@ class _MainScreenState extends State<MainScreen> {
             size: 30,
             color: Colors.white,
           ),
-          Icon(Icons.notifications, size: 30, color: Colors.white),
+          Icon(Icons.search, size: 30, color: Colors.white),
           Icon(Icons.business_center, size: 30, color: Colors.white),
+          Icon(Icons.notifications, size: 30, color: Colors.white),
           Icon(Icons.person, size: 30, color: Colors.white),
         ],
         onTap: (index) {
           //Handle button tap
+          switch (index) {
+            case 0:
+              print('Home');
+              break;
+            case 1:
+              print('Notif');
+              break;
+            case 2:
+              print('Fame');
+              break;
+            case 3:
+              print('Profile');
+              break;
+          }
         },
       ),
-      body: Container(color: Theme.of(context).primaryColor),
+      body: SafeArea(
+        child: ListView(
+          children: <Widget>[
+            ScrollableTitle(
+              color: Colors.orange,
+              height: 300,
+              title: Text("Most Friendly"),
+            ),
+            ScrollableTitle(
+              color: Colors.pink,
+              height: 250,
+              title: Text("Highest Fame"),
+            ),
+            ScrollableTitle(
+              color: Colors.green,
+              height: 250,
+              title: Text("Highest Fame"),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
