@@ -34,8 +34,9 @@ void main() {
     String invalidMessage = validatePassword(badPassword);
     expect(invalidMessage, "Please enter your password");
   });
-  test("Password must be greater than 5 characters", () {
-    String invalidMessage = validatePassword(badPassword);
-    expect(invalidMessage, "Please enter your password");
+  test("validatePassword should ask for more than 5 characters for password",
+      () {
+    String invalidMessage = validatePassword(badPassword2);
+    expect(invalidMessage, "Password must be greater than 5 characters");
   });
 }
