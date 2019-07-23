@@ -1,18 +1,19 @@
 import 'package:cosplay_app/classes/QuestionBank.dart';
 import 'package:flutter/material.dart';
-import 'package:cosplay_app/widgets/question/Question.dart';
+import 'package:cosplay_app/widgets/question/QuestionWidget.dart';
 import 'dart:collection';
 
-class Questions extends StatefulWidget {
+class QuestionsWidget extends StatefulWidget {
   final QuestionBank questionBank;
 
-  Questions({@required this.questionBank});
+  QuestionsWidget({@required this.questionBank});
 
   @override
-  _QuestionsState createState() => _QuestionsState();
+  _QuestionsWidgetState createState() => _QuestionsWidgetState();
 }
 
-class _QuestionsState extends State<Questions> with TickerProviderStateMixin {
+class _QuestionsWidgetState extends State<QuestionsWidget>
+    with TickerProviderStateMixin {
   var userData = HashMap();
   List<AnimationController> animationControllerList =
       List<AnimationController>();
@@ -41,16 +42,18 @@ class _QuestionsState extends State<Questions> with TickerProviderStateMixin {
   List<Widget> renderQuestions(BuildContext context) {
     List<Widget> questionPages = List<Widget>();
 
+    // Determine whether the number picker should show for the question
     bool doesCurrentQuestionNeedNumberPicker(index) {
-      if (index == 2 || index == 3) return true;
+      if (widget.questionBank.getQuestion(index).displayNumberPicker)
+        return true;
       return false;
     }
 
     // Add all question widgets to list
     for (int i = 0; i < widget.questionBank.getQuestionsLength(); i++) {
-      questionPages.add(Question(
+      questionPages.add(QuestionWidget(
         animationController: animationControllerList[i],
-        questionText: widget.questionBank.getQuestion(i),
+        questionText: widget.questionBank.getQuestion(i).questionText,
         onCheckTap: () {
           handleOnCheckClick(i);
         },

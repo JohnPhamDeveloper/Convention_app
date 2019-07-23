@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cosplay_app/constants/questions.dart';
-import 'package:cosplay_app/classes/Questions.dart';
+import 'package:cosplay_app/widgets/question/QuestionsWidget.dart';
 import 'package:cosplay_app/classes/QuestionBank.dart';
+import 'package:cosplay_app/classes/QuestionText.dart';
 
 class QuestionScreen extends StatefulWidget {
   @override
@@ -17,10 +18,12 @@ class _QuestionScreenState extends State<QuestionScreen>
     questionBank.clearQuestions();
 
     // Questions are from questions.dart
-    questionBank.addQuestion(q1(context));
-    questionBank.addQuestion(q2(context));
-    questionBank.addQuestion(q3(context));
-    questionBank.addQuestion(q4(context));
+    questionBank.addQuestion(QuestionText(q1(context), false)); // Cosplayer?
+    questionBank.addQuestion(QuestionText(q2(context), false)); // Photographer?
+    questionBank
+        .addQuestion(QuestionText(q3(context), true)); // Years cosplayed
+    questionBank
+        .addQuestion(QuestionText(q4(context), true)); // Years Photographer
   }
 
   @override
@@ -45,7 +48,7 @@ class _QuestionScreenState extends State<QuestionScreen>
               ],
             ),
           ),
-          child: Questions(questionBank: questionBank),
+          child: QuestionsWidget(questionBank: questionBank),
         ),
       ),
     );

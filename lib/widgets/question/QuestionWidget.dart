@@ -4,7 +4,7 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:cosplay_app/animations/AnimationWrapper.dart';
 import 'package:cosplay_app/widgets/RoundButton.dart';
 
-class Question extends StatefulWidget {
+class QuestionWidget extends StatefulWidget {
   final AnimationController animationController;
   final AnimationDirection animationDirection;
   final bool animationIsOut;
@@ -16,7 +16,7 @@ class Question extends StatefulWidget {
   final Function onYearChange;
   final Function onMonthChange;
 
-  Question(
+  QuestionWidget(
       {@required this.animationController,
       @required this.questionText,
       @required this.onCheckTap,
@@ -29,10 +29,10 @@ class Question extends StatefulWidget {
       this.currentYearPicker = 1});
 
   @override
-  _QuestionState createState() => _QuestionState();
+  _QuestionWidgetState createState() => _QuestionWidgetState();
 }
 
-class _QuestionState extends State<Question> {
+class _QuestionWidgetState extends State<QuestionWidget> {
   AnimationDirection animationDirection;
   int currentYearPicker;
   int currentMonthPicker;
