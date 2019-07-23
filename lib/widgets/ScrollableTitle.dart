@@ -17,12 +17,22 @@ class ScrollableTitle extends StatelessWidget {
             borderRadius: BorderRadius.circular(15.0),
             side: BorderSide(color: kRarityBorders[0], width: 3.5),
           ),
-          child: Container(
-            width: 150,
-            child: Center(
-              child: Text(
-                "BOX",
-                style: TextStyle(color: Colors.black),
+          child: InkWell(
+            onTap: () {
+              // TODO Open user profile
+              print('Opening...');
+            },
+            child: Container(
+              width: 150,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    "Cosplayer",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
               ),
             ),
           ),

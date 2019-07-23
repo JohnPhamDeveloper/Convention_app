@@ -61,7 +61,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
               SizedBox(height: kCardGap + 10),
               ScrollableTitle(
-                title: Text("Highest Fame", style: kCardTitleStyle),
+                title: Text("Most Daily Selfies", style: kCardTitleStyle),
               ),
             ],
           ),
