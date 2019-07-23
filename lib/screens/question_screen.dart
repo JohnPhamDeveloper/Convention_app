@@ -4,8 +4,9 @@ import 'package:cosplay_app/widgets/RoundButton.dart';
 import 'package:cosplay_app/constants/questions.dart';
 import 'package:cosplay_app/animations/AnimationWrapper.dart';
 import 'package:numberpicker/numberpicker.dart';
-import 'package:cosplay_app/classes/QuestionController.dart';
+import 'package:cosplay_app/classes/QuestionBank.dart';
 import 'dart:collection';
+import 'package:cosplay_app/Question.dart';
 
 class QuestionScreen extends StatefulWidget {
   @override
@@ -15,18 +16,11 @@ class QuestionScreen extends StatefulWidget {
 class _QuestionScreenState extends State<QuestionScreen>
     with TickerProviderStateMixin {
   var userData = HashMap();
-  QuestionController questionController = QuestionController();
-  int _currentYearPicker = 1;
-  int _currentMonthPicker = 1;
+  QuestionBank questionBank = QuestionBank();
   List<List<TextSpan>> questions = List<List<TextSpan>>();
-  AnimationController animationController;
   List<AnimationController> animationControllerList =
       List<AnimationController>();
-  List<AnimationDirection> animationDirectionList = List<AnimationDirection>();
-  List<bool> animationIsOutList = List<bool>();
-  List<bool> showPicker = List<bool>();
-  List<int> currentYearPickerList = List<int>();
-  List<int> currentMonthPickerList = List<int>();
+  List<Picker> pickers = new List<Picker>();
 
   @override
   void initState() {
@@ -40,7 +34,6 @@ class _QuestionScreenState extends State<QuestionScreen>
 
   @override
   void dispose() {
-    animationController.dispose();
     for (AnimationController animationController in animationControllerList) {
       animationController.dispose();
     }
@@ -49,194 +42,72 @@ class _QuestionScreenState extends State<QuestionScreen>
 
   void initQuestions(context) {
     // We need to clear the questions every build for context (should change this?)
-    questionController.clearQuestions();
+    questionBank.clearQuestions();
 
     // Questions are from questions.dart
-    questionController.addQuestion(q1(context));
-    questionController.addQuestion(q2(context));
-    questionController.addQuestion(q3(context));
-    questionController.addQuestion(q4(context));
+    questionBank.addQuestion(q1(context));
+    questionBank.addQuestion(q2(context));
+    questionBank.addQuestion(q3(context));
+    questionBank.addQuestion(q4(context));
   }
 
-  void saveCurrentQuestionData() {
-    switch (questionController.getCurrentQuestionIndex()) {
-      case 1:
+  // Save data depending on which question the user is at
+  void saveCurrentQuestionData(int index) {
+    switch (index) {
+      case 0:
         userData['isCosplayer'] = true;
         print(userData);
         break;
-      case 2:
+      case 1:
         userData['isPhotographer'] = true;
         print(userData);
         break;
+      case 2:
+        userData['yearsCosplayed'] = pickers[index].year;
+        userData['monthsCosplayed'] = pickers[index].month;
+        print(userData);
+        break;
       case 3:
-        userData['yearsCosplayed'] = _currentYearPicker;
-        userData['monthsCosplayed'] = _currentMonthPicker;
-        print(userData);
-        break;
-      case 4:
-        userData['yearsPhotographer'] = _currentYearPicker;
-        userData['monthsPhotographer'] = _currentMonthPicker;
+        userData['yearsPhotographer'] = pickers[index].year;
+        userData['monthsPhotographer'] = pickers[index].month;
         print(userData);
         break;
     }
-  }
-
-  // Displays year picker and a function that will set the state with the picker value
-  Widget renderPicker(int index, int currentValue, Function setCurrentValue) {
-    if (index == 2 || index == 3) {
-      return NumberPicker.integer(
-        listViewWidth: 150.0,
-        itemExtent: 60.0,
-        initialValue: currentValue,
-        minValue: 0,
-        maxValue: 100,
-        onChanged: (newValue) => setCurrentValue(newValue),
-      );
-    } else {
-      return Container(); // Return a container since number picker shouldn't be displayed
-    }
-  }
-
-  Widget renderYearText(index) {
-    if (index == 2 || index == 3) {
-      return Text(
-        "Select year(s)",
-        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w300),
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget renderMonthText(index) {
-    if (index == 2 || index == 3) {
-      return Text(
-        "Select month(s)",
-        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w300),
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget createQuestionWidget(int index,
-      {AnimationDirection animationDirection: AnimationDirection.RIGHT,
-      bool isOut: false}) {
-    animationDirectionList.add(animationDirection);
-    animationIsOutList.add(isOut);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        AnimationWrapper(
-          start: 0.0,
-          controller: animationControllerList[index],
-          direction: animationDirectionList[index],
-          isOut: animationIsOutList[index],
-          child: Padding(
-            padding: const EdgeInsets.only(left: 22.0, right: 22.0),
-            child: Container(
-              child: RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.white,
-                  ),
-                  children: questionController.getQuestion(index),
-                ),
-              ),
-            ),
-          ),
-        ),
-        SizedBox(height: kBoxGap + 50.0),
-        AnimationWrapper(
-          start: 0.3,
-          controller: animationControllerList[index],
-          direction: animationDirectionList[index],
-          isOut: animationIsOutList[index],
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              RoundButton(icon: Icons.clear),
-              SizedBox(width: kBoxGap + 40.0),
-              RoundButton(
-                icon: Icons.check,
-                onTap: () => handleOnCheckClick(index),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: kBoxGap + 50.0),
-        SizedBox(height: 20.0),
-        AnimationWrapper(
-          start: 0.5,
-          controller: animationControllerList[index],
-          direction: animationDirectionList[index],
-          isOut: animationIsOutList[index],
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  renderYearText(index),
-                  SizedBox(height: kBoxGap),
-                  renderPicker(index, _currentYearPicker, (newValue) {
-                    setState(() {
-                      _currentYearPicker = newValue;
-                    });
-                  })
-                ],
-              ),
-              SizedBox(width: kBoxGap),
-              Column(
-                children: <Widget>[
-                  renderMonthText(index),
-                  SizedBox(height: kBoxGap),
-                  renderPicker(index, _currentMonthPicker, (newValue) {
-                    setState(() {
-                      _currentMonthPicker = newValue;
-                    });
-                  }),
-                ],
-              ),
-            ],
-          ),
-        )
-      ],
-    );
   }
 
   void handleOnCheckClick(int index) {
-    saveCurrentQuestionData();
-    setState(() {
-      animationIsOutList[index] = true; // Animate out
-      animationDirectionList[index] =
-          AnimationDirection.LEFT; // Animate out to left
-      _currentYearPicker = 1;
-      _currentMonthPicker = 1;
-    });
-    animationControllerList[index].reset();
-    animationControllerList[index].forward(); // Animate with new properties
-    animationControllerList[index + 1].reset();
-    animationControllerList[index + 1].forward();
-    questionController.incrementQuestionIndex(); // Is this needed?
+    int nextQuestionIndex = index + 1;
+    saveCurrentQuestionData(index);
+    questionBank.incrementQuestionIndex();
+
+    // Only animate next question in if there is a next question
+    if (nextQuestionIndex < questionBank.getQuestionsLength() - 1) {
+      animationControllerList[nextQuestionIndex].forward();
+    }
   }
 
   List<Widget> renderQuestions(BuildContext context) {
     List<Widget> questionPages = List<Widget>();
-    double width = MediaQuery.of(context).size.width;
 
-    // First question won't need the animation in wrapped
-    questionPages.add(
-        createQuestionWidget(0, animationDirection: AnimationDirection.RIGHT));
-    animationControllerList[0].forward();
+    bool doesCurrentQuestionNeedNumberPicker(index) {
+      if (index == 2 || index == 3) return true;
+      return false;
+    }
 
     // Wrap all questions after that with animationIn and animationOut
-    for (int i = 1; i < questionController.getQuestionsLength(); i++) {
-      // Create button off screen to the right
-      questionPages.add(createQuestionWidget(i));
+    for (int i = 0; i < questionBank.getQuestionsLength(); i++) {
+      // Create question off screen to the right
+      questionPages.add(Question(
+        animationController: animationControllerList[i],
+        questionText: questionBank.getQuestion(i),
+        onCheckTap: (value) {},
+        showPicker: doesCurrentQuestionNeedNumberPicker(i),
+        onYearChange: (value) {},
+        onMonthChange: (value) {},
+      ));
+
+      // Animate first question in
+      animationControllerList[0].forward();
     }
 
     // Will be put on a stack so reverse to get correct question order
@@ -274,4 +145,9 @@ class _QuestionScreenState extends State<QuestionScreen>
       ),
     );
   }
+}
+
+class Picker {
+  int year;
+  int month;
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class QuestionController {
+class QuestionBank {
   int _currentQuestionIndex = 0;
   List<List<TextSpan>> _questions = new List<List<TextSpan>>();
 
