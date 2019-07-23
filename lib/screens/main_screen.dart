@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:cosplay_app/widgets/ScrollableTitle.dart';
+import 'package:cosplay_app/constants/constants.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       bottomNavigationBar: CurvedNavigationBar(
+        height: 50.0,
         backgroundColor: Theme.of(context).primaryColor,
         buttonBackgroundColor: Colors.pink,
         color: Colors.pink,
@@ -47,23 +49,19 @@ class _MainScreenState extends State<MainScreen> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.only(left: 20.0, top: 50.0, bottom: 20.0),
+          padding: EdgeInsets.only(left: 20.0, top: 50.0, bottom: 15.0),
           child: ListView(
             children: <Widget>[
               ScrollableTitle(
-                color: Colors.orange,
-                height: 330,
-                title: Text("Most Friendly"),
+                title: Text("Most Friendly", style: kCardTitleStyle),
               ),
+              SizedBox(height: kCardGap + 10),
               ScrollableTitle(
-                color: Colors.pink,
-                height: 330,
-                title: Text("Highest Fame"),
+                title: Text("Highest Fame", style: kCardTitleStyle),
               ),
+              SizedBox(height: kCardGap + 10),
               ScrollableTitle(
-                color: Colors.green,
-                height: 330,
-                title: Text("Highest Fame"),
+                title: Text("Highest Fame", style: kCardTitleStyle),
               ),
             ],
           ),

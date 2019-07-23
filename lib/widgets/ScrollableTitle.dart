@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:cosplay_app/constants/constants.dart';
 
 class ScrollableTitle extends StatelessWidget {
-  final Color color;
   final double height;
   final Text title;
 
-  ScrollableTitle({this.color, @required this.height, @required this.title});
+  ScrollableTitle({this.height = 330.0, @required this.title});
 
-  List<Widget> test1(Color color) {
+  List<Widget> test1() {
     List<Widget> widgets = List<Widget>();
     for (int i = 0; i < 12; i++) {
       widgets.add(
         Card(
-          elevation: 2.5,
+          elevation: 2,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0),
               side: BorderSide(color: Colors.blueAccent, width: 3.0)),
@@ -34,13 +34,18 @@ class ScrollableTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        title,
+        Padding(
+          padding: EdgeInsets.only(left: kCardPadding),
+          child: title,
+        ),
+        SizedBox(height: kCardGap),
         Container(
           height: height,
           child: ListView(
             scrollDirection: Axis.horizontal,
-            children: test1(color),
+            children: test1(),
           ),
         ),
       ],

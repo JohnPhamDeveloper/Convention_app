@@ -15,6 +15,15 @@ enum AnimationDirection {
 
 const kBoxGap = 20.0; // Gaps between each elements
 
+// CARDS
+const kCardGap = 18.0;
+const kCardTitleStyle = TextStyle(
+  color: Colors.white,
+  fontSize: 25.0,
+  fontWeight: FontWeight.w500,
+);
+const kCardPadding = 4.0;
+
 TextStyle kTextStyleNotImportant() {
   return TextStyle(
     color: Colors.grey[600],
