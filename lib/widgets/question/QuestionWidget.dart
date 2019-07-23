@@ -3,12 +3,14 @@ import 'package:cosplay_app/constants/constants.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:cosplay_app/animations/AnimationWrapper.dart';
 import 'package:cosplay_app/widgets/RoundButton.dart';
+import 'package:cosplay_app/widgets/SuperButton.dart';
 
 class QuestionWidget extends StatefulWidget {
   final AnimationController animationController;
   final AnimationDirection animationDirection;
   final bool animationIsOut;
   final bool showPicker;
+  final bool shouldRenderSuccessButton;
   final int currentYearPicker;
   final int currentMonthPicker;
   final List<TextSpan> questionText;
@@ -22,6 +24,7 @@ class QuestionWidget extends StatefulWidget {
       @required this.onCheckTap,
       @required this.onYearChange,
       @required this.onMonthChange,
+      this.shouldRenderSuccessButton = false,
       this.animationDirection = AnimationDirection.RIGHT,
       this.animationIsOut = false,
       this.showPicker = false,
@@ -77,36 +80,7 @@ class _QuestionWidgetState extends State<QuestionWidget> {
           ),
         ),
         SizedBox(height: kBoxGap + 50.0),
-        AnimationWrapper(
-          start: 0.3,
-          controller: widget.animationController,
-          direction: animationDirection,
-          isOut: animationIsOut,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              RoundButton(
-                icon: Icons.clear,
-                onTap: () {
-                  if (canTap) {
-                    canTap = false;
-                  }
-                },
-              ),
-              SizedBox(width: kBoxGap + 40.0),
-              RoundButton(
-                icon: Icons.check,
-                onTap: () {
-                  if (canTap) {
-                    changeAnimation(); // Animate this question out
-                    widget.onCheckTap();
-                    canTap = false;
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
+        renderButtons(),
         SizedBox(height: kBoxGap + 50.0),
         SizedBox(height: 20.0),
         AnimationWrapper(
@@ -146,6 +120,60 @@ class _QuestionWidgetState extends State<QuestionWidget> {
           ),
         )
       ],
+    );
+  }
+
+  // TODO: On tap for super button should take us to main screen
+  Widget renderButtons() {
+    // Success screen will render a different button
+    if (widget.shouldRenderSuccessButton) {
+      return AnimationWrapper(
+        start: 0.3,
+        controller: widget.animationController,
+        direction: animationDirection,
+        isOut: animationIsOut,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 50.0),
+          child: SuperButton(
+            text: "Awesome!",
+            color: Colors.pinkAccent,
+            onPress: () {
+              Navigator.pushNamed(context, "/main");
+            },
+          ),
+        ),
+      );
+    }
+
+    return AnimationWrapper(
+      start: 0.3,
+      controller: widget.animationController,
+      direction: animationDirection,
+      isOut: animationIsOut,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          RoundButton(
+            icon: Icons.clear,
+            onTap: () {
+              if (canTap) {
+                canTap = false;
+              }
+            },
+          ),
+          SizedBox(width: kBoxGap + 40.0),
+          RoundButton(
+            icon: Icons.check,
+            onTap: () {
+              if (canTap) {
+                changeAnimation(); // Animate this question out
+                widget.onCheckTap();
+                canTap = false;
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 

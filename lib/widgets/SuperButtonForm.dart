@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
-class SuperButton extends StatelessWidget {
+class SuperButtonForm extends StatelessWidget {
   final double width;
   final double height;
   final Color color;
   final Key parentKey;
   final Function onPress;
+  final Function validated;
   final String text;
 
-  SuperButton(
+  SuperButtonForm(
       {this.parentKey,
       this.onPress,
+      this.validated,
       this.text,
       this.width = double.infinity,
       this.height = 50.0,
@@ -33,7 +35,9 @@ class SuperButton extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          onPress();
+          if (validated()) {
+            onPress();
+          }
         },
       ),
     );

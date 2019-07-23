@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'HyperButton.dart';
 import 'IconFormField.dart';
-import 'SuperButton.dart';
+import 'SuperButtonForm.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:flutter/animation.dart';
 import "package:cosplay_app/animations/AnimationWrapper.dart";
@@ -114,8 +114,9 @@ class _LoginFormState extends State<LoginForm>
             durationMilliseconds: 0,
             durationSeconds: 3,
             delayMilliseconds: 500,
-            child: SuperButton(
+            child: SuperButtonForm(
               text: "LOG IN",
+              color: Theme.of(context).primaryColor,
               validated: () {
                 return _formKey.currentState.validate();
               },

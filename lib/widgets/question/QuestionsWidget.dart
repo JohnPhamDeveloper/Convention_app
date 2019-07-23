@@ -33,9 +33,9 @@ class _QuestionsWidgetState extends State<QuestionsWidget>
 
   @override
   void dispose() {
-    for (AnimationController animationController in animationControllerList) {
+    for (AnimationController animationController in animationControllerList)
       animationController.dispose();
-    }
+
     super.dispose();
   }
 
@@ -54,6 +54,8 @@ class _QuestionsWidgetState extends State<QuestionsWidget>
       questionPages.add(QuestionWidget(
         animationController: animationControllerList[i],
         questionText: widget.questionBank.getQuestion(i).questionText,
+        shouldRenderSuccessButton:
+            widget.questionBank.getQuestion(i).isSuccessQuestion,
         onCheckTap: () {
           handleOnCheckClick(i);
         },
@@ -128,28 +130,3 @@ class Picker {
 
   Picker({this.year, this.month});
 }
-
-//class QuestionManager {
-//  QuestionBank _questionBank;
-//  List<AnimationController> _animationControllerList;
-//  List<Picker> pickers;
-//
-//  QuestionManager(this._questionBank) {
-//    _animationControllerList = List<AnimationController>();
-//
-//    for (int i = 0; i <= _questionBank.getQuestionsLength() - 1; i++) {
-////      AnimationController controller =
-////      AnimationController(duration: Duration(seconds: 1), vsync: this);
-////      animationControllerList.add(controller);
-////      Picker picker = Picker(year: 1, month: 1);
-////      pickers.add(picker);
-//    }
-//  }
-//}
-//
-//class Picker {
-//  int year = 1;
-//  int month = 1;
-//
-//  Picker({this.year, this.month});
-//}

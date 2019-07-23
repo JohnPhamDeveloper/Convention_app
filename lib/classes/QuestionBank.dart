@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:cosplay_app/classes/QuestionText.dart';
 
 class QuestionBank {

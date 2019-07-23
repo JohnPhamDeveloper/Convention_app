@@ -24,6 +24,9 @@ class _QuestionScreenState extends State<QuestionScreen>
         .addQuestion(QuestionText(q3(context), true)); // Years cosplayed
     questionBank
         .addQuestion(QuestionText(q4(context), true)); // Years Photographer
+    questionBank.addQuestion(
+      QuestionText(success(context), false, isSuccessQuestion: true),
+    ); // Success
   }
 
   @override

@@ -60,3 +60,9 @@ List<TextSpan> q4(BuildContext context) {
     ),
   ];
 }
+
+List<TextSpan> success(BuildContext context) {
+  return <TextSpan>[
+    TextSpan(text: 'Your profile is ready to go!'),
+  ];
+}
