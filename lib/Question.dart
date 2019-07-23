@@ -37,6 +37,7 @@ class _QuestionState extends State<Question> {
   int currentYearPicker;
   int currentMonthPicker;
   bool animationIsOut;
+  bool canTap; // Buttons will only register events ONCE (no multiple clicks)
 
   @override
   void initState() {
@@ -45,6 +46,7 @@ class _QuestionState extends State<Question> {
     animationDirection = widget.animationDirection;
     currentYearPicker = widget.currentYearPicker;
     currentMonthPicker = widget.currentMonthPicker;
+    canTap = true;
   }
 
   Widget createQuestionWidget() {
@@ -83,13 +85,23 @@ class _QuestionState extends State<Question> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              RoundButton(icon: Icons.clear),
+              RoundButton(
+                icon: Icons.clear,
+                onTap: () {
+                  if (canTap) {
+                    canTap = false;
+                  }
+                },
+              ),
               SizedBox(width: kBoxGap + 40.0),
               RoundButton(
                 icon: Icons.check,
                 onTap: () {
-                  changeAnimation(); // Animate this question out
-                  widget.onCheckTap();
+                  if (canTap) {
+                    changeAnimation(); // Animate this question out
+                    widget.onCheckTap();
+                    canTap = false;
+                  }
                 },
               ),
             ],
@@ -112,6 +124,7 @@ class _QuestionState extends State<Question> {
                   _renderPicker(currentYearPicker, (year) {
                     setState(() {
                       currentYearPicker = year;
+                      widget.onYearChange(year);
                     });
                   }),
                 ],
@@ -124,6 +137,7 @@ class _QuestionState extends State<Question> {
                   _renderPicker(currentMonthPicker, (month) {
                     setState(() {
                       currentMonthPicker = month;
+                      widget.onMonthChange(month);
                     });
                   }),
                 ],
@@ -157,7 +171,6 @@ class _QuestionState extends State<Question> {
         maxValue: 100,
         onChanged: (newValue) {
           callback(newValue);
-          widget.onCheckTap(newValue);
         },
       );
     } else {

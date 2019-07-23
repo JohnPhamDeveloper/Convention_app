@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cosplay_app/constants/constants.dart';
-import 'package:cosplay_app/widgets/RoundButton.dart';
 import 'package:cosplay_app/constants/questions.dart';
-import 'package:cosplay_app/animations/AnimationWrapper.dart';
-import 'package:numberpicker/numberpicker.dart';
 import 'package:cosplay_app/classes/QuestionBank.dart';
 import 'dart:collection';
 import 'package:cosplay_app/Question.dart';
@@ -29,6 +25,8 @@ class _QuestionScreenState extends State<QuestionScreen>
       AnimationController controller =
           AnimationController(duration: Duration(seconds: 1), vsync: this);
       animationControllerList.add(controller);
+      Picker picker = Picker(year: 1, month: 1);
+      pickers.add(picker);
     }
   }
 
@@ -78,10 +76,10 @@ class _QuestionScreenState extends State<QuestionScreen>
   void handleOnCheckClick(int index) {
     int nextQuestionIndex = index + 1;
     saveCurrentQuestionData(index);
-    questionBank.incrementQuestionIndex();
 
     // Only animate next question in if there is a next question
-    if (nextQuestionIndex < questionBank.getQuestionsLength() - 1) {
+    if (nextQuestionIndex <= questionBank.getQuestionsLength() - 1) {
+      questionBank.incrementQuestionIndex();
       animationControllerList[nextQuestionIndex].forward();
     }
   }
@@ -100,10 +98,20 @@ class _QuestionScreenState extends State<QuestionScreen>
       questionPages.add(Question(
         animationController: animationControllerList[i],
         questionText: questionBank.getQuestion(i),
-        onCheckTap: (value) {},
+        onCheckTap: () {
+          handleOnCheckClick(i);
+        },
         showPicker: doesCurrentQuestionNeedNumberPicker(i),
-        onYearChange: (value) {},
-        onMonthChange: (value) {},
+        onYearChange: (value) {
+          setState(() {
+            pickers[i].year = value;
+          });
+        },
+        onMonthChange: (value) {
+          setState(() {
+            pickers[i].month = value;
+          });
+        },
       ));
 
       // Animate first question in
@@ -148,6 +156,8 @@ class _QuestionScreenState extends State<QuestionScreen>
 }
 
 class Picker {
-  int year;
-  int month;
+  int year = 1;
+  int month = 1;
+
+  Picker({this.year, this.month});
 }
