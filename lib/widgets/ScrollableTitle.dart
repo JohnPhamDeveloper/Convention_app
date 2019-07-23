@@ -5,7 +5,7 @@ class ScrollableTitle extends StatelessWidget {
   final double height;
   final Text title;
 
-  ScrollableTitle({this.height = 200.0, @required this.title});
+  ScrollableTitle({this.height = 330.0, @required this.title});
 
   List<Widget> test1() {
     List<Widget> widgets = List<Widget>();
@@ -23,7 +23,7 @@ class ScrollableTitle extends StatelessWidget {
               print('Opening...');
             },
             child: Container(
-              width: 150,
+              width: 220,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Align(

@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:cosplay_app/widgets/ScrollableTitle.dart';
-import 'package:cosplay_app/constants/constants.dart';
+import 'package:cosplay_app/widgets/RankingListPage.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -9,6 +8,45 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  PageController pageController;
+  int navIndex = 0;
+  PageView pageView;
+
+  @override
+  void initState() {
+    super.initState();
+    pageController = PageController(initialPage: navIndex);
+    pageView = PageView(
+      controller: pageController,
+      children: <Widget>[
+        RankingListPage(),
+        Container(
+          child: Text("lol"),
+        )
+      ],
+    );
+  }
+
+  // Store all pages in a row
+  // If nav button click,
+
+  changePage(index) {
+    switch (index) {
+      case 0:
+        print('Home');
+        break;
+      case 1:
+        print('Notif');
+        break;
+      case 2:
+        print('Fame');
+        break;
+      case 3:
+        print('Profile');
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,41 +68,17 @@ class _MainScreenState extends State<MainScreen> {
           Icon(Icons.person, size: 30, color: Colors.white),
         ],
         onTap: (index) {
-          //Handle button tap
-          switch (index) {
-            case 0:
-              print('Home');
-              break;
-            case 1:
-              print('Notif');
-              break;
-            case 2:
-              print('Fame');
-              break;
-            case 3:
-              print('Profile');
-              break;
-          }
+          pageController.animateToPage(
+            index,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOut,
+          );
         },
       ),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.only(left: 20.0, top: 50.0, bottom: 15.0),
-          child: ListView(
-            children: <Widget>[
-              ScrollableTitle(
-                title: Text("Most Friendly", style: kCardTitleStyle),
-              ),
-              SizedBox(height: kCardGap + 10),
-              ScrollableTitle(
-                title: Text("Highest Fame", style: kCardTitleStyle),
-              ),
-              SizedBox(height: kCardGap + 10),
-              ScrollableTitle(
-                title: Text("Most Daily Selfies", style: kCardTitleStyle),
-              ),
-            ],
-          ),
+          child: pageView,
         ),
       ),
     );
