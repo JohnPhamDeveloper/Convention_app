@@ -11,10 +11,20 @@ class ScrollableTitle extends StatelessWidget {
     List<Widget> widgets = List<Widget>();
     for (int i = 0; i < 12; i++) {
       widgets.add(
-        Container(
-          width: 200,
-          color: color,
-          child: Center(child: title),
+        Card(
+          elevation: 2.5,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+              side: BorderSide(color: Colors.blueAccent, width: 3.0)),
+          child: Container(
+            width: 250,
+            child: Center(
+              child: Text(
+                "BOX",
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+          ),
         ),
       );
     }
@@ -30,7 +40,6 @@ class ScrollableTitle extends StatelessWidget {
           height: height,
           child: ListView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.all(8.0),
             children: test1(color),
           ),
         ),

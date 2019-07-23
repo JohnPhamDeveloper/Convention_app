@@ -46,24 +46,27 @@ class _MainScreenState extends State<MainScreen> {
         },
       ),
       body: SafeArea(
-        child: ListView(
-          children: <Widget>[
-            ScrollableTitle(
-              color: Colors.orange,
-              height: 300,
-              title: Text("Most Friendly"),
-            ),
-            ScrollableTitle(
-              color: Colors.pink,
-              height: 250,
-              title: Text("Highest Fame"),
-            ),
-            ScrollableTitle(
-              color: Colors.green,
-              height: 250,
-              title: Text("Highest Fame"),
-            ),
-          ],
+        child: Padding(
+          padding: EdgeInsets.only(left: 20.0, top: 50.0, bottom: 20.0),
+          child: ListView(
+            children: <Widget>[
+              ScrollableTitle(
+                color: Colors.orange,
+                height: 330,
+                title: Text("Most Friendly"),
+              ),
+              ScrollableTitle(
+                color: Colors.pink,
+                height: 330,
+                title: Text("Highest Fame"),
+              ),
+              ScrollableTitle(
+                color: Colors.green,
+                height: 330,
+                title: Text("Highest Fame"),
+              ),
+            ],
+          ),
         ),
       ),
     );
