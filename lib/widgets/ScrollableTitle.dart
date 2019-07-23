@@ -5,7 +5,7 @@ class ScrollableTitle extends StatelessWidget {
   final double height;
   final Text title;
 
-  ScrollableTitle({this.height = 330.0, @required this.title});
+  ScrollableTitle({this.height = 200.0, @required this.title});
 
   List<Widget> test1() {
     List<Widget> widgets = List<Widget>();
@@ -14,10 +14,11 @@ class ScrollableTitle extends StatelessWidget {
         Card(
           elevation: 2,
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
-              side: BorderSide(color: Colors.blueAccent, width: 3.0)),
+            borderRadius: BorderRadius.circular(15.0),
+            side: BorderSide(color: kRarityBorders[0], width: 3.5),
+          ),
           child: Container(
-            width: 250,
+            width: 150,
             child: Center(
               child: Text(
                 "BOX",

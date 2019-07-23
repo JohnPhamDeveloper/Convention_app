@@ -23,6 +23,12 @@ const kCardTitleStyle = TextStyle(
   fontWeight: FontWeight.w500,
 );
 const kCardPadding = 4.0;
+const kRarityBorders = [
+  Colors.blueGrey,
+  Colors.green,
+  Colors.deepPurpleAccent,
+  Colors.deepOrangeAccent,
+];
 
 TextStyle kTextStyleNotImportant() {
   return TextStyle(
