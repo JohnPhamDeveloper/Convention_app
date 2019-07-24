@@ -1,26 +1,36 @@
 import 'package:flutter/material.dart';
 
+// Note that using this button with Font awesome will not align correctly in the center
 class RoundButton extends StatelessWidget {
-  final icon;
-  final onTap;
+  final IconData icon;
+  final Function onTap;
+  final double iconSize;
+  final EdgeInsets padding;
+  final double size;
 
-  RoundButton({@required this.icon, this.onTap});
+  RoundButton(
+      {@required this.icon,
+      this.onTap,
+      this.iconSize = 35.0,
+      this.padding = const EdgeInsets.all(16.0),
+      this.size = 50.0});
 
   @override
   Widget build(BuildContext context) {
     return RawMaterialButton(
+      constraints: BoxConstraints(minHeight: size, minWidth: size),
       onPressed: () {
         onTap();
       },
-      child: new Icon(
+      child: Icon(
         icon,
         color: Theme.of(context).primaryColor,
-        size: 35.0,
+        size: iconSize,
       ),
-      shape: new CircleBorder(),
+      shape: CircleBorder(),
       elevation: 3,
       fillColor: Colors.white,
-      padding: const EdgeInsets.all(15.0),
+      padding: padding,
     );
   }
 }
