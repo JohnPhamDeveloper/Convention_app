@@ -9,11 +9,7 @@ class ProfileDetailsPage extends StatelessWidget {
     return Column(
       children: <Widget>[
         SizedBox(height: 40.0),
-        ImageContainer(
-            borderRadius: 500.0,
-            path: "assets/1.jpg",
-            width: 180.0,
-            height: 180.0),
+        ImageContainer(borderRadius: 500.0, path: "assets/1.jpg", size: 150.0),
         SizedBox(height: 20.0),
         Text(
           "Jason Chemry",
