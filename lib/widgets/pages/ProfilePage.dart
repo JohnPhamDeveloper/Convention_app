@@ -1,22 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:cosplay_app/widgets/RoundButton.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final List<Widget> items = [
+    ImageContainer(path: "assets/1.jpg"),
+    ImageContainer(path: "assets/2.jpg"),
+    ImageContainer(path: "assets/3.jpg"),
+  ];
+  int _current = 0;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Container(
-          width: double.infinity,
+        CarouselSlider(
           height: double.infinity,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: AssetImage('assets/1.jpg'),
-              ),
-            ),
-          ),
+          items: items,
+          autoPlay: true,
+          //aspectRatio: 1.0,
+          onPageChanged: (index) {
+            setState(() {
+              _current = index;
+            });
+          },
         ),
         Padding(
           padding: const EdgeInsets.only(right: 15.0, bottom: 50.0),
@@ -58,11 +70,43 @@ class ProfilePage extends StatelessWidget {
   }
 }
 
-final TextStyle kProfileOverlayNameStyle =
-    TextStyle(fontSize: 30.0, fontWeight: FontWeight.w700);
+final Color kTextStrokeColor = Colors.white;
+final double kTextStrokeBlur = 3.0;
+final List<Shadow> kTextStrokeOutlines = [
+  Shadow(
+// bottomLeft
+      blurRadius: kTextStrokeBlur,
+      offset: Offset(-1.5, -1.5),
+      color: kTextStrokeColor),
+  Shadow(
+// bottomRight
+      blurRadius: kTextStrokeBlur,
+      offset: Offset(1.5, -1.5),
+      color: kTextStrokeColor),
+  Shadow(
+// topRight
+      blurRadius: kTextStrokeBlur,
+      offset: Offset(1.5, 1.5),
+      color: kTextStrokeColor),
+  Shadow(
+// topLeftblur
+      blurRadius: kTextStrokeBlur,
+      offset: Offset(-1.5, 1.5),
+      color: kTextStrokeColor),
+];
 
-final TextStyle kProfileOverlayTextStyle =
-    TextStyle(fontSize: 25.0, fontWeight: FontWeight.w400);
+final TextStyle kProfileOverlayNameStyle = TextStyle(
+  fontSize: 30.0,
+  color: Colors.black87,
+  fontWeight: FontWeight.w700,
+  shadows: kTextStrokeOutlines,
+);
+
+final TextStyle kProfileOverlayTextStyle = TextStyle(
+    fontSize: 25.0,
+    color: Colors.black87,
+    fontWeight: FontWeight.w400,
+    shadows: kTextStrokeOutlines);
 
 class IconText extends StatelessWidget {
   final IconData icon;
@@ -84,6 +128,27 @@ class IconText extends StatelessWidget {
         SizedBox(width: 10.0),
         text
       ],
+    );
+  }
+}
+
+class ImageContainer extends StatelessWidget {
+  final String path;
+
+  ImageContainer({@required this.path});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      //  height: double.infinity,
+      width: double.infinity,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: AssetImage(path),
+          ),
+        ),
+      ),
     );
   }
 }
