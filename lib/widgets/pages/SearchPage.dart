@@ -22,12 +22,10 @@ class _SearchPageState extends State<SearchPage>
   void initState() {
     super.initState();
     pageController = PageController(initialPage: navIndex);
-    print("Init value $navIndex");
     pageView = PageView(
       onPageChanged: (index) {
         setState(() {
           navIndex = index;
-          print("Seachpage: $navIndex");
         });
       },
       physics: new NeverScrollableScrollPhysics(),

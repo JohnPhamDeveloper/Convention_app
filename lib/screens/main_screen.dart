@@ -47,9 +47,7 @@ class _MainScreenState extends State<MainScreen> {
         SearchPage(),
         FamePage(),
         NotificationPage(),
-        ProfilePage(
-          playCarousel: false,
-        ),
+        ProfilePage(),
       ],
     );
   }
