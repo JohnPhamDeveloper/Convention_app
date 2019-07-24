@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:cosplay_app/widgets/RankingListPage.dart';
+import 'package:cosplay_app/widgets/SearchPage.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -17,34 +18,17 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     pageController = PageController(initialPage: navIndex);
     pageView = PageView(
+      onPageChanged: (index) {
+        setState(() {
+          navIndex = index;
+        });
+      },
       controller: pageController,
       children: <Widget>[
         RankingListPage(),
-        Container(
-          child: Text("lol"),
-        )
+        SearchPage(),
       ],
     );
-  }
-
-  // Store all pages in a row
-  // If nav button click,
-
-  changePage(index) {
-    switch (index) {
-      case 0:
-        print('Home');
-        break;
-      case 1:
-        print('Notif');
-        break;
-      case 2:
-        print('Fame');
-        break;
-      case 3:
-        print('Profile');
-        break;
-    }
   }
 
   @override
@@ -52,6 +36,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       bottomNavigationBar: CurvedNavigationBar(
+        index: navIndex,
         height: 50.0,
         backgroundColor: Theme.of(context).primaryColor,
         buttonBackgroundColor: Colors.pink,
@@ -68,6 +53,9 @@ class _MainScreenState extends State<MainScreen> {
           Icon(Icons.person, size: 30, color: Colors.white),
         ],
         onTap: (index) {
+          setState(() {
+            navIndex = index;
+          });
           pageController.animateToPage(
             index,
             duration: const Duration(milliseconds: 400),
@@ -76,10 +64,7 @@ class _MainScreenState extends State<MainScreen> {
         },
       ),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(left: 20.0, top: 50.0, bottom: 15.0),
-          child: pageView,
-        ),
+        child: pageView,
       ),
     );
   }
