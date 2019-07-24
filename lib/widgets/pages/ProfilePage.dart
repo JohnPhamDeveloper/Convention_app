@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cosplay_app/widgets/RoundButton.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -21,6 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
       children: <Widget>[
         CarouselSlider(
           height: double.infinity,
+          viewportFraction: 1.0,
           items: items,
           autoPlay: true,
           //aspectRatio: 1.0,
@@ -29,6 +31,18 @@ class _ProfilePageState extends State<ProfilePage> {
               _current = index;
             });
           },
+        ),
+        // Should'nt use icons need to draw circles, checkout how that carousel guy did it when site comes back online
+        Row(
+          children: <Widget>[
+            Icon(FontAwesomeIcons.circle),
+            Icon(
+              FontAwesomeIcons.solidCircle,
+              color: Colors.white,
+            ),
+            Icon(FontAwesomeIcons.circle),
+            Icon(FontAwesomeIcons.circle),
+          ],
         ),
         Padding(
           padding: const EdgeInsets.only(right: 15.0, bottom: 50.0),
@@ -70,7 +84,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-final Color kTextStrokeColor = Colors.white;
+final Color kTextStrokeColor = Colors.black;
 final double kTextStrokeBlur = 3.0;
 final List<Shadow> kTextStrokeOutlines = [
   Shadow(
@@ -97,14 +111,14 @@ final List<Shadow> kTextStrokeOutlines = [
 
 final TextStyle kProfileOverlayNameStyle = TextStyle(
   fontSize: 30.0,
-  color: Colors.black87,
+  color: Colors.white,
   fontWeight: FontWeight.w700,
   shadows: kTextStrokeOutlines,
 );
 
 final TextStyle kProfileOverlayTextStyle = TextStyle(
     fontSize: 25.0,
-    color: Colors.black87,
+    color: Colors.white,
     fontWeight: FontWeight.w400,
     shadows: kTextStrokeOutlines);
 
