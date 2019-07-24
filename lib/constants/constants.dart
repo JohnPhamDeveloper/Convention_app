@@ -14,6 +14,7 @@ enum AnimationDirection {
 }
 
 const kBoxGap = 20.0; // Gaps between each elements
+const kBottomNavHeight = 60.0;
 
 // CARDS
 const kCardGap = 18.0;

@@ -18,10 +18,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Stack(
       children: <Widget>[
         CarouselSlider(
-          height: double.infinity,
+          height: screenHeight - kBottomNavigationBarHeight,
           viewportFraction: 1.0,
           items: items,
           autoPlay: true,
@@ -33,6 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         ),
         // Should'nt use icons need to draw circles, checkout how that carousel guy did it when site comes back online
+
         Row(
           children: <Widget>[
             Icon(FontAwesomeIcons.circle),
@@ -45,7 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
         Padding(
-          padding: const EdgeInsets.only(right: 15.0, bottom: 50.0),
+          padding: const EdgeInsets.only(right: 15.0, bottom: 140.0),
           child: Align(
             alignment: Alignment.bottomRight,
             child: RoundButton(
@@ -56,7 +59,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 20.0, bottom: 20.0),
+          padding: const EdgeInsets.only(left: 20.0, bottom: 80.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
