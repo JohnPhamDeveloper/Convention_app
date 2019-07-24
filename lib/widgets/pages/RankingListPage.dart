@@ -6,7 +6,7 @@ class RankingListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 20.0, bottom: 15.0),
+      padding: EdgeInsets.only(top: 20.0, bottom: 15.0),
       child: ListView(
         children: <Widget>[
           ScrollableTitle(

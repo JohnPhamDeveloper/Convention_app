@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:cosplay_app/widgets/RankingListPage.dart';
-import 'package:cosplay_app/widgets/SearchPage.dart';
+import 'package:cosplay_app/widgets/pages/RankingListPage.dart';
+import 'package:cosplay_app/widgets/pages/SearchPage.dart';
+import 'package:cosplay_app/widgets/pages/FamePage.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -20,13 +21,16 @@ class _MainScreenState extends State<MainScreen> {
     pageView = PageView(
       onPageChanged: (index) {
         setState(() {
+          print(index);
           navIndex = index;
         });
       },
+      physics: new NeverScrollableScrollPhysics(),
       controller: pageController,
       children: <Widget>[
         RankingListPage(),
         SearchPage(),
+        FamePage(),
       ],
     );
   }
@@ -37,7 +41,7 @@ class _MainScreenState extends State<MainScreen> {
       backgroundColor: Theme.of(context).primaryColor,
       bottomNavigationBar: CurvedNavigationBar(
         index: navIndex,
-        height: 50.0,
+        height: 60.0,
         backgroundColor: Theme.of(context).primaryColor,
         buttonBackgroundColor: Colors.pink,
         color: Colors.pink,

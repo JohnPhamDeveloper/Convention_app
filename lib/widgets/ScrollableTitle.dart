@@ -9,6 +9,7 @@ class ScrollableTitle extends StatelessWidget {
 
   List<Widget> test1() {
     List<Widget> widgets = List<Widget>();
+    widgets.add(SizedBox(width: kCardPadding)); // padding
     for (int i = 0; i < 12; i++) {
       widgets.add(
         Card(

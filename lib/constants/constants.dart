@@ -22,7 +22,7 @@ const kCardTitleStyle = TextStyle(
   fontSize: 25.0,
   fontWeight: FontWeight.w500,
 );
-const kCardPadding = 4.0;
+const kCardPadding = 20.0;
 final kRarityBorders = [
   Colors.grey[300],
   Colors.greenAccent,
