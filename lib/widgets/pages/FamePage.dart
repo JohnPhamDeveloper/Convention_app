@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:cosplay_app/constants/constants.dart';
 
 class FamePage extends StatefulWidget {
   @override
   _FamePageState createState() => _FamePageState();
 }
 
-class _FamePageState extends State<FamePage> {
+class _FamePageState extends State<FamePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+    double height = MediaQuery.of(context).size.height;
     return Column(
       children: <Widget>[
         Padding(
@@ -38,7 +44,7 @@ class _FamePageState extends State<FamePage> {
         ),
         SizedBox(height: 20.0),
         Container(
-          height: MediaQuery.of(context).size.height - 200,
+          height: height - kBottomNavHeight,
           child: ListView(
             children: <Widget>[
               Wrap(
@@ -48,6 +54,7 @@ class _FamePageState extends State<FamePage> {
                   ProductItem(),
                   ProductItem(),
                   ProductItem(),
+                  SizedBox(height: 500.0),
                 ],
               ),
             ],

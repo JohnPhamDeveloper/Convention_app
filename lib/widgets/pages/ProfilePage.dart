@@ -4,11 +4,19 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ProfilePage extends StatefulWidget {
+  final bool playCarousel;
+
+  ProfilePage({this.playCarousel = true});
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   final List<Widget> items = [
     ImageContainer(path: "assets/1.jpg"),
     ImageContainer(path: "assets/2.jpg"),
@@ -18,6 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Stack(
@@ -26,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
           height: screenHeight - kBottomNavigationBarHeight,
           viewportFraction: 1.0,
           items: items,
-          autoPlay: true,
+          autoPlay: widget.playCarousel,
           //aspectRatio: 1.0,
           onPageChanged: (index) {
             setState(() {

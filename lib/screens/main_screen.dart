@@ -17,13 +17,14 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   PageController pageController;
   CircularBottomNavigationController _navigationController;
+  bool playProfilePageCarousel = false;
   int navIndex = 0;
   PageView pageView;
   List<TabItem> tabItems = List.of([
     TabItem(Icons.home, "Home", Colors.pink),
     TabItem(Icons.search, "Search", Colors.pink),
     TabItem(Icons.business_center, "Rewards", Colors.pink),
-    TabItem(Icons.notifications, "Notifications", Colors.pink),
+    TabItem(Icons.notifications, "Alerts", Colors.pink),
     TabItem(Icons.person, "Profile", Colors.pink),
   ]);
 
@@ -46,9 +47,18 @@ class _MainScreenState extends State<MainScreen> {
         SearchPage(),
         FamePage(),
         NotificationPage(),
-        ProfilePage(),
+        ProfilePage(
+          playCarousel: false,
+        ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _navigationController.dispose();
+    pageController.dispose();
+    super.dispose();
   }
 
   void moveToSelectedPage(int index) {

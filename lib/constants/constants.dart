@@ -15,6 +15,11 @@ enum AnimationDirection {
 
 const kBoxGap = 20.0; // Gaps between each elements
 const kBottomNavHeight = 60.0;
+final Key kRankingListPageKey = Key("RankingListPage");
+final Key kSearchPageKey = Key("SearchPage");
+final Key kFamePageKey = Key("FamePage");
+final Key kAlertPageKey = Key("AlertPage");
+final Key kProfilePageKey = Key("ProfilePage");
 
 // CARDS
 const kCardGap = 18.0;

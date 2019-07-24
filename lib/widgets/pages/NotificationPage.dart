@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:cosplay_app/widgets/CircularBoxClipped.dart';
 
-class NotificationPage extends StatelessWidget {
+class NotificationPage extends StatefulWidget {
+  @override
+  _NotificationPageState createState() => _NotificationPageState();
+}
+
+class _NotificationPageState extends State<NotificationPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ListView(
       children: <Widget>[
         NotificationItem(
