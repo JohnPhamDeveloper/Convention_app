@@ -4,6 +4,7 @@ import 'package:cosplay_app/widgets/pages/RankingListPage.dart';
 import 'package:cosplay_app/widgets/pages/SearchPage.dart';
 import 'package:cosplay_app/widgets/pages/FamePage.dart';
 import 'package:cosplay_app/widgets/pages/NotificationPage.dart';
+import 'package:cosplay_app/widgets/pages/ProfilePage.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -33,6 +34,7 @@ class _MainScreenState extends State<MainScreen> {
         SearchPage(),
         FamePage(),
         NotificationPage(),
+        ProfilePage(),
       ],
     );
   }

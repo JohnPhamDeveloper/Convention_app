@@ -8,6 +8,7 @@ class NotificationPage extends StatelessWidget {
       children: <Widget>[
         NotificationItem(
           iconColor: Colors.orange,
+          message: "You are requesting from an incomplete service yo",
         ),
         NotificationItem(),
         NotificationItem(),
