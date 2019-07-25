@@ -21,11 +21,11 @@ class _MainScreenState extends State<MainScreen> {
   int navIndex = 0;
   PreloadPageView pageView;
   List<TabItem> tabItems = List.of([
-    TabItem(Icons.home, "Home", Colors.pink),
-    TabItem(Icons.search, "Search", Colors.pink),
-    TabItem(Icons.business_center, "Rewards", Colors.pink),
-    TabItem(Icons.notifications, "Alerts", Colors.pink),
-    TabItem(Icons.person, "Profile", Colors.pink),
+    TabItem(Icons.home, "Home", Colors.deepPurpleAccent),
+    TabItem(Icons.search, "Search", Colors.green),
+    TabItem(Icons.business_center, "Rewards", Colors.deepOrangeAccent),
+    TabItem(Icons.notifications, "Alerts", Colors.redAccent),
+    TabItem(Icons.person, "Profile", Colors.pinkAccent),
   ]);
 
   @override
