@@ -7,6 +7,7 @@ import 'package:flutter/animation.dart';
 import "package:cosplay_app/animations/AnimationWrapper.dart";
 import "package:cosplay_app/animations/AnimationBounceIn.dart";
 import 'package:cosplay_app/verification/verification.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginForm extends StatefulWidget {
   final Function onLoginPress;
@@ -23,13 +24,22 @@ class _LoginFormState extends State<LoginForm>
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _bRememberMe = true;
+  FirebaseAuth _auth;
 
   @override
   void initState() {
     super.initState();
+    _auth = FirebaseAuth.instance;
+    Future<FirebaseUser> currentUser = _auth.currentUser();
+    // User signed in already?
+    if (currentUser != null) {
+      print(currentUser);
+    } else {
+      print("Current user is null!");
+    }
+
     animationController =
         AnimationController(duration: Duration(seconds: 2), vsync: this);
-
     animationController.forward();
   }
 
@@ -49,6 +59,7 @@ class _LoginFormState extends State<LoginForm>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
+          // Email
           AnimationWrapper(
             controller: animationController,
             start: 0.0,
@@ -64,6 +75,7 @@ class _LoginFormState extends State<LoginForm>
             ),
           ),
           SizedBox(height: kBoxGap),
+          // Password
           AnimationWrapper(
             controller: animationController,
             start: 0.1,
@@ -80,6 +92,7 @@ class _LoginFormState extends State<LoginForm>
             ),
           ),
           SizedBox(height: kBoxGap),
+          // Remember me and forgot password
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -110,6 +123,7 @@ class _LoginFormState extends State<LoginForm>
             ],
           ),
           SizedBox(height: kBoxGap),
+          // Login Button
           AnimationBounceIn(
             durationMilliseconds: 0,
             durationSeconds: 3,
@@ -118,7 +132,8 @@ class _LoginFormState extends State<LoginForm>
               text: "LOG IN",
               color: Theme.of(context).primaryColor,
               validated: () {
-                return _formKey.currentState.validate();
+                return _formKey.currentState
+                    .validate(); // All form fields are valid?
               },
               onPress: () async {
                 widget.onLoginPress();
@@ -138,6 +153,7 @@ class _LoginFormState extends State<LoginForm>
             ),
           ),
           SizedBox(height: kBoxGap + 20.0),
+          // Signup Button
           AnimationWrapper(
             controller: animationController,
             start: 0.5,

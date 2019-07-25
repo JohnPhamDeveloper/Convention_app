@@ -43,7 +43,7 @@ class ProfileDetailsPage extends StatelessWidget {
                     onTap: () {}),
               ],
             ),
-            SizedBox(height: 35.0),
+            SizedBox(height: 50.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -52,7 +52,7 @@ class ProfileDetailsPage extends StatelessWidget {
                 TitleData(title: "Fame", number: 32222, width: 150.0)
               ],
             ),
-            SizedBox(height: 35.0),
+            SizedBox(height: 50.0),
             CircularBox(
               child: Column(
                 children: <Widget>[
@@ -80,19 +80,32 @@ class ProfileDetailsPage extends StatelessWidget {
                         FriendlyHundredMedal(),
                         FriendlyTwoHundredMedal(),
                         FriendlyFiveHundredMedal(),
+                        FiftySelfieWithOnePersonMedal(),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 35.0),
+            SizedBox(height: 50.0),
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.only(left: 20, right: 90),
               child: RoundButtonTextIcon(
                   text: Text("Vote Friendly", style: kButtonBoldedTextStyle),
                   fillColor: Colors.pinkAccent,
                   icon: Icons.favorite,
+                  iconColor: Colors.white,
+                  onTap: () {
+                    print("TEST");
+                  }),
+            ),
+            SizedBox(height: 25.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 90),
+              child: RoundButtonTextIcon(
+                  text: Text("Selfie Request", style: kButtonBoldedTextStyle),
+                  fillColor: Colors.pinkAccent,
+                  icon: Icons.camera_alt,
                   iconColor: Colors.white,
                   onTap: () {
                     print("TEST");

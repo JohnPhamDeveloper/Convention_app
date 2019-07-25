@@ -161,3 +161,18 @@ class FriendlyFiveHundredMedal extends StatelessWidget {
     );
   }
 }
+
+class FiftySelfieWithOnePersonMedal extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return RoundButton(
+      onTap: () {
+        onMedalClick(context, "Good Friends Medal",
+            "This user took 50 selfies with one person! Maybe they're friends now!");
+      },
+      icon: FontAwesomeIcons.peopleCarry,
+      iconSize: kMedalSize,
+      iconColor: Colors.indigoAccent,
+    );
+  }
+}
