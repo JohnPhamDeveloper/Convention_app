@@ -117,6 +117,31 @@ class ProfileDetailsPage extends StatelessWidget {
                   }),
             ),
             SizedBox(height: 25.0),
+            // Photography request button
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: RoundButtonTextIcon(
+                  text: Text("Photographer Request",
+                      style: kButtonBoldedTextStyle),
+                  fillColor: Colors.pinkAccent,
+                  icon: Icons.linked_camera,
+                  iconColor: Colors.white,
+                  onTap: () async {
+                    print("Logging Out");
+                    FirebaseUser user =
+                        await FirebaseAuth.instance.currentUser();
+                    print(user.email);
+                    print(user.isEmailVerified);
+                    print(user.displayName);
+                    try {
+                      FirebaseAuth.instance.signOut();
+                      Navigator.pushNamed(context, "/");
+                    } catch (e) {
+                      print(e);
+                    }
+                  }),
+            ),
+            SizedBox(height: 25.0),
             // Logout button
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20),
