@@ -9,21 +9,20 @@ import "package:cosplay_app/animations/AnimationBounceIn.dart";
 import 'package:cosplay_app/verification/verification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class LoginForm extends StatefulWidget {
-  final Function onLoginPress;
+class RegisterForm extends StatefulWidget {
+  final Function onRegisterPress;
 
-  LoginForm({this.onLoginPress});
+  RegisterForm({this.onRegisterPress});
   @override
-  _LoginFormState createState() => _LoginFormState();
+  _RegisterFormState createState() => _RegisterFormState();
 }
 
-class _LoginFormState extends State<LoginForm>
+class _RegisterFormState extends State<RegisterForm>
     with SingleTickerProviderStateMixin {
   AnimationController animationController;
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _bRememberMe = true;
   FirebaseAuth _auth;
 
   @override
@@ -92,36 +91,6 @@ class _LoginFormState extends State<LoginForm>
             ),
           ),
           SizedBox(height: kBoxGap),
-          // Remember me and forgot password
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              AnimationWrapper(
-                controller: animationController,
-                start: 0.3,
-                child: Row(
-                  children: <Widget>[
-                    Switch(
-                      activeColor: Theme.of(context).primaryColor,
-                      value: _bRememberMe,
-                      onChanged: (value) {
-                        setState(() {
-                          _bRememberMe = !_bRememberMe;
-                        });
-                      },
-                    ),
-                    Text("Remember Me", style: kTextStyleNotImportant()),
-                  ],
-                ),
-              ),
-              AnimationWrapper(
-                controller: animationController,
-                start: 0.3,
-                direction: AnimationDirection.RIGHT,
-                child: HyperButton(text: "Forgot Password?"),
-              ),
-            ],
-          ),
           SizedBox(height: kBoxGap),
           // Login Button
           AnimationBounceIn(
@@ -129,14 +98,14 @@ class _LoginFormState extends State<LoginForm>
             durationSeconds: 3,
             delayMilliseconds: 500,
             child: SuperButtonForm(
-              text: "LOG IN",
+              text: "REGISTER",
               color: Theme.of(context).primaryColor,
               validated: () {
                 return _formKey.currentState
                     .validate(); // All form fields are valid?
               },
               onPress: () async {
-                widget.onLoginPress();
+                widget.onRegisterPress();
                 Scaffold.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -148,7 +117,7 @@ class _LoginFormState extends State<LoginForm>
                 FocusScope.of(context).requestFocus(new FocusNode());
 
                 await Future.delayed(Duration(seconds: 2), () {});
-                Navigator.pushNamed(context, '/question');
+                Navigator.pushNamed(context, '/');
               },
             ),
           ),
@@ -161,12 +130,13 @@ class _LoginFormState extends State<LoginForm>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("New user? ", style: kTextStyleNotImportant()),
+                Text("Already registered? ", style: kTextStyleNotImportant()),
                 HyperButton(
-                    text: "Sign Up",
-                    onTap: () {
-                      Navigator.pushNamed(context, '/register');
-                    }),
+                  text: "Sign In",
+                  onTap: () {
+                    Navigator.pushNamed(context, '/');
+                  },
+                ),
               ],
             ),
           ),

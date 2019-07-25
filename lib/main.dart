@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
 import 'screens/main_screen.dart';
+import 'screens/register_screen.dart';
 import 'screens/question_screen.dart';
 import 'package:flutter/services.dart';
 
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => LoginScreen(),
         '/question': (context) => QuestionScreen(),
         '/main': (context) => MainScreen(),
+        '/register': (context) => RegisterScreen(),
       },
     );
   }
