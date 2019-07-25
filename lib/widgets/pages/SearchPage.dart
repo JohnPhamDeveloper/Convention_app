@@ -28,7 +28,7 @@ class _SearchPageState extends State<SearchPage>
           navIndex = index;
         });
       },
-      physics: new NeverScrollableScrollPhysics(),
+      //physics: new NeverScrollableScrollPhysics(),
       controller: pageController,
       children: <Widget>[
         CosplayerSearchSection(),
@@ -50,6 +50,7 @@ class _SearchPageState extends State<SearchPage>
       children: <Widget>[
         MyNavbar(
           context: context,
+          index: navIndex,
           onCosplayersTap: () {
             pageController.animateToPage(
               0,

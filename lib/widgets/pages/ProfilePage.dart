@@ -51,6 +51,7 @@ class _ProfilePageState extends State<ProfilePage>
 
   @override
   void dispose() {
+    animationControllerArrow.dispose();
     pageController.dispose();
     super.dispose();
   }

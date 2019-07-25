@@ -117,6 +117,20 @@ class ProfileDetailsPage extends StatelessWidget {
                   }),
             ),
             SizedBox(height: 25.0),
+            // Options
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: RoundButtonTextIcon(
+                  text: Text("Options", style: kButtonBoldedTextStyle),
+                  fillColor: Colors.pinkAccent,
+                  icon: FontAwesomeIcons.cog,
+                  iconColor: Colors.white,
+                  onTap: () {
+                    print("TEST");
+                  }),
+            ),
+
+            SizedBox(height: 25.0),
             // Photography request button
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20),

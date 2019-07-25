@@ -5,11 +5,13 @@ class MyNavbar extends StatefulWidget {
   final BuildContext context;
   final Function onCosplayersTap;
   final Function onPhotographersTap;
+  final int index;
 
   MyNavbar(
       {@required this.context,
       @required this.onCosplayersTap,
-      @required this.onPhotographersTap});
+      @required this.onPhotographersTap,
+      this.index});
 
   @override
   _MyNavbarState createState() => _MyNavbarState();
@@ -60,6 +62,22 @@ class _MyNavbarState extends State<MyNavbar>
     // Return the next position of the line
     return calculateCenterOfEachNavButton() +
         (index * calculateWidthOfEachNavButton());
+  }
+
+  @override
+  void didUpdateWidget(MyNavbar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // user didnt click on button to nav, they used page swipe
+    if (oldWidget.index != widget.index) {
+      setState(() {
+        index = widget.index;
+      });
+      currentLinePositionX = nextLinePositionX;
+      nextLinePositionX = calculateNextLinePosition(context);
+      lineAnim = getLineAnimation(currentLinePositionX, nextLinePositionX);
+      lineAnimController.reset();
+      lineAnimController.forward();
+    }
   }
 
   @override
