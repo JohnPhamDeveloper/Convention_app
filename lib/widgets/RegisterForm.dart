@@ -140,7 +140,7 @@ class _RegisterFormState extends State<RegisterForm>
               },
             ),
           ),
-          SizedBox(height: kBoxGap + 20.0),
+          SizedBox(height: kBoxGap),
           // Signup Button
           AnimationWrapper(
             controller: animationController,

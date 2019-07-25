@@ -4,8 +4,8 @@ import 'package:cosplay_app/widgets/ImageContainer.dart';
 import 'package:cosplay_app/widgets/RoundButton.dart';
 import 'package:cosplay_app/widgets/CircularBox.dart';
 import 'package:cosplay_app/widgets/RoundButtonTextIcon.dart';
-
 import 'package:cosplay_app/widgets/medals/medals.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfileDetailsPage extends StatelessWidget {
   @override
@@ -53,6 +53,7 @@ class ProfileDetailsPage extends StatelessWidget {
               ],
             ),
             SizedBox(height: 50.0),
+            // Medals
             CircularBox(
               child: Column(
                 children: <Widget>[
@@ -68,6 +69,8 @@ class ProfileDetailsPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Wrap(
+                      runAlignment: WrapAlignment.spaceEvenly,
+                      crossAxisAlignment: WrapCrossAlignment.start,
                       runSpacing: 15.0,
                       spacing: 15.0,
                       children: <Widget>[
@@ -88,8 +91,9 @@ class ProfileDetailsPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 50.0),
+            // Vote friendly button
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 90),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               child: RoundButtonTextIcon(
                   text: Text("Vote Friendly", style: kButtonBoldedTextStyle),
                   fillColor: Colors.pinkAccent,
@@ -100,8 +104,9 @@ class ProfileDetailsPage extends StatelessWidget {
                   }),
             ),
             SizedBox(height: 25.0),
+            // Selfie request button
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 90),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               child: RoundButtonTextIcon(
                   text: Text("Selfie Request", style: kButtonBoldedTextStyle),
                   fillColor: Colors.pinkAccent,
@@ -109,6 +114,30 @@ class ProfileDetailsPage extends StatelessWidget {
                   iconColor: Colors.white,
                   onTap: () {
                     print("TEST");
+                  }),
+            ),
+            SizedBox(height: 25.0),
+            // Logout button
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: RoundButtonTextIcon(
+                  text: Text("Log Out", style: kButtonBoldedTextStyle),
+                  fillColor: Colors.pinkAccent,
+                  icon: Icons.camera_alt,
+                  iconColor: Colors.white,
+                  onTap: () async {
+                    print("Logging Out");
+                    FirebaseUser user =
+                        await FirebaseAuth.instance.currentUser();
+                    print(user.email);
+                    print(user.isEmailVerified);
+                    print(user.displayName);
+                    try {
+                      FirebaseAuth.instance.signOut();
+                      Navigator.pushNamed(context, "/");
+                    } catch (e) {
+                      print(e);
+                    }
                   }),
             ),
             SizedBox(height: 250),

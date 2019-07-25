@@ -50,8 +50,8 @@ class MetDeveloperMedal extends StatelessWidget {
         onMedalClick(
             context, "Met Developer Medal", "Met the developer in person!");
       },
-      icon: FontAwesomeIcons.laptopCode,
-      padding: EdgeInsets.only(left: 16, right: 21, top: 16, bottom: 18),
+      icon: Icons.laptop_windows,
+      // padding: EdgeInsets.only(left: 16, right: 21, top: 16, bottom: 18),
       iconSize: kMedalSize,
     );
   }

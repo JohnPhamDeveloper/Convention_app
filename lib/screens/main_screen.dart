@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:cosplay_app/widgets/pages/RankingListPage.dart';
 import 'package:cosplay_app/widgets/pages/SearchPage.dart';
 import 'package:cosplay_app/widgets/pages/FamePage.dart';

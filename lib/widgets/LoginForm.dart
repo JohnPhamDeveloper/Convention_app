@@ -31,7 +31,9 @@ class _LoginFormState extends State<LoginForm>
   @override
   void initState() {
     super.initState();
+    // Should be await
     _auth = FirebaseAuth.instance;
+
     Future<FirebaseUser> currentUser = _auth.currentUser();
     // User signed in already?
     if (currentUser != null) {
