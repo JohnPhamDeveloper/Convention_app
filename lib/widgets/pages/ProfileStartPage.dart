@@ -3,20 +3,20 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cosplay_app/widgets/ImageContainer.dart';
 
-class Profile extends StatefulWidget {
+class ProfileStartPage extends StatefulWidget {
   @override
-  _ProfileState createState() => _ProfileState();
+  _ProfileStartPageState createState() => _ProfileStartPageState();
 }
 
-class _ProfileState extends State<Profile> {
+class _ProfileStartPageState extends State<ProfileStartPage> {
   int _current;
   bool profileCollapsed =
       false; // This collapses when the down arrow is clicked
 
   final List<Widget> userImages = [
-    ImageContainer(path: "assets/1.jpg"),
-    ImageContainer(path: "assets/2.jpg"),
-    ImageContainer(path: "assets/3.jpg"),
+    ImageContainer(path: "assets/1.jpg", size: double.infinity),
+    ImageContainer(path: "assets/2.jpg", size: double.infinity),
+    ImageContainer(path: "assets/3.jpg", size: double.infinity),
   ];
 
   double calculateCarouselSliderHeight(double screenHeight) {
@@ -101,7 +101,7 @@ class _ProfileState extends State<Profile> {
 }
 
 final Color kTextStrokeColor = Colors.black;
-final double kTextStrokeBlur = 3.0;
+final double kTextStrokeBlur = 1.0;
 final List<Shadow> kTextStrokeOutlines = [
   Shadow(
 // bottomLeft
@@ -154,7 +154,16 @@ class IconText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        Icon(icon, color: iconColor, size: iconSize),
+        Stack(
+          children: <Widget>[
+            Positioned(
+              left: 0.2,
+              top: 0.2,
+              child: Icon(icon, color: Colors.black87, size: iconSize + 2.0),
+            ),
+            Icon(icon, color: iconColor, size: iconSize),
+          ],
+        ),
         SizedBox(width: 10.0),
         text
       ],

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cosplay_app/widgets/Profile.dart';
+import 'package:cosplay_app/widgets/pages/ProfileStartPage.dart';
 import 'package:cosplay_app/widgets/pages/ProfileDetailsPage.dart';
 import 'package:cosplay_app/widgets/RoundButton.dart';
 
@@ -27,7 +27,7 @@ class _ProfilePageState extends State<ProfilePage>
       physics: new NeverScrollableScrollPhysics(),
       controller: pageController,
       children: <Widget>[
-        Profile(),
+        ProfileStartPage(),
         ProfileDetailsPage(),
       ],
     );
