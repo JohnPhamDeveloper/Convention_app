@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cosplay_app/widgets/LoginForm.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -8,30 +7,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _State extends State<LoginScreen> {
-  bool _showLoader = false;
-
-  Widget renderLoader() {
-    if (_showLoader) {
-      return Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(color: Colors.black54),
-        child: SpinKitRipple(
-          color: Colors.grey[50],
-          size: 200.0,
-        ),
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  void _setShowLoader() {
-    setState(() {
-      _showLoader = true;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,24 +15,8 @@ class _State extends State<LoginScreen> {
           children: <Widget>[
             CustomPaint(
               painter: ShapesPainter(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(left: 40.0, right: 40.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        LoginForm(onLoginPress: () {
-                          _setShowLoader();
-                        }),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              child: LoginForm(onLoginPress: () {}),
             ),
-            renderLoader(),
           ],
         ),
       ),

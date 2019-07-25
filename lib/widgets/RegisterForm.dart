@@ -106,6 +106,22 @@ class _RegisterFormState extends State<RegisterForm>
               },
               onPress: () async {
                 widget.onRegisterPress();
+
+                // Register user
+                try {
+                  FirebaseUser user =
+                      await _auth.createUserWithEmailAndPassword(
+                          email: _emailController.text,
+                          password: _passwordController.text);
+                  print(
+                      "-------------------user successfully registered------------------------------------");
+                } catch (e) {
+                  print(
+                      "----------------RegisterForm: $e----------------------");
+                  print(e.code);
+                }
+
+                // Debug
                 Scaffold.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -116,7 +132,10 @@ class _RegisterFormState extends State<RegisterForm>
                 // Dismiss keyboard
                 FocusScope.of(context).requestFocus(new FocusNode());
 
+                // Artificial wait time
                 await Future.delayed(Duration(seconds: 2), () {});
+
+                // Go to login screen
                 Navigator.pushNamed(context, '/');
               },
             ),
