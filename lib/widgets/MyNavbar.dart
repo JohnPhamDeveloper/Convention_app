@@ -92,40 +92,57 @@ class _MyNavbarState extends State<MyNavbar>
       height: navBarHeight,
       child: Stack(
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              NavButton(
-                  title: "Cosplayers",
-                  onTap: () {
-                    print("Cosplayers");
-                    widget.onCosplayersTap();
-                    setState(() {
-                      index = 0;
-                      currentLinePositionX = nextLinePositionX;
-                      nextLinePositionX = calculateNextLinePosition(context);
-                      lineAnim = getLineAnimation(
-                          currentLinePositionX, nextLinePositionX);
-                      lineAnimController.reset();
-                      lineAnimController.forward();
-                    });
-                  }),
-              NavButton(
-                  title: "Photographers",
-                  onTap: () {
-                    print("Photographers");
-                    widget.onPhotographersTap();
-                    setState(() {
-                      index = 1;
-                      currentLinePositionX = nextLinePositionX;
-                      nextLinePositionX = calculateNextLinePosition(context);
-                      lineAnim = getLineAnimation(
-                          currentLinePositionX, nextLinePositionX);
-                      lineAnimController.reset();
-                      lineAnimController.forward();
-                    });
-                  }),
-            ],
+          Container(
+            decoration: BoxDecoration(
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  spreadRadius: 5.0,
+                  blurRadius: 5.0,
+                  color: Colors.black12,
+                  offset: Offset(0.0, -5.0),
+                ),
+              ],
+            ),
+            child: Container(
+              color: Colors.cyan[300],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  NavButton(
+                      title: "Cosplayers",
+                      onTap: () {
+                        print("Cosplayers");
+                        widget.onCosplayersTap();
+                        setState(() {
+                          index = 0;
+                          currentLinePositionX = nextLinePositionX;
+                          nextLinePositionX =
+                              calculateNextLinePosition(context);
+                          lineAnim = getLineAnimation(
+                              currentLinePositionX, nextLinePositionX);
+                          lineAnimController.reset();
+                          lineAnimController.forward();
+                        });
+                      }),
+                  NavButton(
+                      title: "Photographers",
+                      onTap: () {
+                        print("Photographers");
+                        widget.onPhotographersTap();
+                        setState(() {
+                          index = 1;
+                          currentLinePositionX = nextLinePositionX;
+                          nextLinePositionX =
+                              calculateNextLinePosition(context);
+                          lineAnim = getLineAnimation(
+                              currentLinePositionX, nextLinePositionX);
+                          lineAnimController.reset();
+                          lineAnimController.forward();
+                        });
+                      }),
+                ],
+              ),
+            ),
           ),
           AnimatedBuilder(
               animation: lineAnim,
