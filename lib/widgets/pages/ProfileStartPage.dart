@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cosplay_app/widgets/ImageContainer.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 
 class ProfileStartPage extends StatefulWidget {
   @override
@@ -33,31 +34,15 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
 
     return Stack(
       children: <Widget>[
-        CarouselSlider(
-          height: calculateCarouselSliderHeight(screenHeight),
-          viewportFraction: 1.0,
-          items: userImages,
-          autoPlay: false,
-          //aspectRatio: 1.0,
-          onPageChanged: (index) {
-            setState(() {
-              _current = index;
-            });
+        Swiper(
+          itemBuilder: (BuildContext context, int index) {
+            return userImages[index];
           },
-        ),
-        // Should'nt use icons need to draw circles, checkout how that carousel guy did it when site comes back online
-        Opacity(
-          opacity: profileCollapsed ? 0 : 1,
-          child: Row(
-            children: <Widget>[
-              Icon(FontAwesomeIcons.circle),
-              Icon(
-                FontAwesomeIcons.solidCircle,
-                color: Colors.white,
-              ),
-              Icon(FontAwesomeIcons.circle),
-              Icon(FontAwesomeIcons.circle),
-            ],
+          itemCount: userImages.length,
+          pagination: SwiperPagination(
+              alignment: Alignment.topCenter, builder: SwiperPagination.dots),
+          control: SwiperControl(
+            color: Colors.white,
           ),
         ),
         Opacity(

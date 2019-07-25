@@ -75,18 +75,19 @@ class _ProfilePageState extends State<ProfilePage>
                     parent: animationControllerArrow, curve: Curves.easeInOut),
               ),
               child: RoundButton(
-                  icon: Icons.arrow_downward,
-                  iconColor: Colors.white,
-                  fillColor: Colors.pinkAccent,
-                  onTap: () {
-                    if (_navIndex == 0) {
-                      animationControllerArrow.forward();
-                      moveToDetailsPage();
-                    } else {
-                      animationControllerArrow.reverse();
-                      moveToFirstPage();
-                    }
-                  }),
+                icon: Icons.arrow_downward,
+                iconColor: Colors.white,
+                fillColor: Colors.pinkAccent,
+                onTap: () {
+                  if (_navIndex == 0) {
+                    animationControllerArrow.forward();
+                    moveToDetailsPage();
+                  } else {
+                    animationControllerArrow.reverse();
+                    moveToFirstPage();
+                  }
+                },
+              ),
             ),
           ),
         ),
