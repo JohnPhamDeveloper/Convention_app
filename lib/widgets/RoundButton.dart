@@ -8,6 +8,7 @@ class RoundButton extends StatelessWidget {
   final EdgeInsets padding;
   final double size;
   final Color iconColor;
+  final Color fillColor;
 
   RoundButton(
       {@required this.icon,
@@ -15,7 +16,8 @@ class RoundButton extends StatelessWidget {
       this.iconSize = 35.0,
       this.padding = const EdgeInsets.all(16.0),
       this.size = 50.0,
-      this.iconColor});
+      this.iconColor,
+      this.fillColor = Colors.white});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class RoundButton extends StatelessWidget {
       ),
       shape: CircleBorder(),
       elevation: 3,
-      fillColor: Colors.white,
+      fillColor: fillColor,
       padding: padding,
     );
   }

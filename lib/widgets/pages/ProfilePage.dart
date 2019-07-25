@@ -59,6 +59,8 @@ class _ProfilePageState extends State<ProfilePage>
             alignment: Alignment.bottomRight,
             child: RoundButton(
                 icon: Icons.arrow_downward,
+                iconColor: Colors.white,
+                fillColor: Colors.pinkAccent,
                 onTap: () {
                   setState(() {
                     moveToDetailsPage();

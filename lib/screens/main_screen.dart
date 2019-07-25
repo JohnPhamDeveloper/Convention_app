@@ -36,7 +36,6 @@ class _MainScreenState extends State<MainScreen> {
     pageView = PreloadPageView(
       onPageChanged: (index) {
         setState(() {
-          print(index);
           navIndex = index;
         });
       },
@@ -85,7 +84,6 @@ class _MainScreenState extends State<MainScreen> {
               barHeight: kBottomNavHeight,
               controller: _navigationController,
               selectedCallback: (int selectedPos) {
-                print("selected $selectedPos");
                 moveToSelectedPage(selectedPos);
               },
             ),
