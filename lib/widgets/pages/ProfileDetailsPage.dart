@@ -93,9 +93,10 @@ class ProfileDetailsPage extends StatelessWidget {
             SizedBox(height: 50.0),
             // Vote friendly button
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.only(
+                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
               child: RoundButtonTextIcon(
-                  text: Text("Vote Friendly", style: kButtonBoldedTextStyle),
+                  text: Text("Vote Friendly", style: kButtonActionTextStyle),
                   fillColor: Colors.pinkAccent,
                   icon: Icons.favorite,
                   iconColor: Colors.white,
@@ -106,9 +107,10 @@ class ProfileDetailsPage extends StatelessWidget {
             SizedBox(height: 25.0),
             // Selfie request button
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.only(
+                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
               child: RoundButtonTextIcon(
-                  text: Text("Selfie Request", style: kButtonBoldedTextStyle),
+                  text: Text("Selfie Request", style: kButtonActionTextStyle),
                   fillColor: Colors.pinkAccent,
                   icon: Icons.camera_alt,
                   iconColor: Colors.white,
@@ -117,26 +119,13 @@ class ProfileDetailsPage extends StatelessWidget {
                   }),
             ),
             SizedBox(height: 25.0),
-            // Options
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: RoundButtonTextIcon(
-                  text: Text("Options", style: kButtonBoldedTextStyle),
-                  fillColor: Colors.pinkAccent,
-                  icon: FontAwesomeIcons.cog,
-                  iconColor: Colors.white,
-                  onTap: () {
-                    print("TEST");
-                  }),
-            ),
-
-            SizedBox(height: 25.0),
             // Photography request button
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.only(
+                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
               child: RoundButtonTextIcon(
                   text: Text("Photographer Request",
-                      style: kButtonBoldedTextStyle),
+                      style: kButtonActionTextStyle),
                   fillColor: Colors.pinkAccent,
                   icon: Icons.linked_camera,
                   iconColor: Colors.white,
@@ -156,14 +145,29 @@ class ProfileDetailsPage extends StatelessWidget {
                   }),
             ),
             SizedBox(height: 25.0),
+            // Options
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
+              child: RoundButtonTextIcon(
+                  text: Text("Options", style: kButtonNormalTextStyle),
+                  fillColor: kButtonNormalFillColor,
+                  icon: FontAwesomeIcons.cog,
+                  iconColor: kButtonNormalIconColor,
+                  onTap: () {
+                    print("TEST");
+                  }),
+            ),
+            SizedBox(height: 25.0),
             // Logout button
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.only(
+                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
               child: RoundButtonTextIcon(
-                  text: Text("Log Out", style: kButtonBoldedTextStyle),
-                  fillColor: Colors.pinkAccent,
+                  text: Text("Log Out", style: kButtonNormalTextStyle),
+                  fillColor: kButtonNormalFillColor,
                   icon: Icons.directions_run,
-                  iconColor: Colors.white,
+                  iconColor: kButtonNormalIconColor,
                   onTap: () async {
                     print("Logging Out");
                     FirebaseUser user =
@@ -187,9 +191,21 @@ class ProfileDetailsPage extends StatelessWidget {
   }
 }
 
-const TextStyle kButtonBoldedTextStyle =
-    TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0, color: Colors.white);
+// Both buttons
+const double kButtonPaddingLeft = 30.0;
+const double kButtonPaddingRight = 30.0;
 
+// Pink buttons
+const TextStyle kButtonActionTextStyle =
+    TextStyle(fontWeight: FontWeight.w500, fontSize: 22.0, color: Colors.white);
+
+// White buttons
+const TextStyle kButtonNormalTextStyle = TextStyle(
+    fontWeight: FontWeight.w500, fontSize: 22.0, color: Colors.black54);
+const kButtonNormalFillColor = Colors.white;
+const kButtonNormalIconColor = Colors.black54;
+
+// Column widget which displays a title on top and an number on bottom
 class TitleData extends StatelessWidget {
   final String title;
   final int number;
