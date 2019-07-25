@@ -5,6 +5,8 @@ import 'package:cosplay_app/widgets/RoundButton.dart';
 import 'package:cosplay_app/widgets/CircularBox.dart';
 import 'package:cosplay_app/widgets/RoundButtonTextIcon.dart';
 
+import 'package:cosplay_app/widgets/medals/medals.dart';
+
 class ProfileDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -63,41 +65,23 @@ class ProfileDetailsPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 15.0),
-                  Wrap(
-                    runSpacing: 15.0,
-                    spacing: 15.0,
-                    children: <Widget>[
-                      RoundButton(
-                          icon: FontAwesomeIcons.handHoldingHeart,
-                          iconSize: kMedalSize),
-                      RoundButton(
-                          icon: FontAwesomeIcons.handHoldingHeart,
-                          iconSize: kMedalSize),
-                      RoundButton(
-                          icon: FontAwesomeIcons.medal,
-                          iconSize: kMedalSize,
-                          iconColor: Colors.purpleAccent),
-                      RoundButton(
-                        icon: FontAwesomeIcons.laptopCode,
-                        padding: EdgeInsets.only(
-                            left: 16, right: 21, top: 16, bottom: 18),
-                        iconSize: kMedalSize,
-                      ),
-                      RoundButton(
-                          icon: FontAwesomeIcons.medal, iconSize: kMedalSize),
-                      RoundButton(
-                          icon: FontAwesomeIcons.handHoldingHeart,
-                          iconSize: kMedalSize),
-                      RoundButton(
-                          icon: FontAwesomeIcons.handHoldingHeart,
-                          iconSize: kMedalSize),
-                      RoundButton(
-                          icon: FontAwesomeIcons.handHoldingHeart,
-                          iconSize: kMedalSize),
-                      RoundButton(
-                          icon: FontAwesomeIcons.handHoldingHeart,
-                          iconSize: kMedalSize),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Wrap(
+                      runSpacing: 15.0,
+                      spacing: 15.0,
+                      children: <Widget>[
+                        TrustMedal(),
+                        MetDeveloperMedal(),
+                        PurpleHeartMedal(),
+                        VerifiedPhoneMedal(),
+                        HundredSelfieMedal(),
+                        ThreeHundredSelfieMedal(),
+                        FriendlyHundredMedal(),
+                        FriendlyTwoHundredMedal(),
+                        FriendlyFiveHundredMedal(),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -122,7 +106,6 @@ class ProfileDetailsPage extends StatelessWidget {
   }
 }
 
-const double kMedalSize = 18.0;
 const TextStyle kButtonBoldedTextStyle =
     TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0, color: Colors.white);
 
