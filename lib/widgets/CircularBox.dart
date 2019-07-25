@@ -4,12 +4,21 @@ class CircularBox extends StatelessWidget {
   final Widget child;
   final double radius;
   final BorderRadiusGeometry borderRadius;
+  final double width;
+  final EdgeInsets padding;
 
-  CircularBox({@required this.child, this.radius = 20.0, this.borderRadius});
+  CircularBox({
+    @required this.child,
+    this.radius = 20.0,
+    this.borderRadius,
+    this.width,
+    this.padding = const EdgeInsets.all(12.0),
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(radius)),
         boxShadow: [
@@ -26,7 +35,7 @@ class CircularBox extends StatelessWidget {
         color: Colors.white,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: padding,
         child: child,
       ),
     );

@@ -36,6 +36,7 @@ dev_dependencies:
   font_awesome_flutter: ^8.5.0
   carousel_slider: ^1.3.0
   circular_bottom_navigation: ^1.0.0
+  rflutter_alert: ^1.0.3
 
 
 # For information on the generic Dart part of this file, see the
