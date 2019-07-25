@@ -16,6 +16,7 @@ class _FamePageState extends State<FamePage>
     double height = MediaQuery.of(context).size.height;
     return Column(
       children: <Widget>[
+        // Fame point display
         Padding(
           padding: const EdgeInsets.only(top: 20.0),
           child: Column(
@@ -43,8 +44,8 @@ class _FamePageState extends State<FamePage>
           ),
         ),
         SizedBox(height: 20.0),
-        Container(
-          height: height - kBottomNavHeight,
+        // Fame items to purchase
+        Expanded(
           child: ListView(
             children: <Widget>[
               Wrap(
@@ -54,7 +55,7 @@ class _FamePageState extends State<FamePage>
                   ProductItem(),
                   ProductItem(),
                   ProductItem(),
-                  SizedBox(height: 500.0),
+                  SizedBox(height: 400.0),
                 ],
               ),
             ],

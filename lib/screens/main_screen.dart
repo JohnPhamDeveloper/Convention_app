@@ -7,6 +7,7 @@ import 'package:cosplay_app/widgets/pages/ProfilePage.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:cosplay_app/constants/constants.dart';
+import 'package:preload_page_view/preload_page_view.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -14,11 +15,11 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  PageController pageController;
+  PreloadPageController preloadPageController;
   CircularBottomNavigationController _navigationController;
   bool playProfilePageCarousel = false;
   int navIndex = 0;
-  PageView pageView;
+  PreloadPageView pageView;
   List<TabItem> tabItems = List.of([
     TabItem(Icons.home, "Home", Colors.pink),
     TabItem(Icons.search, "Search", Colors.pink),
@@ -30,17 +31,18 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    pageController = PageController(initialPage: navIndex);
+    preloadPageController = PreloadPageController(initialPage: navIndex);
     _navigationController = CircularBottomNavigationController(navIndex);
-    pageView = PageView(
+    pageView = PreloadPageView(
       onPageChanged: (index) {
         setState(() {
           print(index);
           navIndex = index;
         });
       },
+      preloadPagesCount: 5,
       physics: new NeverScrollableScrollPhysics(),
-      controller: pageController,
+      controller: preloadPageController,
       children: <Widget>[
         RankingListPage(),
         SearchPage(),
@@ -54,7 +56,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void dispose() {
     _navigationController.dispose();
-    pageController.dispose();
+    preloadPageController.dispose();
     super.dispose();
   }
 
@@ -62,7 +64,7 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       navIndex = index;
     });
-    pageController.animateToPage(
+    preloadPageController.animateToPage(
       index,
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,

@@ -123,7 +123,7 @@ class ProfileDetailsPage extends StatelessWidget {
               child: RoundButtonTextIcon(
                   text: Text("Log Out", style: kButtonBoldedTextStyle),
                   fillColor: Colors.pinkAccent,
-                  icon: Icons.camera_alt,
+                  icon: Icons.directions_run,
                   iconColor: Colors.white,
                   onTap: () async {
                     print("Logging Out");

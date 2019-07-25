@@ -100,7 +100,7 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
   }
 }
 
-final Color kTextStrokeColor = Colors.black;
+final Color kTextStrokeColor = Colors.black12;
 final double kTextStrokeBlur = 1.0;
 final List<Shadow> kTextStrokeOutlines = [
   Shadow(
@@ -159,7 +159,7 @@ class IconText extends StatelessWidget {
             Positioned(
               left: 0.2,
               top: 0.2,
-              child: Icon(icon, color: Colors.black87, size: iconSize + 2.0),
+              child: Icon(icon, color: Colors.black12, size: iconSize + 2.0),
             ),
             Icon(icon, color: iconColor, size: iconSize),
           ],

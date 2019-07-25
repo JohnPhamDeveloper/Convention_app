@@ -66,12 +66,7 @@ class _SearchPageState extends State<SearchPage>
           },
         ),
         SizedBox(height: 25.0),
-        Container(
-            width: 500,
-            height: MediaQuery.of(context).size.height -
-                kBottomNavHeight -
-                80, // 80 is the height of MyNavbar (see the wiget)
-            child: pageView),
+        Expanded(child: pageView),
       ],
     );
   }
