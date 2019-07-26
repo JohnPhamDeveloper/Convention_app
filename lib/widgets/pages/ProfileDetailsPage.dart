@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cosplay_app/widgets/ImageContainer.dart';
 import 'package:cosplay_app/widgets/RoundButton.dart';
-import 'package:cosplay_app/widgets/CircularBox.dart';
+import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 import 'package:cosplay_app/widgets/RoundButtonTextIcon.dart';
 import 'package:cosplay_app/widgets/medals/medals.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,9 +15,11 @@ class ProfileDetailsPage extends StatelessWidget {
         Column(
           children: <Widget>[
             SizedBox(height: 40.0),
+            // user image
             ImageContainer(
                 borderRadius: 500.0, path: "assets/1.jpg", size: 160.0),
             SizedBox(height: 20.0),
+            // Name
             Text(
               "Jason Chemry",
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0),
@@ -43,7 +45,8 @@ class ProfileDetailsPage extends StatelessWidget {
                     onTap: () {}),
               ],
             ),
-            SizedBox(height: 50.0),
+            SizedBox(height: 30.0),
+            // Friendliness
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -52,7 +55,7 @@ class ProfileDetailsPage extends StatelessWidget {
                 TitleData(title: "Fame", number: 32222, width: 150.0)
               ],
             ),
-            SizedBox(height: 50.0),
+            SizedBox(height: 30.0),
             // Medals
             CircularBox(
               child: Column(
@@ -61,7 +64,7 @@ class ProfileDetailsPage extends StatelessWidget {
                     "Medals",
                     style: TextStyle(
                       fontSize: 18.0,
-                      color: Colors.black87,
+                      color: Colors.black54,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -90,7 +93,7 @@ class ProfileDetailsPage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 50.0),
+            SizedBox(height: 40.0),
             // Vote friendly button
             Padding(
               padding: const EdgeInsets.only(
@@ -172,6 +175,10 @@ class ProfileDetailsPage extends StatelessWidget {
                     print("Logging Out");
                     FirebaseUser user =
                         await FirebaseAuth.instance.currentUser();
+
+                    // They were not signed in the first place (how did the get in?)
+                    if (user == null) Navigator.pushNamed(context, '/');
+
                     print(user.email);
                     print(user.isEmailVerified);
                     print(user.displayName);
@@ -229,7 +236,7 @@ class TitleData extends StatelessWidget {
             title,
             style: TextStyle(
               fontSize: 18.0,
-              color: Colors.black87,
+              color: Colors.black54,
               fontWeight: FontWeight.w600,
             ),
           ),

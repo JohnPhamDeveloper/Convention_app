@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'HyperButton.dart';
-import 'IconFormField.dart';
-import 'SuperButtonForm.dart';
+import 'package:cosplay_app/widgets/HyperButton.dart';
+import 'package:cosplay_app/widgets/form/IconFormField.dart';
+import 'package:cosplay_app/widgets/form/SuperButtonForm.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:flutter/animation.dart';
 import "package:cosplay_app/animations/AnimationWrapper.dart";

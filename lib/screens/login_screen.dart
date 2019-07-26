@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cosplay_app/widgets/LoginForm.dart';
+import 'package:cosplay_app/widgets/form/LoginForm.dart';
 
 class LoginScreen extends StatefulWidget {
   @override

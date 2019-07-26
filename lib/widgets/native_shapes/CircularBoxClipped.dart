@@ -32,7 +32,7 @@ class CircularBoxClipped extends StatelessWidget {
             spreadRadius: 1.0, // has the effect of extending the shadow
             offset: Offset(
               0.0, // horizontal, move right 10
-              5.0, // vertical, move down 10
+              4.0, // vertical, move down 10
             ),
           )
         ],

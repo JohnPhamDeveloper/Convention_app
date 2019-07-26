@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:cosplay_app/widgets/CircularBoxClipped.dart';
+import 'package:cosplay_app/widgets/notification/NotificationItem.dart';
+import 'dart:async';
+import 'dart:math';
+
+//DEBUG
+final colorsMe = [Colors.red, Colors.orange, Colors.pink, Colors.green];
+final textMe = ["RED", "ORANGE", "PINK", "GREEN"];
 
 class NotificationPage extends StatefulWidget {
   @override
@@ -8,101 +14,102 @@ class NotificationPage extends StatefulWidget {
 
 class _NotificationPageState extends State<NotificationPage>
     with AutomaticKeepAliveClientMixin {
+  List<NotificationItem> currentNotifications;
+  Timer timer;
+  int debugIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    currentNotifications = List<NotificationItem>();
+
+//  refresh timer for the age of the message
+    timer = Timer.periodic(
+      Duration(seconds: 5),
+      (Timer t) => setState(
+        () {},
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 
+  void addNewNotification(NotificationItem item) {
+    // Add item
+    setState(() {
+      currentNotifications.insert(
+        0,
+        item,
+      );
+      debugIndex++; // O(n) since its moving all items down
+    });
+  }
+
+  // Maybe the little bubble timer should manage itself rather than this whole widget?
+//  List<Widget> getNewNotifications() {
+//    print("RUN?");
+//    if (currentNotifications.isEmpty) {
+//      List<Text> empty = List<Text>();
+//      empty.add(Text("Nothing here!"));
+//      return empty;
+//    }
+//
+////   List<NotificationItem> newNotifications = List<NotificationItem>();
+////
+////    // Return in reversed order
+////    for (int i = currentNotifications.length - 1; i >= 0; i--) {
+////      newNotifications.add(currentNotifications[i]);
+////    }
+//
+////    for (int i = 0; i < currentNotifications.length; i++) {
+////      newNotifications.add(currentNotifications[i]);
+////    }
+//
+//    //setState(() {
+//    //  currentNotifications = newNotifications;
+//    //});
+//
+//    return currentNotifications;
+//  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ListView(
+    return Column(
       children: <Widget>[
-        NotificationItem(
-          iconColor: Colors.orange,
-          message: "You are requesting from an incomplete service yo",
-        ),
-        NotificationItem(),
-        NotificationItem(),
-        NotificationItem(
-            iconColor: Colors.blue,
-            message: "Wants to meetup with you for a gathering!"),
-        NotificationItem(),
-        NotificationItem(),
-        NotificationItem(),
-        NotificationItem(),
-        NotificationItem(),
-        NotificationItem(),
-        NotificationItem(),
-        NotificationItem(),
-        NotificationItem(),
-        NotificationItem(),
-        NotificationItem(),
-        NotificationItem(),
-        NotificationItem(),
-        SizedBox(height: 40.0),
-      ],
-    );
-  }
-}
-
-class NotificationItem extends StatelessWidget {
-  final Color iconColor;
-  final String message;
-
-  NotificationItem(
-      {this.iconColor = Colors.pink, this.message = "Default test message"});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 30.0,
-        left: 20.0,
-      ),
-      child: Row(
-        children: <Widget>[
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 10.0, // has the effect of softening the shadow
-                  spreadRadius: 1.0, // has the effect of extending the shadow
-                  offset: Offset(
-                    0.0, // horizontal, move right 10
-                    5.0, // vertical, move down 10
-                  ),
-                )
-              ],
-            ),
-            child: Icon(Icons.notifications, size: 30, color: iconColor),
-          ),
-          SizedBox(width: 15.0),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: CircularBoxClipped(
-                topRight: Radius.circular(30.0),
-                bottomRight: Radius.circular(30.0),
-                bottomLeft: Radius.circular(30.0),
-                topLeft: Radius.circular(30.0),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 5.0),
-                  child: Text(
-                    message,
-                    textAlign: TextAlign.left,
-                    style: TextStyle(color: Colors.black87),
-                  ),
-                ),
+        // Debug button for push notification
+        FlatButton(
+          onPressed: () {
+            addNewNotification(
+              NotificationItem(
+                iconColor: colorsMe[Random().nextInt(4)],
+                message: debugIndex.toString(),
+                index: debugIndex,
+                timeSinceCreated: DateTime.now(),
+                key: UniqueKey(),
               ),
-            ),
+            );
+          },
+          child: Text("press me"),
+        ),
+        // Listview of notifications
+        Expanded(
+          child: ListView.builder(
+            itemCount: currentNotifications.length,
+            itemBuilder: (context, index) {
+              return currentNotifications[index];
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

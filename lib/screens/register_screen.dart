@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cosplay_app/widgets/RegisterForm.dart';
+import 'package:cosplay_app/widgets/form/RegisterForm.dart';
 
 class RegisterScreen extends StatelessWidget {
   @override

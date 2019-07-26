@@ -13,8 +13,12 @@ enum AnimationDirection {
   BOTTOM,
 }
 
-const kBoxGap = 20.0; // Gaps between each elements
+const kBoxGap = 20.0; // Gaps between each elements;
+
+// BOTTOM NAV HEIGHT
 const kBottomNavHeight = 60.0;
+
+// PAGE KEYS
 final Key kRankingListPageKey = Key("RankingListPage");
 final Key kSearchPageKey = Key("SearchPage");
 final Key kFamePageKey = Key("FamePage");
@@ -29,6 +33,8 @@ const kCardTitleStyle = TextStyle(
   fontWeight: FontWeight.w500,
 );
 const kCardPadding = 20.0;
+
+// RARITY BORDERS FOR PROFILE
 final kRarityBorders = [
   Colors.grey[300],
   Colors.greenAccent,
@@ -53,3 +59,6 @@ TextStyle kTextStyleImportant(BuildContext context) {
     color: Theme.of(context).accentColor,
   );
 }
+
+// COLORS
+const kBlack = Colors.black;
