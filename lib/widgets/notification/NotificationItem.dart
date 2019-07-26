@@ -2,24 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:cosplay_app/widgets/notification/Bubble.dart';
 import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 import 'package:cosplay_app/constants/constants.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 class NotificationItem extends StatelessWidget {
   final Color iconColor;
   final String message;
-  final int index;
   final Key key;
-  final DateTime timeSinceCreated;
-  // The parent has a timer which will toggle this. This will then cause this child to rebuild to update the message's age
-  final DateTime toggleBuild;
+  final String timeSinceCreated;
 
   NotificationItem(
       {this.iconColor = Colors.pink,
       this.message = "Default test message.",
-      this.index,
       this.key,
-      this.timeSinceCreated,
-      this.toggleBuild})
+      this.timeSinceCreated})
       : super(key: key);
 
   String formattedTimer;
@@ -97,7 +91,7 @@ class NotificationItem extends StatelessWidget {
                   top: 5.0, bottom: 5.0, left: 10.0, right: 10.0),
               radius: 20.0,
               child: Text(
-                timeago.format(timeSinceCreated, locale: 'en_short'),
+                timeSinceCreated,
                 style: TextStyle(
                     color: kBlack, fontWeight: FontWeight.w600, fontSize: 10.0),
               ),
