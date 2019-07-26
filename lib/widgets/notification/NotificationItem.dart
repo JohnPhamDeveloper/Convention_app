@@ -38,6 +38,7 @@ class NotificationItem extends StatelessWidget {
             ),
             child: Row(
               children: <Widget>[
+                // Icon
                 Container(
                   width: 50,
                   height: 50,
@@ -61,6 +62,7 @@ class NotificationItem extends StatelessWidget {
                   child: Icon(Icons.notifications, size: 30, color: iconColor),
                 ),
                 SizedBox(width: 15.0),
+                // Message
                 Expanded(
                   child: Bubble(text: message),
                 ),

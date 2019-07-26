@@ -32,15 +32,17 @@ class _NotificationPageState extends State<NotificationPage>
     super.initState();
     _auth = FirebaseAuth.instance;
 
+    beginRebuildEverySeconds(60);
+
     // DEBUG AND FOR LEARNING (though make sure the user is signed in)
     getData();
   }
 
   // We need the bubble to update the notifications age every second with the given value
-  void beginRebuildEverySeconds() {
+  void beginRebuildEverySeconds(int seconds) {
     // Just an empty setstate call to trigger a rebuild
     timer = Timer.periodic(
-      Duration(seconds: 60),
+      Duration(seconds: seconds),
       (Timer t) => setState(
         () {},
       ),
@@ -152,7 +154,7 @@ class _NotificationPageState extends State<NotificationPage>
             if (!snapshot.hasData) return Text("Nothing loaded!");
             print(snapshot.data.documents.length);
             // Go through every messages and store in notifications
-            List<NotificationItem> notifications = List<NotificationItem>();
+            List<Widget> notifications = List<Widget>();
             for (DocumentSnapshot snapshot in snapshot.data.documents) {
               notifications.add(buildNotificationItem(snapshot));
             }
@@ -160,9 +162,13 @@ class _NotificationPageState extends State<NotificationPage>
             // Reverse order so recent is on top
             notifications = notifications.reversed.toList();
 
+            // Add a box at the end of the notifications so the last notification doesn't get blocked off
+            notifications.add(SizedBox(height: 150));
+
             return Expanded(
               child: ListView.builder(
-                itemCount: snapshot.data.documents.length,
+                itemCount: snapshot.data.documents.length +
+                    1, // + 1 is for the sized box
                 itemBuilder: (context, index) {
                   return notifications[index];
                 },

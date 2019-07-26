@@ -19,7 +19,7 @@ class Bubble extends StatelessWidget {
         child: RichText(
           text: TextSpan(
             style: TextStyle(
-                color: kBlack, fontWeight: FontWeight.w500, fontSize: 15.0),
+                color: kBlack, fontWeight: FontWeight.w400, fontSize: 15.0),
             children: [
               TextSpan(text: text),
             ],

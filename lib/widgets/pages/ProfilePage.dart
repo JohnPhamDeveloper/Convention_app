@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cosplay_app/widgets/pages/ProfileStartPage.dart';
 import 'package:cosplay_app/widgets/pages/ProfileDetailsPage.dart';
+import 'package:preload_page_view/preload_page_view.dart';
 import 'package:cosplay_app/widgets/RoundButton.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -10,8 +11,8 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage>
     with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
-  PageController pageController;
-  PageView pageView;
+  PreloadPageController pageController;
+  PreloadPageView pageView;
   AnimationController animationControllerArrow;
   Animation animationArrow;
   int _navIndex = 0;
@@ -19,14 +20,15 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   void initState() {
     super.initState();
-    pageController = PageController(initialPage: 0);
-    pageView = PageView(
+    pageController = PreloadPageController(initialPage: 0);
+    pageView = PreloadPageView(
       scrollDirection: Axis.vertical,
       onPageChanged: (index) {
         setState(() {
           _navIndex = index;
         });
       },
+      preloadPagesCount: 2,
       physics: new NeverScrollableScrollPhysics(),
       controller: pageController,
       children: <Widget>[
