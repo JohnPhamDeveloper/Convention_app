@@ -9,6 +9,12 @@ import 'dart:math';
 //DEBUG
 final colorsMe = [Colors.red, Colors.orange, Colors.pink, Colors.green];
 final textMe = ["RED", "ORANGE", "PINK", "GREEN"];
+final randomText = [
+  "Yo my boi wheres my shoes",
+  "I dunno i go tlost in the woods and found my way out the next morning",
+  "ya babe",
+  "YOu eat cheese"
+];
 
 class NotificationPage extends StatefulWidget {
   @override
@@ -128,6 +134,17 @@ class _NotificationPageState extends State<NotificationPage>
     );
   }
 
+  void testSendNotification() {
+    Firestore.instance
+        .collection("users")
+        .document("jones")
+        .collection("messages")
+        .add({
+      'message': randomText[Random().nextInt(randomText.length)],
+      'timeSent': DateTime.now(),
+    });
+  }
+
   void addNewNotification(NotificationItem item) {
     // Add item
 //    setState(() {
@@ -175,6 +192,11 @@ class _NotificationPageState extends State<NotificationPage>
     super.build(context);
     return Column(
       children: <Widget>[
+        RaisedButton(
+            onPressed: () {
+              testSendNotification();
+            },
+            child: Text("CLICk")),
         StreamBuilder(
           stream: Firestore.instance
               .collection("users")
