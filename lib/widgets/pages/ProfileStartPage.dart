@@ -62,7 +62,7 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
                 ),
                 SizedBox(height: 10.0),
                 IconText(
-                  icon: Icons.favorite,
+                  icon: Icons.sentiment_very_satisfied,
                   text: Text(
                     "1352",
                     style: kProfileOverlayTextStyle,

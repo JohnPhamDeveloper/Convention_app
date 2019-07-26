@@ -66,7 +66,6 @@ class _SearchPageState extends State<SearchPage>
             );
           },
         ),
-        SizedBox(height: 25.0),
         Expanded(child: pageView),
       ],
     );
