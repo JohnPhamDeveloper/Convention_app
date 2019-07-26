@@ -4,54 +4,34 @@ import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class NotificationItem extends StatefulWidget {
+class NotificationItem extends StatelessWidget {
   final Color iconColor;
   final String message;
   final int index;
   final Key key;
   final DateTime timeSinceCreated;
+  // The parent has a timer which will toggle this. This will then cause this child to rebuild to update the message's age
+  final DateTime toggleBuild;
 
   NotificationItem(
       {this.iconColor = Colors.pink,
       this.message = "Default test message.",
       this.index,
       this.key,
-      this.timeSinceCreated})
+      this.timeSinceCreated,
+      this.toggleBuild})
       : super(key: key);
 
-  @override
-  _NotificationItemState createState() => _NotificationItemState();
-}
-
-class _NotificationItemState extends State<NotificationItem>
-    with AutomaticKeepAliveClientMixin {
   String formattedTimer;
 
   @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
-
-  @override
-  void initState() {
-    super.initState();
-    formattedTimer =
-        timeago.format(widget.timeSinceCreated, locale: 'en_short');
-    print(widget.key);
-  }
-
-  @override
-  void dispose() {
-    //timer.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    print(
-        "How many times is this rebuilt??????-----------------------------------");
-    print("timeSinceCreated[${widget.index}]: $widget.timeSinceCreated");
-    print(
-        "timeAgo: ${timeago.format(widget.timeSinceCreated, locale: 'en_short')}");
+    print("Rebuilded child?");
+//    print(
+//        "How many times is this rebuilt??????-----------------------------------");
+//    print("timeSinceCreated[${widget.index}]: $widget.timeSinceCreated");
+//    print(
+//        "timeAgo: ${timeago.format(widget.timeSinceCreated, locale: 'en_short')}");
     return Padding(
       padding: const EdgeInsets.only(right: 20.0),
       child: Stack(
@@ -84,12 +64,11 @@ class _NotificationItemState extends State<NotificationItem>
                       )
                     ],
                   ),
-                  child: Icon(Icons.notifications,
-                      size: 30, color: widget.iconColor),
+                  child: Icon(Icons.notifications, size: 30, color: iconColor),
                 ),
                 SizedBox(width: 15.0),
                 Expanded(
-                  child: Bubble(text: widget.message),
+                  child: Bubble(text: message),
                 ),
               ],
             ),
@@ -118,7 +97,7 @@ class _NotificationItemState extends State<NotificationItem>
                   top: 5.0, bottom: 5.0, left: 10.0, right: 10.0),
               radius: 20.0,
               child: Text(
-                timeago.format(widget.timeSinceCreated, locale: 'en_short'),
+                timeago.format(timeSinceCreated, locale: 'en_short'),
                 style: TextStyle(
                     color: kBlack, fontWeight: FontWeight.w600, fontSize: 10.0),
               ),

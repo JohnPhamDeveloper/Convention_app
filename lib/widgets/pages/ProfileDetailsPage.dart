@@ -103,9 +103,7 @@ class ProfileDetailsPage extends StatelessWidget {
                   fillColor: Colors.pinkAccent,
                   icon: Icons.favorite,
                   iconColor: Colors.white,
-                  onTap: () {
-                    print("TEST");
-                  }),
+                  onTap: () {}),
             ),
             SizedBox(height: 25.0),
             // Selfie request button

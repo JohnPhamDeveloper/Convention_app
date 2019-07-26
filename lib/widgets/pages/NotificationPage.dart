@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:cosplay_app/widgets/notification/NotificationItem.dart';
 import 'dart:async';
 import 'dart:math';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 //DEBUG
 final colorsMe = [Colors.red, Colors.orange, Colors.pink, Colors.green];
@@ -15,21 +18,76 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage>
     with AutomaticKeepAliveClientMixin {
   List<NotificationItem> currentNotifications;
+  List<String> ageOfNotifications;
+  DatabaseReference database;
+  FirebaseAuth _auth;
+  Firestore _firestore;
+  List<DateTime> timestamp;
   Timer timer;
+  DateTime now;
+  bool toggleChildrenToRebuild = false;
   int debugIndex = 0;
 
   @override
   void initState() {
     super.initState();
     currentNotifications = List<NotificationItem>();
-
+    database = FirebaseDatabase.instance.reference();
+    _auth = FirebaseAuth.instance;
+    _firestore = Firestore.instance;
+    getData();
 //  refresh timer for the age of the message
-    timer = Timer.periodic(
-      Duration(seconds: 5),
-      (Timer t) => setState(
-        () {},
-      ),
-    );
+//    timer = Timer.periodic(
+//      Duration(seconds: 2),
+//      (Timer t) => setState(
+//        () {
+//          toggleChildrenToRebuild = !toggleChildrenToRebuild;
+//          print(toggleChildrenToRebuild);
+//          print("REBUILD");
+//          now = DateTime.now();
+//          print(now);
+//          // This will do the calcuations for the age for all messages
+//          for(int i = 0; i < ageOfNotifications.length; i++){
+//            timestamp.insert(0, element)
+//          }
+//        },
+//      ),
+//    );
+  }
+
+  void getData() async {
+    print('signing in');
+    FirebaseUser user = await _auth.signInWithEmailAndPassword(
+        email: 'bob2@hotmail.com', password: '123456');
+    if (user != null) {
+      print("Signed in...");
+      final QuerySnapshot querySnapshot = await Firestore.instance
+          .collection("users")
+          .where("name", isEqualTo: "Bobby Jones")
+          .getDocuments();
+      final List<DocumentSnapshot> documents = querySnapshot.documents;
+      //  print(documents.length);
+      print(documents[0].data);
+//      CollectionReference ref = Firestore.instance.collection("users");
+//      Stream<QuerySnapshot> snapshot =
+//          ref.where("name", isEqualTo: "bobby jones").snapshots();
+//
+//      DocumentReference docRef =
+//          Firestore.instance.collection("users").document();
+
+//      final data =
+//          snapshot.documents.map((document) => document['message']).toList();
+
+      // print(data);
+      //print(data);
+      QuerySnapshot snapshot =
+          await Firestore.instance.collection('users').getDocuments();
+
+      for (DocumentSnapshot yes in snapshot.documents) {
+        print(yes.data);
+      }
+      //print(snapshot.documents.first);
+    }
   }
 
   @override
@@ -49,6 +107,10 @@ class _NotificationPageState extends State<NotificationPage>
         0,
         item,
       );
+
+      // Get timestamp for when this message is first created
+      timestamp.insert(0, DateTime.now());
+
       debugIndex++; // O(n) since its moving all items down
     });
   }
@@ -94,6 +156,7 @@ class _NotificationPageState extends State<NotificationPage>
                 message: debugIndex.toString(),
                 index: debugIndex,
                 timeSinceCreated: DateTime.now(),
+                toggleBuild: now,
                 key: UniqueKey(),
               ),
             );
