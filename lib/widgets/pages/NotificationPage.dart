@@ -23,44 +23,35 @@ class NotificationPage extends StatefulWidget {
 
 class _NotificationPageState extends State<NotificationPage>
     with AutomaticKeepAliveClientMixin {
-  List<NotificationItem> currentNotifications;
-  List<String> ageOfNotifications;
   FirebaseAuth _auth;
-  Firestore _firestore;
-  List<DateTime> timestamp;
   Timer timer;
-  DateTime now;
   bool toggleChildrenToRebuild = false;
-  int debugIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    currentNotifications = List<NotificationItem>();
     _auth = FirebaseAuth.instance;
-    _firestore = Firestore.instance;
-    //print(DateTime.now());
-    //var date = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+
+    // DEBUG AND FOR LEARNING (though make sure the user is signed in)
     getData();
-//  refresh timer for the age of the message
-//    timer = Timer.periodic(
-//      Duration(seconds: 2),
-//      (Timer t) => setState(
-//        () {
-//          toggleChildrenToRebuild = !toggleChildrenToRebuild;
-//          print(toggleChildrenToRebuild);
-//          print("REBUILD");
-//          now = DateTime.now();
-//          print(now);
-//          // This will do the calcuations for the age for all messages
-//          for(int i = 0; i < ageOfNotifications.length; i++){
-//            timestamp.insert(0, element)
-//          }
-//        },
-//      ),
-//    );
   }
 
+  // We need the bubble to update the notifications age every second with the given value
+  void beginRebuildEverySeconds() {
+    // Just an empty setstate call to trigger a rebuild
+    timer = Timer.periodic(
+      Duration(seconds: 60),
+      (Timer t) => setState(
+        () {},
+      ),
+    );
+  }
+
+  void stopRebuildEverySeconds() {
+    timer.cancel();
+  }
+
+  // DEBUG AND FOR LEARNING REFERENCE
   void getData() async {
     print('signing in');
     FirebaseUser user = await _auth.signInWithEmailAndPassword(
@@ -104,7 +95,7 @@ class _NotificationPageState extends State<NotificationPage>
 
   @override
   void dispose() {
-    timer.cancel();
+    stopRebuildEverySeconds();
     super.dispose();
   }
 
@@ -112,19 +103,13 @@ class _NotificationPageState extends State<NotificationPage>
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 
+  // Create a notification item with the data from the database
   Widget buildNotificationItem(DocumentSnapshot documentSnapshot) {
     // Create a timestamp of when the message was sent
     int seconds = documentSnapshot.data['timeSent'].seconds;
     String message = documentSnapshot.data['message'];
     var date = new DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
     String created = timeago.format(date);
-
-//    // Create widget with those properties
-//    final notificationItem =
-//
-//    // Add
-//    List<Widget> notifications = List<Widget>();
-    //notifications.add(value)
 
     return NotificationItem(
       iconColor: colorsMe[Random().nextInt(4)],
@@ -134,6 +119,7 @@ class _NotificationPageState extends State<NotificationPage>
     );
   }
 
+  // Debug purposes
   void testSendNotification() {
     Firestore.instance
         .collection("users")
@@ -144,48 +130,6 @@ class _NotificationPageState extends State<NotificationPage>
       'timeSent': DateTime.now(),
     });
   }
-
-  void addNewNotification(NotificationItem item) {
-    // Add item
-//    setState(() {
-//      currentNotifications.insert(
-//        0,
-//        item,
-//      );
-
-    // Get timestamp for when this message is first created
-    //timestamp.insert(0, DateTime.now());
-
-    // debugIndex++; // O(n) since its moving all items down
-//    });
-  }
-
-  // Maybe the little bubble timer should manage itself rather than this whole widget?
-//  List<Widget> getNewNotifications() {
-//    print("RUN?");
-//    if (currentNotifications.isEmpty) {
-//      List<Text> empty = List<Text>();
-//      empty.add(Text("Nothing here!"));
-//      return empty;
-//    }
-//
-////   List<NotificationItem> newNotifications = List<NotificationItem>();
-////
-////    // Return in reversed order
-////    for (int i = currentNotifications.length - 1; i >= 0; i--) {
-////      newNotifications.add(currentNotifications[i]);
-////    }
-//
-////    for (int i = 0; i < currentNotifications.length; i++) {
-////      newNotifications.add(currentNotifications[i]);
-////    }
-//
-//    //setState(() {
-//    //  currentNotifications = newNotifications;
-//    //});
-//
-//    return currentNotifications;
-//  }
 
   @override
   Widget build(BuildContext context) {
