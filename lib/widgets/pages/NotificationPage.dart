@@ -107,10 +107,19 @@ class _NotificationPageState extends State<NotificationPage>
   bool get wantKeepAlive => true;
 
   Widget buildNotificationItem(DocumentSnapshot documentSnapshot) {
+    // Create a timestamp of when the message was sent
     int seconds = documentSnapshot.data['timeSent'].seconds;
     String message = documentSnapshot.data['message'];
     var date = new DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
     String created = timeago.format(date);
+
+//    // Create widget with those properties
+//    final notificationItem =
+//
+//    // Add
+//    List<Widget> notifications = List<Widget>();
+    //notifications.add(value)
+
     return NotificationItem(
       iconColor: colorsMe[Random().nextInt(4)],
       message: message,
@@ -173,12 +182,23 @@ class _NotificationPageState extends State<NotificationPage>
               .collection('messages')
               .snapshots(),
           builder: (context, snapshot) {
+            // Nothing loaded yet
             if (!snapshot.hasData) return Text("Nothing loaded!");
+            print(snapshot.data.documents.length);
+            // Go through every messages and store in notifications
+            List<NotificationItem> notifications = List<NotificationItem>();
+            for (DocumentSnapshot snapshot in snapshot.data.documents) {
+              notifications.add(buildNotificationItem(snapshot));
+            }
+
+            // Reverse order so recent is on top
+            notifications = notifications.reversed.toList();
+
             return Expanded(
               child: ListView.builder(
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
-                  return buildNotificationItem(snapshot.data.documents[index]);
+                  return notifications[index];
                 },
               ),
             );
