@@ -16,10 +16,11 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
 
   final List<Widget> userImages = [
     ImageContainer(
-        image: NetworkImage(
-            "https://c.pxhere.com/photos/0c/ea/china_girls_game_anime_cute_girl_japanese_costume-187567.jpg!d"),
-        height: double.infinity,
-        width: double.infinity),
+      image: NetworkImage(
+          "https://c.pxhere.com/photos/0c/ea/china_girls_game_anime_cute_girl_japanese_costume-187567.jpg!d"),
+      height: double.infinity,
+      width: double.infinity,
+    ),
     ImageContainer(
         image: NetworkImage(
             "https://c.pxhere.com/photos/eb/33/china_girls_game_anime_cute_girl_japanese_costume-187564.jpg!d"),

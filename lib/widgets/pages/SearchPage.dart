@@ -236,7 +236,7 @@ class PhotographerSearchSection extends StatelessWidget {
               "Nunjo Saert",
           yearsExperience: 8,
           monthsExperience: 1,
-          cost: "Not shooting",
+          cost: "Not Shooting",
           backgroundImage: NetworkImage(
               "https://c.pxhere.com/photos/b3/2d/camera_digital_equipment_female_girl_isolated_lens_people-1260617.jpg!d"),
           friendliness: 74,

@@ -5,31 +5,17 @@ import 'package:cosplay_app/widgets/ImageContainer.dart';
 class ScrollableTitle extends StatelessWidget {
   final double height;
   final Text title;
+  final List<NetworkImage> images;
 
-  ScrollableTitle({this.height = 330.0, @required this.title});
+  ScrollableTitle(
+      {this.height = 330.0, @required this.title, @required this.images});
 
   List<Widget> test1() {
     List<Widget> widgets = List<Widget>();
     widgets.add(SizedBox(width: kCardPadding)); // padding
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < images.length; i++) {
       widgets.add(
-        Padding(
-          padding: EdgeInsets.only(right: 12.0),
-          child: InkWell(
-            onTap: () {
-              // TODO Open user profile
-              print('Opening...');
-            },
-            child: ImageContainer(
-                borderWidth: 3.5,
-                borderRadius: 25.0,
-                enableShadows: true,
-                rarityBorderColor: kRarityBorders[0],
-                width: 220,
-                image: NetworkImage(
-                    "https://c.pxhere.com/photos/eb/33/china_girls_game_anime_cute_girl_japanese_costume-187564.jpg!d")),
-          ),
-        ),
+        ClickableImageContainer(image: images[i]),
       );
     }
     return widgets;
@@ -53,6 +39,31 @@ class ScrollableTitle extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class ClickableImageContainer extends StatelessWidget {
+  final ImageProvider image;
+
+  ClickableImageContainer({@required this.image});
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(right: 12.0, bottom: 12.0),
+      child: InkWell(
+        onTap: () {
+          // TODO Open user profile
+          print('Opening...');
+        },
+        child: ImageContainer(
+            borderWidth: 3.5,
+            borderRadius: 25.0,
+            enableShadows: true,
+            rarityBorderColor: kRarityBorders[0],
+            width: 220,
+            image: image),
+      ),
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 import 'package:cosplay_app/widgets/RoundButtonTextIcon.dart';
 import 'package:cosplay_app/widgets/medals/medals.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cosplay_app/constants/constants.dart';
 
 class ProfileDetailsPage extends StatelessWidget {
   @override
@@ -16,12 +17,17 @@ class ProfileDetailsPage extends StatelessWidget {
           children: <Widget>[
             SizedBox(height: 40.0),
             // user image
-            ImageContainer(
-                borderRadius: 500.0,
-                image: NetworkImage(
-                    "https://c.pxhere.com/photos/0c/ea/china_girls_game_anime_cute_girl_japanese_costume-187567.jpg!d"),
-                width: 160.0,
-                height: 160.0),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: ImageContainer(
+                  borderWidth: 3.5,
+                  rarityBorderColor: kRarityBorders[0],
+                  borderRadius: 500.0,
+                  image: NetworkImage(
+                      "https://c.pxhere.com/photos/0c/ea/china_girls_game_anime_cute_girl_japanese_costume-187567.jpg!d"),
+                  width: 160.0,
+                  height: 160.0),
+            ),
             SizedBox(height: 20.0),
             // Name
             Text(
@@ -129,7 +135,7 @@ class ProfileDetailsPage extends StatelessWidget {
               padding: const EdgeInsets.only(
                   left: kButtonPaddingLeft, right: kButtonPaddingRight),
               child: RoundButtonTextIcon(
-                  text: Text("Photographer Request",
+                  text: Text("Photography Request",
                       style: kButtonActionTextStyle),
                   fillColor: Colors.pinkAccent,
                   icon: Icons.linked_camera,
