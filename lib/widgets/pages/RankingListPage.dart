@@ -38,11 +38,13 @@ class _RankingListPageState extends State<RankingListPage>
       child: ListView(
         children: <Widget>[
           SizedBox(height: 20),
+          // Most Friendly
           ScrollableTitle(
             title: Text("Most Friendly", style: kCardTitleStyle),
             images: testImages,
           ),
           SizedBox(height: kCardGap + 10),
+          // Highest Fame
           ScrollableTitle(
             title: Text("Highest Fame", style: kCardTitleStyle),
             images: testImages2,

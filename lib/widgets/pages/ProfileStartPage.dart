@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cosplay_app/widgets/ImageContainer.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:cosplay_app/widgets/notification/NotificationDot.dart';
 
 class ProfileStartPage extends StatefulWidget {
   @override
@@ -42,6 +43,7 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
 
     return Stack(
       children: <Widget>[
+        // Carousel
         Swiper(
           itemBuilder: (BuildContext context, int index) {
             return userImages[index];
@@ -53,6 +55,7 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
             color: Colors.white,
           ),
         ),
+        // User information bottom left
         Opacity(
           opacity: profileCollapsed ? 0 : 1,
           child: Padding(
@@ -86,6 +89,13 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
                 ),
               ],
             ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 20.0, top: 20.0),
+            child: NotificationDot(innerColor: Colors.pinkAccent),
           ),
         ),
       ],
