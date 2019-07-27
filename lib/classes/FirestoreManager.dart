@@ -9,9 +9,8 @@ class FirestoreManager {
   static String keyFriendliness = 'friendliness';
   static String keyFame = 'fame';
 
-  // Gets information from database and returns that information ina LoggedInUser object
+  // Gets information from database and returns that information in a LoggedInUser object
   static Future<LoggedInUser> getUserInformationFromFirestore() async {
-    List<dynamic> photosURL = List<dynamic>();
     DocumentSnapshot snapshot;
 
     print("Fetching database...");
@@ -21,12 +20,12 @@ class FirestoreManager {
           await Firestore.instance.collection("users").document(username).get();
     } catch (e) {
       print(e);
-      // TODO Getting user infrmation fails
+      // TODO Getting user information fails
       // If fails, we should log out user and kick user out back to login screen
       // We will retry though and give the user information on screen that we're retrying...
     }
 
-    photosURL = snapshot.data[keyPhotos];
+    List<dynamic> photosURL = snapshot.data[keyPhotos];
     int friendliness = snapshot.data[keyFriendliness];
     int fame = snapshot.data[keyFame];
     String displayName = snapshot.data[keyDisplayName];
@@ -38,6 +37,14 @@ class FirestoreManager {
         photosURL, displayName, rarityBorder, friendliness, fame);
   }
 
+  // Get snapshot of users information in database
+  static Future<DocumentSnapshot> getSnapshot() async {
+    DocumentSnapshot snapshot =
+        await Firestore.instance.collection("users").document(username).get();
+    return snapshot;
+  }
+
+  // Update user information in database
   static Future<bool> update(Map<String, dynamic> newData) async {
     print("Trying to update data");
     try {

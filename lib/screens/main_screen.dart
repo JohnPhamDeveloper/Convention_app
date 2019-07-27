@@ -9,6 +9,9 @@ import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:preload_page_view/preload_page_view.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
+import 'package:cosplay_app/classes/FirestoreManager.dart';
+import 'package:provider/provider.dart';
+import 'package:cosplay_app/widgets/LoadingIndicator.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -17,6 +20,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   LoggedInUser loggedInUser;
+  bool loadedUserData = false;
   PreloadPageController preloadPageController;
   CircularBottomNavigationController _navigationController;
   bool playProfilePageCarousel = false;
@@ -54,6 +58,16 @@ class _MainScreenState extends State<MainScreen> {
     );
 
     // Get data from database for logged in user
+    loadUserInformationFromDatabase();
+  }
+
+  void loadUserInformationFromDatabase() async {
+    loggedInUser = await FirestoreManager.getUserInformationFromFirestore();
+    if (loggedInUser != null) {
+      setState(() {
+        loadedUserData = true;
+      });
+    }
   }
 
   @override
@@ -74,26 +88,36 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  Widget renderLoadingIfNotLoaded() {
+    if (loadedUserData) {
+      return ChangeNotifierProvider<LoggedInUser>(
+        builder: (context) => LoggedInUser.copy(loggedInUser),
+        child: Scaffold(
+          backgroundColor: Theme.of(context).primaryColor,
+          body: SafeArea(
+            child: Stack(children: <Widget>[
+              pageView,
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: CircularBottomNavigation(
+                  tabItems,
+                  barHeight: kBottomNavHeight,
+                  controller: _navigationController,
+                  selectedCallback: (int selectedPos) {
+                    moveToSelectedPage(selectedPos);
+                  },
+                ),
+              )
+            ]),
+          ),
+        ),
+      );
+    }
+    return LoadingIndicator();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      body: SafeArea(
-        child: Stack(children: <Widget>[
-          pageView,
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: CircularBottomNavigation(
-              tabItems,
-              barHeight: kBottomNavHeight,
-              controller: _navigationController,
-              selectedCallback: (int selectedPos) {
-                moveToSelectedPage(selectedPos);
-              },
-            ),
-          )
-        ]),
-      ),
-    );
+    return renderLoadingIfNotLoaded();
   }
 }

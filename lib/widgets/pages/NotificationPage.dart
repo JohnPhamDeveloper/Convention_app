@@ -150,9 +150,9 @@ class _NotificationPageState extends State<NotificationPage>
               .collection('messages')
               .snapshots(),
           builder: (context, snapshot) {
+            // TODO Implement linked list so insert doesn't take O(n) every new notification
             // Nothing loaded yet
             if (!snapshot.hasData) return Text("Nothing loaded!");
-            // print(snapshot.data.documents.length);
             // Go through every messages and store in notifications
             List<Widget> notifications = List<Widget>();
             for (DocumentSnapshot snapshot in snapshot.data.documents) {

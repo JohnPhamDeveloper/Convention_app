@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cosplay_app/widgets/ImageContainer.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:cosplay_app/widgets/notification/NotificationDot.dart';
-import 'package:cosplay_app/widgets/LoadingIndicator.dart';
-import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
+import 'package:provider/provider.dart';
 
 class ProfileStartPage extends StatefulWidget {
   @override
@@ -12,8 +11,6 @@ class ProfileStartPage extends StatefulWidget {
 }
 
 class _ProfileStartPageState extends State<ProfileStartPage> {
-  bool isLoading; // Still loading information from database
-  LoggedInUser loggedInUser;
   List<ImageContainer>
       userImageWidgets; // Widget that builds itself based on the photosURL information
 
@@ -21,25 +18,9 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
   void initState() {
     super.initState();
     userImageWidgets = List<ImageContainer>();
-    isLoading = true;
-    getUserInformationFromFirestore();
   }
 
-  void getUserInformationFromFirestore() async {
-    loggedInUser = await FirestoreManager.getUserInformationFromFirestore();
-
-    // Create a widget to store the image. We use the user's image URLs.
-    for (String url in loggedInUser.photosURL) {
-      userImageWidgets.add(createImageContainerWidget(url));
-    }
-
-    //  Don't display the loading spinner anymore, since we finished loading from database
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  ImageContainer createImageContainerWidget(String url) {
+  ImageContainer createImageContainerWidgetFromURL(String url) {
     return ImageContainer(
       image: NetworkImage(url),
       height: double.infinity,
@@ -47,8 +28,25 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
     );
   }
 
-  Widget conditionalRendering() {
-    if (!isLoading) {
+  // Generate image widgets for the carousel from the logged in users image references
+  void updateUserImageWidgets(LoggedInUser loggedInUser) {
+    List<ImageContainer> newUserImageWidgets = List<ImageContainer>();
+    for (String url in loggedInUser.photosURL) {
+      newUserImageWidgets.add(createImageContainerWidgetFromURL(url));
+    }
+
+    userImageWidgets = newUserImageWidgets;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final loggedInUser = Provider.of<LoggedInUser>(context);
+    print(
+        "--------------------------------------------------------------------");
+    print(loggedInUser);
+    return Consumer<LoggedInUser>(builder: (context, loggedInUser, child) {
+      updateUserImageWidgets(loggedInUser);
+      print("How often rebuilded?");
       return Stack(
         children: <Widget>[
           // Carousel
@@ -105,14 +103,7 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
           ),
         ],
       );
-    } else {
-      return LoadingIndicator();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return conditionalRendering();
+    });
   }
 }
 
