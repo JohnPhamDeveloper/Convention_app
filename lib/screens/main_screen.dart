@@ -12,6 +12,7 @@ import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:provider/provider.dart';
 import 'package:cosplay_app/widgets/LoadingIndicator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -37,6 +38,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    loggedInUser = LoggedInUser();
     preloadPageController = PreloadPageController(initialPage: navIndex);
     _navigationController = CircularBottomNavigationController(navIndex);
     pageView = PreloadPageView(
@@ -57,17 +59,17 @@ class _MainScreenState extends State<MainScreen> {
       ],
     );
 
-    // Get data from database for logged in user
-    loadUserInformationFromDatabase();
+    // Get data from database for logged in user when it changes
+    // Set loading is called if data is successfuly updated into loggedInUser
+    FirestoreManager.streamUserData(loggedInUser, setLoading);
   }
 
-  void loadUserInformationFromDatabase() async {
-    loggedInUser = await FirestoreManager.getUserInformationFromFirestore();
-    if (loggedInUser != null) {
-      setState(() {
-        loadedUserData = true;
-      });
-    }
+  void setLoading() {
+    print("how many times is this called?");
+    loggedInUser.updateWidgetsListeningToThis();
+    setState(() {
+      loadedUserData = true; // Stop showing spinner
+    });
   }
 
   @override
@@ -91,7 +93,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget renderLoadingIfNotLoaded() {
     if (loadedUserData) {
       return ChangeNotifierProvider<LoggedInUser>(
-        builder: (context) => LoggedInUser.copy(loggedInUser),
+        builder: (context) => loggedInUser,
         child: Scaffold(
           backgroundColor: Theme.of(context).primaryColor,
           body: SafeArea(

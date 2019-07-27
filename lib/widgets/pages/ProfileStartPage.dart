@@ -4,6 +4,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:cosplay_app/widgets/notification/NotificationDot.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:provider/provider.dart';
+import 'package:cosplay_app/classes/FirestoreManager.dart';
 
 class ProfileStartPage extends StatefulWidget {
   @override
@@ -31,7 +32,9 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
   // Generate image widgets for the carousel from the logged in users image references
   void updateUserImageWidgets(LoggedInUser loggedInUser) {
     List<ImageContainer> newUserImageWidgets = List<ImageContainer>();
-    for (String url in loggedInUser.photosURL) {
+    List<dynamic> urls = loggedInUser.getHashMap[FirestoreManager.keyPhotos];
+
+    for (String url in urls) {
       newUserImageWidgets.add(createImageContainerWidgetFromURL(url));
     }
 
@@ -46,7 +49,7 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
     print(loggedInUser);
     return Consumer<LoggedInUser>(builder: (context, loggedInUser, child) {
       updateUserImageWidgets(loggedInUser);
-      print("How often rebuilded?");
+      print("How often is profile start page rebuilding?");
       return Stack(
         children: <Widget>[
           // Carousel
@@ -71,7 +74,7 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
                 IconText(
                   icon: Icons.face,
                   text: Text(
-                    loggedInUser.displayName,
+                    loggedInUser.getHashMap[FirestoreManager.keyDisplayName],
                     style: kProfileOverlayNameStyle,
                   ),
                 ),
@@ -79,7 +82,8 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
                 IconText(
                   icon: Icons.sentiment_very_satisfied,
                   text: Text(
-                    loggedInUser.friendliness.toString(),
+                    loggedInUser.getHashMap[FirestoreManager.keyFriendliness]
+                        .toString(),
                     style: kProfileOverlayTextStyle,
                   ),
                 ),
@@ -87,7 +91,8 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
                 IconText(
                   icon: Icons.star,
                   text: Text(
-                    loggedInUser.fame.toString(),
+                    loggedInUser.getHashMap[FirestoreManager.keyFame]
+                        .toString(),
                     style: kProfileOverlayTextStyle,
                   ),
                 ),

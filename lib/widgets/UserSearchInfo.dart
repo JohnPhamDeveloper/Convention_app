@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:cosplay_app/widgets/ImageContainer.dart';
+import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 
 // COSPLAYER
 class UserSearchInfo extends StatelessWidget {
@@ -8,6 +9,7 @@ class UserSearchInfo extends StatelessWidget {
   final String name;
   final String cosplayName;
   final String seriesName;
+  final String cost;
   final int friendliness;
 
   UserSearchInfo(
@@ -15,7 +17,8 @@ class UserSearchInfo extends StatelessWidget {
       this.name,
       this.seriesName,
       this.cosplayName,
-      this.friendliness});
+      this.friendliness,
+      this.cost});
 
   Text renderTextIfNoImage() {
     if (backgroundImage == null) {
@@ -65,11 +68,18 @@ class UserSearchInfo extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(name,
+                  CircularBox(
+                    padding: EdgeInsets.symmetric(vertical: 2, horizontal: 6.5),
+                    hasShadow: false,
+                    child: Text(
+                      name,
                       style: TextStyle(
-                        fontSize: 17.0,
-                        fontWeight: FontWeight.w600,
-                      )),
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
                   SizedBox(height: 3.0),
                   Text(
                     cosplayName,
@@ -92,11 +102,30 @@ class UserSearchInfo extends StatelessWidget {
             SizedBox(width: 25.0),
             Container(
               width: 85,
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Icon(Icons.sentiment_very_satisfied, color: Colors.grey[50]),
-                  SizedBox(width: 5.0),
-                  Text(friendliness.toString()),
+                  Row(
+                    children: <Widget>[
+                      Icon(Icons.sentiment_very_satisfied,
+                          color: Colors.grey[50]),
+                      SizedBox(width: 5.0),
+                      Text(friendliness.toString()),
+                    ],
+                  ),
+                  SizedBox(height: 6),
+                  CircularBox(
+                    hasShadow: false,
+                    padding:
+                        EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
+                    child: Text(
+                      "\$42/hr",
+                      style: TextStyle(
+                          color: Colors.black87,
+                          fontSize: 11.0,
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -151,6 +180,7 @@ class PhotographerSearchInfo extends StatelessWidget {
             left: 16.0, right: 0.0, bottom: 8.0, top: 8.0),
         child: Row(
           children: <Widget>[
+            // Image container
             Padding(
               padding: const EdgeInsets.only(bottom: 0.0),
               child: ImageContainer(
@@ -161,22 +191,22 @@ class PhotographerSearchInfo extends StatelessWidget {
                   width: 60.0,
                   height: 60.0),
             ),
-//            CircleAvatar(
-//              minRadius: 30.0,
-//              backgroundColor: Colors.blueAccent,
-//              child: renderTextIfNoImage(),
-//              backgroundImage: backgroundImage,
-//            ),
             SizedBox(width: 20.0),
+            // Middle information
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(name,
-                      style: TextStyle(
-                        fontSize: 17.0,
-                        fontWeight: FontWeight.w600,
-                      )),
+                  CircularBox(
+                    padding: EdgeInsets.symmetric(vertical: 2, horizontal: 6.5),
+                    hasShadow: false,
+                    child: Text(name,
+                        style: TextStyle(
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87,
+                        )),
+                  ),
                   SizedBox(height: 3.0),
                   Text(
                     "${yearsExperience.toString()} year(s) and ${monthsExperience.toString()} month(s)",
@@ -197,14 +227,32 @@ class PhotographerSearchInfo extends StatelessWidget {
               ),
             ),
             SizedBox(width: 25.0),
+            // Friendliness
             Container(
               width: 85,
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Icon(Icons.sentiment_very_satisfied, color: Colors.grey[50]),
-                  SizedBox(width: 5.0),
-                  Text(
-                    friendliness.toString(),
+                  Row(
+                    children: <Widget>[
+                      Icon(Icons.sentiment_very_satisfied,
+                          color: Colors.grey[50]),
+                      SizedBox(width: 5.0),
+                      Text(friendliness.toString()),
+                    ],
+                  ),
+                  SizedBox(height: 6),
+                  CircularBox(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
+                    hasShadow: false,
+                    child: Text(
+                      "\$42/hr",
+                      style: TextStyle(
+                          color: Colors.black87,
+                          fontSize: 11.0,
+                          fontWeight: FontWeight.w700),
+                    ),
                   ),
                 ],
               ),
