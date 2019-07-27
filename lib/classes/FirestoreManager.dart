@@ -2,14 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
 
 class FirestoreManager {
+  static String username = "testUser1"; // Or phone number
+  static String keyDisplayName = "displayName";
+  static String keyRarityBorder = 'rarityBorder';
+  static String keyPhotos = 'photos';
+  static String keyFriendliness = 'friendliness';
+  static String keyFame = 'fame';
+
   // Gets information from database and returns that information ina LoggedInUser object
   static Future<LoggedInUser> getUserInformationFromFirestore() async {
-    String username = "testUser1"; // Or phone number
-    String keyDisplayName = "displayName";
-    String keyRarityBorder = 'rarityBorder';
-    String keyPhotos = 'photos';
-    String keyFriendliness = 'friendliness';
-    String keyFame = 'fame';
     List<dynamic> photosURL = List<dynamic>();
     DocumentSnapshot snapshot;
 
@@ -20,6 +21,9 @@ class FirestoreManager {
           await Firestore.instance.collection("users").document(username).get();
     } catch (e) {
       print(e);
+      // TODO Getting user infrmation fails
+      // If fails, we should log out user and kick user out back to login screen
+      // We will retry though and give the user information on screen that we're retrying...
     }
 
     photosURL = snapshot.data[keyPhotos];
@@ -32,5 +36,19 @@ class FirestoreManager {
 
     return LoggedInUser(
         photosURL, displayName, rarityBorder, friendliness, fame);
+  }
+
+  static Future<bool> update(Map<String, dynamic> newData) async {
+    print("Trying to update data");
+    try {
+      await Firestore.instance
+          .collection("users")
+          .document(username)
+          .updateData(newData);
+      return true;
+    } catch (e) {
+      print(e);
+    }
+    return false;
   }
 }
