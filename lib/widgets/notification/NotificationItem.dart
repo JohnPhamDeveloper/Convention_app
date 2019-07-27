@@ -20,12 +20,6 @@ class NotificationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Rebuilded child?");
-//    print(
-//        "How many times is this rebuilt??????-----------------------------------");
-//    print("timeSinceCreated[${widget.index}]: $widget.timeSinceCreated");
-//    print(
-//        "timeAgo: ${timeago.format(widget.timeSinceCreated, locale: 'en_short')}");
     return Padding(
       padding: const EdgeInsets.only(right: 20.0),
       child: Stack(

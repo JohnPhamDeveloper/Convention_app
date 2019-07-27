@@ -55,11 +55,11 @@ class _NotificationPageState extends State<NotificationPage>
 
   // DEBUG AND FOR LEARNING REFERENCE
   void getData() async {
-    print('signing in');
+    //print('signing in');
     FirebaseUser user = await _auth.signInWithEmailAndPassword(
         email: 'bob2@hotmail.com', password: '123456');
     if (user != null) {
-      print("Signed in...");
+      //print("Signed in...");
       final QuerySnapshot querySnapshot = await Firestore.instance
           .collection("users")
           .where("name", isEqualTo: "Bobby Jones")
@@ -72,20 +72,20 @@ class _NotificationPageState extends State<NotificationPage>
           .collection("messages")
           .getDocuments();
       final List<DocumentSnapshot> messageDocuments = messageSnapshot.documents;
-      print(messageDocuments[0].data['timeSent'].seconds);
+      //print(messageDocuments[0].data['timeSent'].seconds);
 
       // Get when the message was sent
       int seconds = messageDocuments[0].data['timeSent'].seconds;
-      print(messageDocuments[1].data);
+      //print(messageDocuments[1].data);
 
       // This gets the correct time
       var date = new DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
-      print(date);
-      print(timeago.format(date));
+//      print(date);
+//      print(timeago.format(date));
 //      //  print(documents.length);
 //      print(documents[0].data);
 //      print("Name: ${documents[0].data['name']}");
-      print("Registered: ${documents[0].data['registered']}");
+      // print("Registered: ${documents[0].data['registered']}");
 //      QuerySnapshot snapshot =
 //          await Firestore.instance.collection('users').getDocuments();
 //
@@ -152,7 +152,7 @@ class _NotificationPageState extends State<NotificationPage>
           builder: (context, snapshot) {
             // Nothing loaded yet
             if (!snapshot.hasData) return Text("Nothing loaded!");
-            print(snapshot.data.documents.length);
+            // print(snapshot.data.documents.length);
             // Go through every messages and store in notifications
             List<Widget> notifications = List<Widget>();
             for (DocumentSnapshot snapshot in snapshot.data.documents) {

@@ -126,7 +126,7 @@ class ProfileDetailsPage extends StatelessWidget {
                   icon: Icons.camera_alt,
                   iconColor: Colors.white,
                   onTap: () {
-                    print("TEST");
+                    // print("TEST");
                   }),
             ),
             SizedBox(height: 25.0),
@@ -166,7 +166,7 @@ class ProfileDetailsPage extends StatelessWidget {
                   icon: FontAwesomeIcons.cog,
                   iconColor: kButtonNormalIconColor,
                   onTap: () {
-                    print("TEST");
+                    //print("TEST");
                   }),
             ),
             SizedBox(height: 25.0),

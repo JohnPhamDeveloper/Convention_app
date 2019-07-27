@@ -132,6 +132,13 @@ class PhotographerSearchInfo extends StatelessWidget {
     }
   }
 
+  NetworkImage renderImage() {
+    if (backgroundImage == null)
+      return NetworkImage(
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/1024px-Icon-round-Question_mark.svg.png");
+    return backgroundImage;
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -144,12 +151,22 @@ class PhotographerSearchInfo extends StatelessWidget {
             left: 16.0, right: 0.0, bottom: 8.0, top: 8.0),
         child: Row(
           children: <Widget>[
-            CircleAvatar(
-              minRadius: 30.0,
-              backgroundColor: Colors.blueAccent,
-              child: renderTextIfNoImage(),
-              backgroundImage: backgroundImage,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 0.0),
+              child: ImageContainer(
+                  borderWidth: 2.5,
+                  rarityBorderColor: kRarityBorders[0],
+                  borderRadius: 500.0,
+                  image: renderImage(),
+                  width: 60.0,
+                  height: 60.0),
             ),
+//            CircleAvatar(
+//              minRadius: 30.0,
+//              backgroundColor: Colors.blueAccent,
+//              child: renderTextIfNoImage(),
+//              backgroundImage: backgroundImage,
+//            ),
             SizedBox(width: 20.0),
             Expanded(
               child: Column(
@@ -186,7 +203,9 @@ class PhotographerSearchInfo extends StatelessWidget {
                 children: <Widget>[
                   Icon(Icons.sentiment_very_satisfied, color: Colors.grey[50]),
                   SizedBox(width: 5.0),
-                  Text(friendliness.toString()),
+                  Text(
+                    friendliness.toString(),
+                  ),
                 ],
               ),
             ),

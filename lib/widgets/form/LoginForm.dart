@@ -9,6 +9,7 @@ import "package:cosplay_app/animations/AnimationBounceIn.dart";
 import 'package:cosplay_app/verification/verification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:cosplay_app/widgets/LoadingIndicator.dart';
 
 class LoginForm extends StatefulWidget {
   final Function onLoginPress;
@@ -25,7 +26,7 @@ class _LoginFormState extends State<LoginForm>
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _bRememberMe = true;
-  bool _showLoader = false;
+  bool _isLoading = false;
   FirebaseAuth _auth;
 
   @override
@@ -47,28 +48,9 @@ class _LoginFormState extends State<LoginForm>
     animationController.forward();
   }
 
-  Widget renderLoader(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-
-    if (_showLoader) {
-      return Container(
-        width: screenWidth,
-        height: screenHeight,
-        decoration: BoxDecoration(color: Colors.black54),
-        child: SpinKitRipple(
-          color: Colors.grey[50],
-          size: 200.0,
-        ),
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  void _setShowLoader(bool show) {
+  void _setIsLoading(bool loading) {
     setState(() {
-      _showLoader = show;
+      _isLoading = loading;
     });
   }
 
@@ -172,8 +154,8 @@ class _LoginFormState extends State<LoginForm>
                     onPress: () async {
                       widget.onLoginPress();
 
-                      print(_showLoader);
-                      _setShowLoader(true);
+                      // print(_isLoading);
+                      _setIsLoading(true);
 
                       Scaffold.of(context).showSnackBar(
                         SnackBar(
@@ -195,10 +177,10 @@ class _LoginFormState extends State<LoginForm>
                           password: _passwordController.text,
                         );
                         print("Sign in successful!");
-                        _setShowLoader(false);
+                        _setIsLoading(false);
                         Navigator.pushNamed(context, '/question');
                       } catch (e) {
-                        _setShowLoader(false);
+                        _setIsLoading(false);
                         print(e);
                       }
                     },
@@ -226,7 +208,7 @@ class _LoginFormState extends State<LoginForm>
             ),
           ),
         ),
-        renderLoader(context),
+        LoadingIndicator(),
       ],
     );
   }

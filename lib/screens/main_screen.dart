@@ -8,6 +8,7 @@ import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:preload_page_view/preload_page_view.dart';
+import 'package:cosplay_app/classes/LoggedInUser.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -15,6 +16,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  LoggedInUser loggedInUser;
   PreloadPageController preloadPageController;
   CircularBottomNavigationController _navigationController;
   bool playProfilePageCarousel = false;
@@ -50,6 +52,8 @@ class _MainScreenState extends State<MainScreen> {
         ProfilePage(),
       ],
     );
+
+    // Get data from database for logged in user
   }
 
   @override

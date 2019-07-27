@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cosplay_app/widgets/ImageContainer.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:cosplay_app/widgets/notification/NotificationDot.dart';
+import 'package:cosplay_app/widgets/LoadingIndicator.dart';
+import 'package:cosplay_app/classes/FirestoreManager.dart';
+import 'package:cosplay_app/classes/LoggedInUser.dart';
 
 class ProfileStartPage extends StatefulWidget {
   @override
@@ -11,54 +12,59 @@ class ProfileStartPage extends StatefulWidget {
 }
 
 class _ProfileStartPageState extends State<ProfileStartPage> {
-  int _current;
-  bool profileCollapsed =
-      false; // This collapses when the down arrow is clicked
-
-  final List<Widget> userImages = [
-    ImageContainer(
-      image: NetworkImage(
-          "https://c.pxhere.com/photos/0c/ea/china_girls_game_anime_cute_girl_japanese_costume-187567.jpg!d"),
-      height: double.infinity,
-      width: double.infinity,
-    ),
-    ImageContainer(
-        image: NetworkImage(
-            "https://c.pxhere.com/photos/eb/33/china_girls_game_anime_cute_girl_japanese_costume-187564.jpg!d"),
-        height: double.infinity,
-        width: double.infinity),
-  ];
-
-  double calculateCarouselSliderHeight(double screenHeight) {
-    if (profileCollapsed) {
-      return screenHeight / 2;
-    } else {
-      return screenHeight - kBottomNavigationBarHeight;
-    }
-  }
+  bool isLoading; // Still loading information from database
+  LoggedInUser loggedInUser;
+  List<ImageContainer>
+      userImageWidgets; // Widget that builds itself based on the photosURL information
 
   @override
-  Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
+  void initState() {
+    super.initState();
+    userImageWidgets = List<ImageContainer>();
+    isLoading = true;
+    getUserInformationFromFirestore();
+  }
 
-    return Stack(
-      children: <Widget>[
-        // Carousel
-        Swiper(
-          itemBuilder: (BuildContext context, int index) {
-            return userImages[index];
-          },
-          itemCount: userImages.length,
-          pagination: SwiperPagination(
-              alignment: Alignment.topCenter, builder: SwiperPagination.dots),
-          control: SwiperControl(
-            color: Colors.white,
+  void getUserInformationFromFirestore() async {
+    loggedInUser = await FirestoreManager.getUserInformationFromFirestore();
+
+    // Create a widget to store the image. We use the user's image URLs.
+    for (String url in loggedInUser.photosURL) {
+      userImageWidgets.add(createImageContainerWidget(url));
+    }
+
+    //  Don't display the loading spinner anymore, since we finished loading from database
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  ImageContainer createImageContainerWidget(String url) {
+    return ImageContainer(
+      image: NetworkImage(url),
+      height: double.infinity,
+      width: double.infinity,
+    );
+  }
+
+  Widget conditionalRendering() {
+    if (!isLoading) {
+      return Stack(
+        children: <Widget>[
+          // Carousel
+          Swiper(
+            itemBuilder: (BuildContext context, int index) {
+              return userImageWidgets[index];
+            },
+            itemCount: userImageWidgets.length,
+            pagination: SwiperPagination(
+                alignment: Alignment.topCenter, builder: SwiperPagination.dots),
+            control: SwiperControl(
+              color: Colors.white,
+            ),
           ),
-        ),
-        // User information bottom left
-        Opacity(
-          opacity: profileCollapsed ? 0 : 1,
-          child: Padding(
+          // User information bottom left
+          Padding(
             padding: const EdgeInsets.only(left: 20.0, bottom: 80.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -67,7 +73,7 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
                 IconText(
                   icon: Icons.face,
                   text: Text(
-                    "Shikano Mel",
+                    loggedInUser.displayName,
                     style: kProfileOverlayNameStyle,
                   ),
                 ),
@@ -75,7 +81,7 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
                 IconText(
                   icon: Icons.sentiment_very_satisfied,
                   text: Text(
-                    "1352",
+                    loggedInUser.friendliness.toString(),
                     style: kProfileOverlayTextStyle,
                   ),
                 ),
@@ -83,23 +89,30 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
                 IconText(
                   icon: Icons.star,
                   text: Text(
-                    "5242",
+                    loggedInUser.fame.toString(),
                     style: kProfileOverlayTextStyle,
                   ),
                 ),
               ],
             ),
           ),
-        ),
-        Align(
-          alignment: Alignment.topRight,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 20.0, top: 20.0),
-            child: NotificationDot(innerColor: Colors.pinkAccent),
+          Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 20.0, top: 20.0),
+              child: NotificationDot(innerColor: Colors.pinkAccent),
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    } else {
+      return LoadingIndicator();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return conditionalRendering();
   }
 }
 
