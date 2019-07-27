@@ -7,174 +7,185 @@ import 'package:cosplay_app/widgets/RoundButtonTextIcon.dart';
 import 'package:cosplay_app/widgets/medals/medals.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cosplay_app/constants/constants.dart';
+import 'package:cosplay_app/classes/LoggedInUser.dart';
+import 'package:provider/provider.dart';
+import 'package:cosplay_app/classes/FirestoreManager.dart';
 
 class ProfileDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        Column(
-          children: <Widget>[
-            SizedBox(height: 40.0),
-            // user image
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: ImageContainer(
-                  borderWidth: 3.5,
-                  rarityBorderColor: kRarityBorders[0],
-                  borderRadius: 500.0,
-                  image: NetworkImage(
-                      "https://c.pxhere.com/photos/0c/ea/china_girls_game_anime_cute_girl_japanese_costume-187567.jpg!d"),
-                  width: 160.0,
-                  height: 160.0),
-            ),
-            SizedBox(height: 20.0),
-            // Name
-            Text(
-              "Shikano Mel",
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0),
-            ),
-            SizedBox(height: 15.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                RoundButton(
-                    size: 45.0,
-                    icon: FontAwesomeIcons.instagram,
-                    iconSize: 25.0,
-                    padding: EdgeInsets.only(
-                        left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
-                    onTap: () {}),
-                SizedBox(width: 20.0),
-                RoundButton(
-                    size: 45.0,
-                    icon: FontAwesomeIcons.twitter,
-                    iconSize: 25.0,
-                    padding: EdgeInsets.only(
-                        left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
-                    onTap: () {}),
-              ],
-            ),
-            SizedBox(height: 30.0),
-            // Friendliness
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                TitleData(title: "Friendliness", number: 1352, width: 150.0),
-                SizedBox(width: 30),
-                TitleData(title: "Fame", number: 5242, width: 150.0)
-              ],
-            ),
-            SizedBox(height: 30.0),
-            // Medals
-            CircularBox(
-              child: Column(
+    return Consumer<LoggedInUser>(builder: (context, loggedInUser, child) {
+      return ListView(
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              SizedBox(height: 40.0),
+              // user image
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: ImageContainer(
+                    borderWidth: 3.5,
+                    rarityBorderColor: kRarityBorders[0],
+                    borderRadius: 500.0,
+                    image: NetworkImage(
+                        loggedInUser.getHashMap[FirestoreManager.keyPhotos][0]),
+                    width: 160.0,
+                    height: 160.0),
+              ),
+              SizedBox(height: 20.0),
+              // Name
+              Text(
+                loggedInUser.getHashMap[FirestoreManager.keyDisplayName],
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0),
+              ),
+              SizedBox(height: 15.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                    "Medals",
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 15.0),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Wrap(
-                      runAlignment: WrapAlignment.spaceEvenly,
-                      crossAxisAlignment: WrapCrossAlignment.start,
-                      runSpacing: 15.0,
-                      spacing: 15.0,
-                      children: <Widget>[
-                        TrustMedal(),
-                        MetDeveloperMedal(),
-                        PurpleHeartMedal(),
-                        VerifiedPhoneMedal(),
-                        HundredSelfieMedal(),
-                        ThreeHundredSelfieMedal(),
-                        FriendlyHundredMedal(),
-                        FriendlyTwoHundredMedal(),
-                        FriendlyFiveHundredMedal(),
-                        FiftySelfieWithOnePersonMedal(),
-                      ],
-                    ),
-                  ),
+                  RoundButton(
+                      size: 45.0,
+                      icon: FontAwesomeIcons.instagram,
+                      iconSize: 25.0,
+                      padding: EdgeInsets.only(
+                          left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
+                      onTap: () {}),
+                  SizedBox(width: 20.0),
+                  RoundButton(
+                      size: 45.0,
+                      icon: FontAwesomeIcons.twitter,
+                      iconSize: 25.0,
+                      padding: EdgeInsets.only(
+                          left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
+                      onTap: () {}),
                 ],
               ),
-            ),
-            SizedBox(height: 40.0),
-            // Vote friendly button
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
-              child: RoundButtonTextIcon(
-                  text: Text("Vote Friendly", style: kButtonActionTextStyle),
-                  fillColor: Colors.pinkAccent,
-                  icon: Icons.favorite,
-                  iconColor: Colors.white,
-                  onTap: () {}),
-            ),
-            SizedBox(height: 25.0),
-            // Selfie request button
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
-              child: RoundButtonTextIcon(
-                  text: Text("Selfie Request", style: kButtonActionTextStyle),
-                  fillColor: Colors.pinkAccent,
-                  icon: Icons.camera_alt,
-                  iconColor: Colors.white,
-                  onTap: () {
-                    // print("TEST");
-                  }),
-            ),
-            SizedBox(height: 25.0),
-            // Photography request button
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
-              child: RoundButtonTextIcon(
-                  text: Text("Photography Request",
-                      style: kButtonActionTextStyle),
-                  fillColor: Colors.pinkAccent,
-                  icon: Icons.linked_camera,
-                  iconColor: Colors.white,
-                  onTap: () async {
-                    print("Logging Out");
-                    FirebaseUser user =
-                        await FirebaseAuth.instance.currentUser();
-                    print(user.email);
-                    print(user.isEmailVerified);
-                    print(user.displayName);
-                    try {
-                      FirebaseAuth.instance.signOut();
-                      Navigator.pushNamed(context, "/");
-                    } catch (e) {
-                      print(e);
-                    }
-                  }),
-            ),
-            SizedBox(height: 25.0),
-            // Options
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
-              child: RoundButtonTextIcon(
-                  text: Text("Options", style: kButtonNormalTextStyle),
-                  fillColor: kButtonNormalFillColor,
-                  icon: FontAwesomeIcons.cog,
-                  iconColor: kButtonNormalIconColor,
-                  onTap: () {
-                    //print("TEST");
-                  }),
-            ),
-            SizedBox(height: 25.0),
-            // Logout button
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
-              child: RoundButtonTextIcon(
+              SizedBox(height: 30.0),
+              // Friendliness
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  TitleData(
+                      title: "Friendliness",
+                      number: loggedInUser
+                          .getHashMap[FirestoreManager.keyFriendliness],
+                      width: 150.0),
+                  SizedBox(width: 30),
+                  TitleData(
+                      title: "Fame",
+                      number: loggedInUser.getHashMap[FirestoreManager.keyFame],
+                      width: 150.0)
+                ],
+              ),
+              SizedBox(height: 30.0),
+              // Medals
+              CircularBox(
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      "Medals",
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 15.0),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Wrap(
+                        runAlignment: WrapAlignment.spaceEvenly,
+                        crossAxisAlignment: WrapCrossAlignment.start,
+                        runSpacing: 15.0,
+                        spacing: 15.0,
+                        children: <Widget>[
+                          TrustMedal(),
+                          MetDeveloperMedal(),
+                          PurpleHeartMedal(),
+                          VerifiedPhoneMedal(),
+                          HundredSelfieMedal(),
+                          ThreeHundredSelfieMedal(),
+                          FriendlyHundredMedal(),
+                          FriendlyTwoHundredMedal(),
+                          FriendlyFiveHundredMedal(),
+                          FiftySelfieWithOnePersonMedal(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 40.0),
+              // Vote friendly button
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: kButtonPaddingLeft, right: kButtonPaddingRight),
+                child: RoundButtonTextIcon(
+                    text: Text("Vote Friendly", style: kButtonActionTextStyle),
+                    fillColor: Colors.pinkAccent,
+                    icon: Icons.favorite,
+                    iconColor: Colors.white,
+                    onTap: () {}),
+              ),
+              SizedBox(height: 25.0),
+              // Selfie request button
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: kButtonPaddingLeft, right: kButtonPaddingRight),
+                child: RoundButtonTextIcon(
+                    text: Text("Selfie Request", style: kButtonActionTextStyle),
+                    fillColor: Colors.pinkAccent,
+                    icon: Icons.camera_alt,
+                    iconColor: Colors.white,
+                    onTap: () {
+                      // print("TEST");
+                    }),
+              ),
+              SizedBox(height: 25.0),
+              // Photography request button
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: kButtonPaddingLeft, right: kButtonPaddingRight),
+                child: RoundButtonTextIcon(
+                    text: Text("Photography Request",
+                        style: kButtonActionTextStyle),
+                    fillColor: Colors.pinkAccent,
+                    icon: Icons.linked_camera,
+                    iconColor: Colors.white,
+                    onTap: () async {
+                      print("Logging Out");
+                      FirebaseUser user =
+                          await FirebaseAuth.instance.currentUser();
+                      print(user.email);
+                      print(user.isEmailVerified);
+                      print(user.displayName);
+                      try {
+                        FirebaseAuth.instance.signOut();
+                        Navigator.pushNamed(context, "/");
+                      } catch (e) {
+                        print(e);
+                      }
+                    }),
+              ),
+              SizedBox(height: 25.0),
+              // Options
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: kButtonPaddingLeft, right: kButtonPaddingRight),
+                child: RoundButtonTextIcon(
+                    text: Text("Options", style: kButtonNormalTextStyle),
+                    fillColor: kButtonNormalFillColor,
+                    icon: FontAwesomeIcons.cog,
+                    iconColor: kButtonNormalIconColor,
+                    onTap: () {
+                      //print("TEST");
+                    }),
+              ),
+              SizedBox(height: 25.0),
+              // Logout button
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: kButtonPaddingLeft, right: kButtonPaddingRight),
+                child: RoundButtonTextIcon(
                   text: Text("Log Out", style: kButtonNormalTextStyle),
                   fillColor: kButtonNormalFillColor,
                   icon: Icons.directions_run,
@@ -196,13 +207,15 @@ class ProfileDetailsPage extends StatelessWidget {
                     } catch (e) {
                       print(e);
                     }
-                  }),
-            ),
-            SizedBox(height: 250),
-          ],
-        ),
-      ],
-    );
+                  },
+                ),
+              ),
+              SizedBox(height: 250),
+            ],
+          ),
+        ],
+      );
+    });
   }
 }
 
