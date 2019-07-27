@@ -15,9 +15,16 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
       false; // This collapses when the down arrow is clicked
 
   final List<Widget> userImages = [
-    ImageContainer(path: "assets/1.jpg", size: double.infinity),
-    ImageContainer(path: "assets/2.jpg", size: double.infinity),
-    ImageContainer(path: "assets/3.jpg", size: double.infinity),
+    ImageContainer(
+        image: NetworkImage(
+            "https://c.pxhere.com/photos/0c/ea/china_girls_game_anime_cute_girl_japanese_costume-187567.jpg!d"),
+        height: double.infinity,
+        width: double.infinity),
+    ImageContainer(
+        image: NetworkImage(
+            "https://c.pxhere.com/photos/eb/33/china_girls_game_anime_cute_girl_japanese_costume-187564.jpg!d"),
+        height: double.infinity,
+        width: double.infinity),
   ];
 
   double calculateCarouselSliderHeight(double screenHeight) {
@@ -56,7 +63,7 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
                 IconText(
                   icon: Icons.face,
                   text: Text(
-                    "Jenny Smith",
+                    "Shikano Mel",
                     style: kProfileOverlayNameStyle,
                   ),
                 ),

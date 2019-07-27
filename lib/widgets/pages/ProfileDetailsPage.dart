@@ -17,11 +17,15 @@ class ProfileDetailsPage extends StatelessWidget {
             SizedBox(height: 40.0),
             // user image
             ImageContainer(
-                borderRadius: 500.0, path: "assets/1.jpg", size: 160.0),
+                borderRadius: 500.0,
+                image: NetworkImage(
+                    "https://c.pxhere.com/photos/0c/ea/china_girls_game_anime_cute_girl_japanese_costume-187567.jpg!d"),
+                width: 160.0,
+                height: 160.0),
             SizedBox(height: 20.0),
             // Name
             Text(
-              "Jason Chemry",
+              "Shikano Mel",
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0),
             ),
             SizedBox(height: 15.0),
@@ -50,9 +54,9 @@ class ProfileDetailsPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                TitleData(title: "Friendliness", number: 1252, width: 150.0),
+                TitleData(title: "Friendliness", number: 1352, width: 150.0),
                 SizedBox(width: 30),
-                TitleData(title: "Fame", number: 32222, width: 150.0)
+                TitleData(title: "Fame", number: 5242, width: 150.0)
               ],
             ),
             SizedBox(height: 30.0),

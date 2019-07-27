@@ -223,47 +223,48 @@ class PhotographerSearchSection extends StatelessWidget {
           friendliness: 45,
         ),
         PhotographerSearchInfo(
-          name: "Ettai Gonchat",
+          name: "Bob Smith",
           yearsExperience: 4,
           monthsExperience: 6,
           cost: "\$92.12 / session",
           backgroundImage: NetworkImage(
               "https://c.pxhere.com/photos/9d/fd/photographer_camera_photo_photos_foto_lens_take_a_photograph_electronic_equipment-942701.jpg!d"),
-          friendliness: 1532,
+          friendliness: 32,
         ),
         PhotographerSearchInfo(
-          name: "Ettai Gonchat",
-          yearsExperience: 12,
-          monthsExperience: 2,
+          name: ""
+              "Nunjo Saert",
+          yearsExperience: 8,
+          monthsExperience: 1,
           cost: "Not shooting",
           backgroundImage: NetworkImage(
-              "https://c.pxhere.com/images/29/3a/ab7eb8106f292a24d2a5d818c6a1-1418380.jpg!d"),
-          friendliness: 1532,
+              "https://c.pxhere.com/photos/b3/2d/camera_digital_equipment_female_girl_isolated_lens_people-1260617.jpg!d"),
+          friendliness: 74,
         ),
         PhotographerSearchInfo(
-          name: "Ettai Gonchat",
-          yearsExperience: 12,
-          monthsExperience: 2,
+          name: "Teer San",
+          yearsExperience: 3,
+          monthsExperience: 3,
           backgroundImage: NetworkImage(
-              "https://c.pxhere.com/images/29/3a/ab7eb8106f292a24d2a5d818c6a1-1418380.jpg!d"),
+              "https://c.pxhere.com/photos/08/97/photographer_road_camera_girl_person-180399.jpg!d"),
           friendliness: 1532,
         ),
         PhotographerSearchInfo(
-          name: "Ettai Gonchat",
-          yearsExperience: 12,
-          monthsExperience: 2,
+          name: "Loon Poi",
+          yearsExperience: 8,
+          monthsExperience: 4,
           cost: "\$15.00 / hr",
           backgroundImage: NetworkImage(
-              "https://c.pxhere.com/images/29/3a/ab7eb8106f292a24d2a5d818c6a1-1418380.jpg!d"),
+              "https://c.pxhere.com/photos/62/c1/camera_photographer_person_photography_urban-133163.jpg!d"),
           friendliness: 1532,
         ),
         PhotographerSearchInfo(
-          name: "Ettai Gonchat",
-          yearsExperience: 12,
-          monthsExperience: 2,
+          name: "Erri Wan",
+          yearsExperience: 1,
+          monthsExperience: 3,
           backgroundImage: NetworkImage(
-              "https://c.pxhere.com/images/29/3a/ab7eb8106f292a24d2a5d818c6a1-1418380.jpg!d"),
-          friendliness: 1532,
+              "https://c.pxhere.com/photos/64/b4/photographer_photography_digital_camera_dslr_camera_digital_single_lens_reflex_camera_camera-964918.jpg!d"),
+          friendliness: 99,
         ),
         PhotographerSearchInfo(
           name: "Ettai Gonchat",
