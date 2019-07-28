@@ -75,7 +75,9 @@ class _NotificationPageState extends State<NotificationPage>
       //print(messageDocuments[0].data['timeSent'].seconds);
 
       // Get when the message was sent
-      int seconds = messageDocuments[0].data['timeSent'].seconds;
+      // TODO Change back
+      //int seconds = messageDocuments[0].data['timeSent'].seconds;
+      int seconds = 1;
       //print(messageDocuments[1].data);
 
       // This gets the correct time
