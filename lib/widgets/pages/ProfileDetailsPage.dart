@@ -12,6 +12,14 @@ import 'package:provider/provider.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 
 class ProfileDetailsPage extends StatelessWidget {
+  ImageProvider renderUserImage(loggedInUser) {
+    List<dynamic> imageUrls =
+        loggedInUser.getHashMap[FirestoreManager.keyPhotos];
+    if (imageUrls.isEmpty) return AssetImage("assets/noImage.png");
+
+    return NetworkImage(imageUrls[0]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<LoggedInUser>(builder: (context, loggedInUser, child) {
@@ -27,8 +35,7 @@ class ProfileDetailsPage extends StatelessWidget {
                     borderWidth: 3.5,
                     rarityBorderColor: kRarityBorders[0],
                     borderRadius: 500.0,
-                    image: NetworkImage(
-                        loggedInUser.getHashMap[FirestoreManager.keyPhotos][0]),
+                    image: renderUserImage(loggedInUser),
                     width: 160.0,
                     height: 160.0),
               ),

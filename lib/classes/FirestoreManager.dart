@@ -12,6 +12,11 @@ class FirestoreManager {
   static String keyIsCosplayer = 'isCosplayer';
   static String keyIsPhotographer = 'isPhotographer';
   static String keyRealName = 'realName';
+  static String keyDateRegistered = 'dateRegistered';
+  static String keyCosplayName = 'cosplayName';
+  static String keySeriesName = 'seriesName';
+  static String keyCosplayerCost = 'cosplayerCost';
+  static String keyPhotographerCost = 'photographerCost';
 
   // All of database keys are stored in here (not sure if this is used)
   static HashMap<String, String> keys = HashMap<String, String>();
@@ -28,11 +33,6 @@ class FirestoreManager {
         print("---------------Database Updated----------------------");
         print("Updating local logged in user information");
         doc.data.forEach((key, value) {
-          // Iterate through all keys in the database
-          // Store key in FirestoreManager fireStoreManagerKeys[key] = [key]
-          // Store user[key] = [value];
-          // Notify listeners
-          // Store keys in here incase we need it locally
           print("Updating $key...");
           FirestoreManager.keys[key] = key;
           loggedInUser.getHashMap[key] = value;

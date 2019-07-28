@@ -62,6 +62,26 @@ class _MainScreenState extends State<MainScreen> {
     // Get data from database for logged in user when it changes
     // Set loading is called if data is successfuly updated into loggedInUser
     FirestoreManager.streamUserData(loggedInUser, setLoading);
+
+    createMockUser();
+  }
+
+  // TODO DELEETE THIS MOCK USER
+  void createMockUser() async {
+    await Firestore.instance.collection("users").document("testUser2").setData({
+      FirestoreManager.keyFame: 45,
+      FirestoreManager.keyFriendliness: 512,
+      FirestoreManager.keyDisplayName: "Netarno",
+      FirestoreManager.keyPhotos: [
+        "https://c.pxhere.com/photos/bb/92/boy_portrait_people_man_anime_face_35mm_comic-185893.jpg!d"
+      ],
+      FirestoreManager.keyIsCosplayer: true,
+      FirestoreManager.keyIsPhotographer: true,
+      FirestoreManager.keyRarityBorder: 0,
+      FirestoreManager.keyRealName: "Bobby Jones",
+      FirestoreManager.keyDateRegistered: DateTime.now(),
+    });
+    print("Finished creating mock user");
   }
 
   void setLoading() {

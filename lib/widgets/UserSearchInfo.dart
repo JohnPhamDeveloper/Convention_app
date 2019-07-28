@@ -28,10 +28,8 @@ class UserSearchInfo extends StatelessWidget {
     }
   }
 
-  NetworkImage renderImage() {
-    if (backgroundImage == null)
-      return NetworkImage(
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/1024px-Icon-round-Question_mark.svg.png");
+  ImageProvider renderImage() {
+    if (backgroundImage == null) return AssetImage("assets/noImage.png");
     return backgroundImage;
   }
 
@@ -114,17 +112,12 @@ class UserSearchInfo extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 6),
-                  CircularBox(
-                    hasShadow: false,
-                    padding:
-                        EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
-                    child: Text(
-                      "\$42/hr",
-                      style: TextStyle(
-                          color: Colors.black87,
-                          fontSize: 11.0,
-                          fontWeight: FontWeight.w700),
-                    ),
+                  Text(
+                    "\$42/hr",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 11.0,
+                        fontWeight: FontWeight.w700),
                   ),
                 ],
               ),
