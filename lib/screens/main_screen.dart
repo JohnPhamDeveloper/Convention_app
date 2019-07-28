@@ -227,7 +227,7 @@ class _MainScreenState extends State<MainScreen> {
 //  }
 
   void setLoading() {
-    print("how many times is this called?");
+    //print("how many times is this called?");
     loggedInUser.updateWidgetsListeningToThis();
     setState(() {
       loadedUserData = true; // Stop showing spinner

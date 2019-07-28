@@ -5,6 +5,7 @@ import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 
 // COSPLAYER
 class UserSearchInfo extends StatelessWidget {
+  final String imageHeroName;
   final String backgroundImage;
   final String name;
   final String title;
@@ -18,6 +19,7 @@ class UserSearchInfo extends StatelessWidget {
   UserSearchInfo({
     this.backgroundImage =
         "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/300px-Icon-round-Question_mark.svg.png",
+    this.imageHeroName = "",
     @required this.onTap,
     this.name,
     this.subtitle,
@@ -44,6 +46,7 @@ class UserSearchInfo extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 0.0),
               child: ImageContainer(
+                  heroName: imageHeroName,
                   enableTopLeftDot: true,
                   topLeftDotBottom: 2,
                   topLeftDotRight: 2,

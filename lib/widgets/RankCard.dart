@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:cosplay_app/widgets/IconText.dart';
 import 'package:cosplay_app/widgets/ImageContainer.dart';
 import 'package:cosplay_app/widgets/notification/NotificationDot.dart';
 import 'package:cosplay_app/constants/constants.dart';
-import 'package:cosplay_app/widgets/IconText.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cosplay_app/classes/HeroCreator.dart';
+import 'package:cosplay_app/widgets/HeroProfileDetails.dart';
+import 'package:cosplay_app/widgets/HeroProfileStart.dart';
 
 class RankCard extends StatelessWidget {
+  final DocumentSnapshot documentSnapshot;
   final String heroName;
   final String image;
   final String name;
@@ -13,10 +18,15 @@ class RankCard extends StatelessWidget {
   final IconData icon;
   final bool dotIsOn;
   final Key key;
-  final Function onTap;
+  final String imageHeroName;
+
+  HeroProfileDetails _details;
+  HeroProfileStart _start;
 
   RankCard({
     this.heroName = "",
+    this.imageHeroName = "",
+    @required this.documentSnapshot,
     @required this.image,
     @required this.name,
     @required this.icon,
@@ -24,8 +34,9 @@ class RankCard extends StatelessWidget {
     @required this.rarityBorder,
     @required this.dotIsOn,
     @required this.key,
-    @required this.onTap,
-  }) : super(key: key);
+  }) : super(key: key) {
+    createClickedProfile();
+  }
 
   Widget renderHeroDot() {
     if (heroName.isNotEmpty) {
@@ -46,6 +57,13 @@ class RankCard extends StatelessWidget {
     );
   }
 
+  // Precreate profiles for no lag when clicking on a ranked user
+  void createClickedProfile() {
+    _start = HeroCreator.createHeroProfileStart(
+        heroName, imageHeroName, documentSnapshot);
+    _details = HeroCreator.createHeroProfileDetails(documentSnapshot);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -54,7 +72,8 @@ class RankCard extends StatelessWidget {
         splashColor: Colors.transparent,
         hoverColor: Colors.transparent,
         onTap: () {
-          onTap();
+          ///onTap();
+          HeroCreator.pushProfileIntoView2(_start, _details, context);
         },
         child: Stack(
           children: <Widget>[
@@ -73,6 +92,7 @@ class RankCard extends StatelessWidget {
                     )
                   ]),
               child: ImageContainer(
+                  heroName: imageHeroName,
                   borderWidth: 3.5,
                   borderRadius: 25.0,
                   enableShadows: true,

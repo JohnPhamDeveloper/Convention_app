@@ -122,6 +122,9 @@ class _CosplayerSearchSectionState extends State<CosplayerSearchSection> {
           docSnapshot.data.forEach((key, value) {
             user.getHashMap[key] = value;
           });
+          String key = UniqueKey().toString();
+          String dotHeroName = key + 'dot';
+          String imageHeroName = key + "searchHeroImage";
 
           // store that users information into the widget
           UserSearchInfo widget = UserSearchInfo(
@@ -134,7 +137,7 @@ class _CosplayerSearchSectionState extends State<CosplayerSearchSection> {
             rarity: user.getHashMap[FirestoreManager.keyRarityBorder],
             onTap: () {
               HeroCreator.pushProfileIntoView(
-                  UniqueKey(), docSnapshot, context);
+                  dotHeroName, imageHeroName, docSnapshot, context);
             },
             key: UniqueKey(),
           );
@@ -145,6 +148,8 @@ class _CosplayerSearchSectionState extends State<CosplayerSearchSection> {
           docSnapshot.data.forEach((key, value) {
             user.getHashMap[key] = value;
           });
+          String dotHeroName = "";
+          String imageHeroName = UniqueKey().toString();
 
           UserSearchInfo widget = UserSearchInfo(
             backgroundImage: user.getHashMap[FirestoreManager.keyPhotos][0],
@@ -156,7 +161,7 @@ class _CosplayerSearchSectionState extends State<CosplayerSearchSection> {
             rarity: user.getHashMap[FirestoreManager.keyRarityBorder],
             onTap: () {
               HeroCreator.pushProfileIntoView(
-                  UniqueKey(), docSnapshot, context);
+                  dotHeroName, imageHeroName, docSnapshot, context);
             },
             key: UniqueKey(),
           );

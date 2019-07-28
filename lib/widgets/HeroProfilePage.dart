@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:cosplay_app/widgets/pages/ProfileStartPage.dart';
-import 'package:cosplay_app/widgets/pages/ProfileDetailsPage.dart';
 import 'package:preload_page_view/preload_page_view.dart';
 import 'package:cosplay_app/widgets/RoundButton.dart';
 
+/*
+* The controller for the Hero details and Hero start page when you click
+* on a person in ranked page or search page
+* Note: This is different from the User profile page
+ */
 class HeroProfilePage extends StatefulWidget {
-  List<Widget> pages;
+  final List<Widget> pages;
 
   HeroProfilePage({@required this.pages});
   @override
@@ -49,6 +52,11 @@ class _HeroProfilePageState extends State<HeroProfilePage>
   void moveToFirstPage() {
     pageController.animateToPage(0,
         duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
   }
 
   @override

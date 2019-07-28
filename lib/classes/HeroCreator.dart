@@ -11,9 +11,10 @@ class HeroCreator {
   // Creates the two pages
   // Start is the first page and Details is the second page
   static HeroProfileStart createHeroProfileStart(
-      Key key, DocumentSnapshot data) {
+      String dotHeroName, String imageHeroName, DocumentSnapshot data) {
     return HeroProfileStart(
-      heroName: key.toString(),
+      heroName: dotHeroName,
+      imageHeroName: imageHeroName,
       userImages: data[FirestoreManager.keyPhotos],
       name: data[FirestoreManager.keyDisplayName],
       friendliness: data[FirestoreManager.keyFriendliness],
@@ -45,14 +46,25 @@ class HeroCreator {
   }
 
   // Construct HeroProfile widget from the information on the clicked avatar
-  static pushProfileIntoView(
-      Key key, DocumentSnapshot data, BuildContext context) {
+  static pushProfileIntoView(String dotHeroName, String imageHeroName,
+      DocumentSnapshot data, BuildContext context) {
     HeroProfileStart heroProfileStart =
-        HeroCreator.createHeroProfileStart(key, data);
+        HeroCreator.createHeroProfileStart(dotHeroName, imageHeroName, data);
     HeroProfileDetails heroProfileDetails =
         HeroCreator.createHeroProfileDetails(data);
     Widget clickedProfile = HeroCreator.wrapInScaffold(
         [heroProfileStart, heroProfileDetails], context);
+
+    // Push that profile into view
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => clickedProfile));
+  }
+
+  // Construct HeroProfile widget from the information on the clicked avatar
+  static pushProfileIntoView2(HeroProfileStart start,
+      HeroProfileDetails details, BuildContext context) {
+    Widget clickedProfile =
+        HeroCreator.wrapInScaffold([start, details], context);
 
     // Push that profile into view
     Navigator.push(

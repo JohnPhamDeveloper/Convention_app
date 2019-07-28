@@ -4,9 +4,6 @@ import 'package:cosplay_app/constants/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/widgets/RankCard.dart';
-import 'package:cosplay_app/widgets/HeroProfileStart.dart';
-import 'package:cosplay_app/widgets/HeroProfileDetails.dart';
-import 'package:cosplay_app/widgets/HeroProfilePage.dart';
 import 'package:cosplay_app/classes/HeroCreator.dart';
 
 class RankingListPage extends StatefulWidget {
@@ -42,10 +39,14 @@ class _RankingListPageState extends State<RankingListPage>
           String url =
               data[FirestoreManager.keyPhotos][0]; // Network URL to image
           Key key = UniqueKey(); // Used for the dot hero animation
+          String dotHeroName = key.toString() + "rankedDot";
+          String imageHeroName = key.toString() + "rankedToHero";
 
           // Create the card
           RankCard card = RankCard(
-            heroName: key.toString(),
+            documentSnapshot: data,
+            heroName: dotHeroName,
+            imageHeroName: imageHeroName,
             image: url,
             name: data[FirestoreManager.keyDisplayName],
             icon: icon,
@@ -53,10 +54,8 @@ class _RankingListPageState extends State<RankingListPage>
             value: data[orderBy],
             dotIsOn: true,
             key: UniqueKey(),
-            onTap: () {
-              HeroCreator.pushProfileIntoView(key, data, context);
-            },
           );
+
           // Trigger rebuild when adding each card (bad?)
           setState(() {
             cards.add(card);

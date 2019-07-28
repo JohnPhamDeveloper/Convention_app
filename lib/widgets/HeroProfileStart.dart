@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:cosplay_app/widgets/notification/NotificationDot.dart';
 import 'package:cosplay_app/widgets/ImageContainer.dart';
+import 'package:cosplay_app/widgets/IconText.dart';
 
 class HeroProfileStart extends StatelessWidget {
   final String heroName;
+  final String imageHeroName;
   final List<dynamic> userImages;
   final List<ImageContainer> userImagesContainer = List<ImageContainer>();
   final String name;
@@ -15,18 +17,28 @@ class HeroProfileStart extends StatelessWidget {
   HeroProfileStart(
       {@required this.userImages,
       @required this.name,
+      this.imageHeroName = "",
       @required this.friendliness,
       this.heroName = "",
       this.bottomLeftItemPadding =
           const EdgeInsets.only(left: 20.0, bottom: 80.0),
       @required this.fame}) {
-    for (String url in userImages) {
-      userImagesContainer.add(createImageContainerWidgetFromURL(url));
+    // Add all images to container for the carousel
+    // Only give hero name to the first image
+    print(imageHeroName);
+    userImagesContainer
+        .add(createImageContainerWidgetFromURL(userImages[0], imageHeroName));
+
+    for (int i = 1; i < userImagesContainer.length; i++) {
+      userImagesContainer
+          .add(createImageContainerWidgetFromURL(userImages[i], ''));
     }
   }
 
-  ImageContainer createImageContainerWidgetFromURL(String url) {
+  ImageContainer createImageContainerWidgetFromURL(
+      String url, String heroName) {
     return ImageContainer(
+      heroName: heroName,
       image: url,
       height: double.infinity,
       width: double.infinity,
@@ -53,7 +65,8 @@ class HeroProfileStart extends StatelessWidget {
           itemBuilder: (BuildContext context, int index) {
             return userImagesContainer[index];
           },
-          itemCount: userImages.length,
+          loop: false,
+          itemCount: userImagesContainer.length,
           pagination: SwiperPagination(
               alignment: Alignment.topCenter, builder: SwiperPagination.dots),
           control: SwiperControl(
@@ -143,36 +156,3 @@ final TextStyle kProfileOverlayTextStyle = TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w400,
     shadows: kTextStrokeOutlines);
-
-class IconText extends StatelessWidget {
-  final IconData icon;
-  final double iconSize;
-  final Color iconColor;
-  final Text text;
-
-  IconText(
-      {@required this.icon,
-      this.iconSize = 30.0,
-      @required this.text,
-      this.iconColor = Colors.white});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Stack(
-          children: <Widget>[
-            Positioned(
-              left: 0.2,
-              top: 0.2,
-              child: Icon(icon, color: Colors.black12, size: iconSize + 2.0),
-            ),
-            Icon(icon, color: iconColor, size: iconSize),
-          ],
-        ),
-        SizedBox(width: 10.0),
-        text
-      ],
-    );
-  }
-}

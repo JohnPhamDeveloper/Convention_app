@@ -4,6 +4,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:cosplay_app/widgets/notification/NotificationDot.dart';
 
 class ImageContainer extends StatelessWidget {
+  final String heroName;
   final String image;
   final double borderRadius;
   final double borderWidth;
@@ -26,6 +27,7 @@ class ImageContainer extends StatelessWidget {
       this.topLeftDotInnerColor = Colors.green,
       this.topLeftDotInnerSize = 5.0,
       this.topLeftDotOuterSize = 15.0,
+      this.heroName = "",
       this.topLeftDotBottom,
       this.topLeftDotLeft,
       this.topLeftDotRight,
@@ -77,30 +79,64 @@ class ImageContainer extends StatelessWidget {
     return Container(width: 0, height: 0);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Container(
-          foregroundDecoration: BoxDecoration(
-            border: Border.all(width: borderWidth, color: rarityBorderColor),
-            borderRadius: BorderRadius.circular(borderRadius),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(borderRadius),
-            child: FadeInImage.memoryNetwork(
-              width: width,
-              height: height,
-              fadeInDuration: Duration(seconds: 1),
-              fadeInCurve: Curves.easeInOut,
-              fit: BoxFit.cover,
-              placeholder: kTransparentImage,
-              image: image,
+  Widget heroWidget() {
+    if (heroName.isEmpty) {
+      return Stack(
+        children: <Widget>[
+          Container(
+            foregroundDecoration: BoxDecoration(
+              border: Border.all(width: borderWidth, color: rarityBorderColor),
+              borderRadius: BorderRadius.circular(borderRadius),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(borderRadius),
+              child: FadeInImage.memoryNetwork(
+                width: width,
+                height: height,
+                fadeInDuration: Duration(seconds: 1),
+                fadeInCurve: Curves.easeInOut,
+                fit: BoxFit.cover,
+                placeholder: kTransparentImage,
+                image: image,
+              ),
             ),
           ),
+          renderStatusDot(),
+        ],
+      );
+    } else {
+      return Hero(
+        tag: heroName,
+        child: Stack(
+          children: <Widget>[
+            Container(
+              foregroundDecoration: BoxDecoration(
+                border:
+                    Border.all(width: borderWidth, color: rarityBorderColor),
+                borderRadius: BorderRadius.circular(borderRadius),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(borderRadius),
+                child: FadeInImage.memoryNetwork(
+                  width: width,
+                  height: height,
+                  fadeInDuration: Duration(seconds: 1),
+                  fadeInCurve: Curves.easeInOut,
+                  fit: BoxFit.cover,
+                  placeholder: kTransparentImage,
+                  image: image,
+                ),
+              ),
+            ),
+            renderStatusDot(),
+          ],
         ),
-        renderStatusDot(),
-      ],
-    );
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return heroWidget();
   }
 }
