@@ -7,6 +7,7 @@ import 'package:cosplay_app/widgets/RankCard.dart';
 import 'package:cosplay_app/widgets/HeroProfileStart.dart';
 import 'package:cosplay_app/widgets/HeroProfileDetails.dart';
 import 'package:cosplay_app/widgets/HeroProfilePage.dart';
+import 'package:cosplay_app/classes/HeroCreator.dart';
 
 class RankingListPage extends StatefulWidget {
   @override
@@ -40,7 +41,7 @@ class _RankingListPageState extends State<RankingListPage>
         snapshot.documents.forEach((data) {
           String url =
               data[FirestoreManager.keyPhotos][0]; // Network URL to image
-          Key key = UniqueKey();
+          Key key = UniqueKey(); // Used for the dot hero animation
 
           // Create the card
           RankCard card = RankCard(
@@ -53,37 +54,9 @@ class _RankingListPageState extends State<RankingListPage>
             dotIsOn: true,
             key: UniqueKey(),
             onTap: () {
-              // Construct HeroProfile widget from the information on the clicked avatar
-              HeroProfileStart heroProfileStart = HeroProfileStart(
-                heroName: key.toString(),
-                userImages: data[FirestoreManager.keyPhotos],
-                name: data[FirestoreManager.keyDisplayName],
-                friendliness: data[FirestoreManager.keyFriendliness],
-                fame: data[FirestoreManager.keyFame],
-                bottomLeftItemPadding: EdgeInsets.only(left: 20, bottom: 25),
-              );
-              HeroProfileDetails heroProfileDetails = HeroProfileDetails(
-                userCircleImage: data[FirestoreManager.keyPhotos][0],
-                rarityBorder: data[FirestoreManager.keyRarityBorder],
-                displayName: data[FirestoreManager.keyDisplayName],
-                friendliness: data[FirestoreManager.keyFriendliness],
-                fame: data[FirestoreManager.keyFame],
-              );
-
-              Widget clickedProfile = Scaffold(
-                backgroundColor: Theme.of(context).primaryColor,
-                body: SafeArea(
-                  child: HeroProfilePage(
-                      pages: [heroProfileStart, heroProfileDetails]),
-                ),
-              );
-
-              // Push that profile into view
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => clickedProfile));
+              HeroCreator.pushProfileIntoView(key, data, context);
             },
           );
-
           // Trigger rebuild when adding each card (bad?)
           setState(() {
             cards.add(card);
@@ -94,6 +67,20 @@ class _RankingListPageState extends State<RankingListPage>
       print(e);
     }
   }
+
+//  void onRankCardTap(Key key, DocumentSnapshot data) {
+//    // Construct HeroProfile widget from the information on the clicked avatar
+//    HeroProfileStart heroProfileStart =
+//        HeroCreator.createHeroProfileStart(key, data);
+//    HeroProfileDetails heroProfileDetails =
+//        HeroCreator.createHeroProfileDetails(data);
+//    Widget clickedProfile = HeroCreator.wrapInScaffold(
+//        [heroProfileStart, heroProfileDetails], context);
+//
+//    // Push that profile into view
+//    Navigator.push(
+//        context, MaterialPageRoute(builder: (context) => clickedProfile));
+//  }
 
   @override
   bool get wantKeepAlive => true;

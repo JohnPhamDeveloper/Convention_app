@@ -8,6 +8,10 @@ import 'package:cosplay_app/widgets/RoundButton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
+import 'package:cosplay_app/widgets/HeroProfileStart.dart';
+import 'package:cosplay_app/widgets/HeroProfileDetails.dart';
+import 'package:cosplay_app/widgets/HeroProfilePage.dart';
+import 'package:cosplay_app/classes/HeroCreator.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -104,10 +108,10 @@ class _CosplayerSearchSectionState extends State<CosplayerSearchSection> {
   @override
   void initState() {
     super.initState();
-    test();
+    createSearchUsers(context);
   }
 
-  void test() {
+  void createSearchUsers(BuildContext context) {
     // Go through every person in the users (though we'll change this to users around us)
     // Check if they are a cosplayer, if they are, then put into cosplayer list
     //List<LoggedInUser> userList = List<LoggedInUser>();
@@ -120,7 +124,7 @@ class _CosplayerSearchSectionState extends State<CosplayerSearchSection> {
             user.getHashMap[key] = value;
           });
 
-          // Create userinfo widet
+          // store that users information into the widget
           UserSearchInfo widget = UserSearchInfo(
             backgroundImage: user.getHashMap[FirestoreManager.keyPhotos][0],
             name: user.getHashMap[FirestoreManager.keyDisplayName],
@@ -129,16 +133,17 @@ class _CosplayerSearchSectionState extends State<CosplayerSearchSection> {
             friendliness: user.getHashMap[FirestoreManager.keyFriendliness],
             cost: user.getHashMap[FirestoreManager.keyCosplayerCost],
             rarity: user.getHashMap[FirestoreManager.keyRarityBorder],
+            onTap: () {
+              HeroCreator.pushProfileIntoView(
+                  UniqueKey(), docSnapshot, context);
+            },
             key: UniqueKey(),
           );
-
-          print("adding widget");
           userSearchInfoWidgets.add(widget);
-
-          // add to list which we'll use to create the widget
-          // userList.add(user);
         }
       });
+      // done storing all of users information, now we can setState to rebuild
+      // and display it
       setState(() {
         print("Triggering rebuild");
         print(userSearchInfoWidgets.length);
@@ -156,94 +161,6 @@ class _CosplayerSearchSectionState extends State<CosplayerSearchSection> {
       itemBuilder: (context, index) {
         return userSearchInfoWidgets[index];
       },
-//        UserSearchInfo(
-//          name: "Ketano Reeve",
-//          cosplayName: "Cosplay Name",
-//          seriesName: "Anime/Tv Name",
-//          backgroundImage: NetworkImage(
-//              "https://c.pxhere.com/photos/0b/f9/anime_girl_japan_japanese_tokyo_cosplay-266599.jpg!d"),
-//          friendliness: 1532,
-//        ),
-//        UserSearchInfo(
-//          name: "Magical Girl",
-//          cosplayName: "Cosplay Name",
-//          seriesName: "Anime/Tv Name",
-//          backgroundImage: NetworkImage(
-//              "https://c.pxhere.com/photos/eb/33/china_girls_game_anime_cute_girl_japanese_costume-187564.jpg!d"),
-//          friendliness: 153,
-//        ),
-//        UserSearchInfo(
-//          name: "Shinano Arita",
-//          cosplayName: "Cosplay Name",
-//          seriesName: "Anime/Tv Name",
-//          backgroundImage: NetworkImage(
-//              "https://c.pxhere.com/photos/ff/89/girls_game_anime_cute_girl_japanese_costume_comic-187663.jpg!d"),
-//          friendliness: 1,
-//        ),
-//        UserSearchInfo(
-//          name: "Narito Menga",
-//          cosplayName: "Cosplay Name",
-//          seriesName: "Anime/Tv Name",
-//          backgroundImage: NetworkImage(
-//              "https://c.pxhere.com/photos/fc/88/boy_portrait_people_man_anime_face_35mm_comic-185839.jpg!d"),
-//          friendliness: 1532,
-//        ),
-//        UserSearchInfo(
-//          name: "Shitano Len Gauss",
-//          cosplayName: "Cosplay Name",
-//          seriesName: "Anime/Tv Name",
-//          backgroundImage: NetworkImage(
-//              "https://c.pxhere.com/photos/fb/84/50mm_anime_comic_comiccon_cosplay_costume_cute_face-343295.jpg!d"),
-//          friendliness: 142,
-//        ),
-//        UserSearchInfo(
-//          name: "Banani Loepr",
-//          cosplayName: "Cosplay Name",
-//          seriesName: "Anime/Tv Name",
-//          backgroundImage: NetworkImage(
-//              "https://c.pxhere.com/photos/d4/02/auto_pc_nikon_nikkor_f25_105mm-146568.jpg!d"),
-//          friendliness: 15222,
-//        ),
-//        UserSearchInfo(
-//          name: "Lesonga Chornasmo",
-//          cosplayName: "Cosplay Name",
-//          seriesName: "Anime/Tv Name",
-//          backgroundImage: NetworkImage(
-//              "https://c.pxhere.com/photos/bb/92/boy_portrait_people_man_anime_face_35mm_comic-185893.jpg!d"),
-//          friendliness: 1532,
-//        ),
-//        UserSearchInfo(
-//          name: "Ettai Gonchat",
-//          cosplayName: "Cosplay Name",
-//          seriesName: "Anime/Tv Name",
-//          backgroundImage: NetworkImage(
-//              "https://c.pxhere.com/photos/8a/12/girls_cute_girl_hair_japanese_costume_comic_expo-432382.jpg!d"),
-//          friendliness: 1532,
-//        ),
-//        UserSearchInfo(
-//          name: "Bob Willas",
-//          cosplayName: "Len",
-//          seriesName: "Vocaloid",
-//          friendliness: 1532,
-//        ),
-//        UserSearchInfo(
-//          name: "Junypai",
-//          cosplayName: "Len",
-//          seriesName: "Vocaloid",
-//          friendliness: 1532,
-//        ),
-//        UserSearchInfo(
-//          name: "Junypai",
-//          cosplayName: "Len",
-//          seriesName: "Vocaloid",
-//          friendliness: 1532,
-//        ),
-//        UserSearchInfo(
-//          name: "Junypai",
-//          cosplayName: "Len",
-//          seriesName: "Vocaloid",
-//          friendliness: 1532,
-//        ),
     );
   }
 }

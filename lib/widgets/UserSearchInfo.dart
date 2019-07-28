@@ -10,12 +10,14 @@ class UserSearchInfo extends StatelessWidget {
   final String cosplayName;
   final String seriesName;
   final String cost;
+  final Function onTap;
   final int rarity;
   final int friendliness;
   final Key key;
 
   UserSearchInfo({
     this.backgroundImage,
+    @required this.onTap,
     this.name,
     this.seriesName,
     this.cosplayName,
@@ -44,13 +46,14 @@ class UserSearchInfo extends StatelessWidget {
     return InkWell(
       splashColor: Colors.grey[100],
       onTap: () {
-        print("Tapped search item");
+        onTap();
       },
       child: Padding(
         padding: const EdgeInsets.only(
             left: 16.0, right: 0.0, bottom: 8.0, top: 8.0),
         child: Row(
           children: <Widget>[
+            // Image
             Padding(
               padding: const EdgeInsets.only(bottom: 0.0),
               child: ImageContainer(
@@ -61,13 +64,8 @@ class UserSearchInfo extends StatelessWidget {
                   width: 60.0,
                   height: 60.0),
             ),
-//            CircleAvatar(
-//              minRadius: 30.0,
-//              backgroundColor: Colors.blueAccent,
-//              child: renderTextIfNoImage(),
-//              backgroundImage: backgroundImage,
-//            ),
             SizedBox(width: 20.0),
+            // Name
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,6 +99,7 @@ class UserSearchInfo extends StatelessWidget {
               ),
             ),
             SizedBox(width: 25.0),
+            // Friendly icon
             Container(
               width: 85,
               child: Column(
