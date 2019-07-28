@@ -72,16 +72,13 @@ class UserSearchInfo extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  CircularBox(
-                    padding: EdgeInsets.symmetric(vertical: 2, horizontal: 6.5),
-                    hasShadow: false,
-                    child: Text(
-                      name,
-                      style: TextStyle(
-                        fontSize: 15.0,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black87,
-                      ),
+                  Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 17.0,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.2,
+                      color: Colors.white,
                     ),
                   ),
                   SizedBox(height: 3.0),
@@ -90,7 +87,7 @@ class UserSearchInfo extends StatelessWidget {
                     style: TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.w400,
-                        color: Colors.grey[50]),
+                        color: Colors.white),
                   ),
                   SizedBox(height: 1.5),
                   Text(
@@ -98,7 +95,7 @@ class UserSearchInfo extends StatelessWidget {
                     style: TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.w400,
-                        color: Colors.grey[50]),
+                        color: Colors.white),
                   ),
                 ],
               ),

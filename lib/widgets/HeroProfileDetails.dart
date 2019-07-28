@@ -27,190 +27,196 @@ class HeroProfileDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: <Widget>[
-        SizedBox(height: 40.0),
-        // user image
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10.0),
-          child: ImageContainer(
-              borderWidth: 3.5,
-              rarityBorderColor: kRarityBorders[rarityBorder],
-              borderRadius: 500.0,
-              image: userCircleImage,
-              width: 160.0,
-              height: 160.0),
-        ),
-        SizedBox(height: 20.0),
-        // Name
-        Text(
-          displayName,
-          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0),
-        ),
-        SizedBox(height: 15.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Column(
           children: <Widget>[
-            RoundButton(
-                size: 45.0,
-                icon: FontAwesomeIcons.instagram,
-                iconSize: 25.0,
-                padding: EdgeInsets.only(
-                    left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
-                onTap: () {}),
-            SizedBox(width: 20.0),
-            RoundButton(
-                size: 45.0,
-                icon: FontAwesomeIcons.twitter,
-                iconSize: 25.0,
-                padding: EdgeInsets.only(
-                    left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
-                onTap: () {}),
-          ],
-        ),
-        SizedBox(height: 30.0),
-        // Friendliness
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TitleData(
-                title: "Friendliness", number: friendliness, width: 150.0),
-            SizedBox(width: 30),
-            TitleData(title: "Fame", number: fame, width: 150.0)
-          ],
-        ),
-        SizedBox(height: 30.0),
-        // Medals
-        CircularBox(
-          child: Column(
-            children: <Widget>[
-              Text(
-                "Medals",
-                style: TextStyle(
-                  fontSize: 18.0,
-                  color: Colors.black54,
-                  fontWeight: FontWeight.w600,
-                ),
+            SizedBox(height: 40.0),
+            // user image
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: ImageContainer(
+                  borderWidth: 3.5,
+                  rarityBorderColor: kRarityBorders[rarityBorder],
+                  borderRadius: 500.0,
+                  image: userCircleImage,
+                  width: 160.0,
+                  height: 160.0),
+            ),
+            SizedBox(height: 20.0),
+            // Name
+            Text(
+              displayName,
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0),
+            ),
+            SizedBox(height: 15.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RoundButton(
+                    size: 45.0,
+                    icon: FontAwesomeIcons.instagram,
+                    iconSize: 25.0,
+                    padding: EdgeInsets.only(
+                        left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
+                    onTap: () {}),
+                SizedBox(width: 20.0),
+                RoundButton(
+                    size: 45.0,
+                    icon: FontAwesomeIcons.twitter,
+                    iconSize: 25.0,
+                    padding: EdgeInsets.only(
+                        left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
+                    onTap: () {}),
+              ],
+            ),
+            SizedBox(height: 30.0),
+            // Friendliness
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TitleData(
+                    title: "Friendliness", number: friendliness, width: 150.0),
+                SizedBox(width: 30),
+                TitleData(title: "Fame", number: fame, width: 150.0)
+              ],
+            ),
+            SizedBox(height: 30.0),
+            // Medals
+            CircularBox(
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    "Medals",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 15.0),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Wrap(
+                      runAlignment: WrapAlignment.spaceEvenly,
+                      crossAxisAlignment: WrapCrossAlignment.start,
+                      runSpacing: 15.0,
+                      spacing: 15.0,
+                      children: <Widget>[
+                        TrustMedal(),
+                        MetDeveloperMedal(),
+                        PurpleHeartMedal(),
+                        VerifiedPhoneMedal(),
+                        HundredSelfieMedal(),
+                        ThreeHundredSelfieMedal(),
+                        FriendlyHundredMedal(),
+                        FriendlyTwoHundredMedal(),
+                        FriendlyFiveHundredMedal(),
+                        FiftySelfieWithOnePersonMedal(),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 15.0),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Wrap(
-                  runAlignment: WrapAlignment.spaceEvenly,
-                  crossAxisAlignment: WrapCrossAlignment.start,
-                  runSpacing: 15.0,
-                  spacing: 15.0,
-                  children: <Widget>[
-                    TrustMedal(),
-                    MetDeveloperMedal(),
-                    PurpleHeartMedal(),
-                    VerifiedPhoneMedal(),
-                    HundredSelfieMedal(),
-                    ThreeHundredSelfieMedal(),
-                    FriendlyHundredMedal(),
-                    FriendlyTwoHundredMedal(),
-                    FriendlyFiveHundredMedal(),
-                    FiftySelfieWithOnePersonMedal(),
-                  ],
-                ),
+            ),
+            SizedBox(height: 40.0),
+            // Vote friendly button
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
+              child: RoundButtonTextIcon(
+                  text: Text("Vote Friendly", style: kButtonActionTextStyle),
+                  fillColor: Colors.pinkAccent,
+                  icon: Icons.favorite,
+                  iconColor: Colors.white,
+                  onTap: () {}),
+            ),
+            SizedBox(height: 25.0),
+            // Selfie request button
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
+              child: RoundButtonTextIcon(
+                  text: Text("Selfie Request", style: kButtonActionTextStyle),
+                  fillColor: Colors.pinkAccent,
+                  icon: Icons.camera_alt,
+                  iconColor: Colors.white,
+                  onTap: () {
+                    // print("TEST");
+                  }),
+            ),
+            SizedBox(height: 25.0),
+            // Photography request button
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
+              child: RoundButtonTextIcon(
+                  text: Text("Photography Request",
+                      style: kButtonActionTextStyle),
+                  fillColor: Colors.pinkAccent,
+                  icon: Icons.linked_camera,
+                  iconColor: Colors.white,
+                  onTap: () async {
+                    print("Logging Out");
+                    FirebaseUser user =
+                        await FirebaseAuth.instance.currentUser();
+                    print(user.email);
+                    print(user.isEmailVerified);
+                    print(user.displayName);
+                    try {
+                      FirebaseAuth.instance.signOut();
+                      Navigator.pushNamed(context, "/");
+                    } catch (e) {
+                      print(e);
+                    }
+                  }),
+            ),
+            SizedBox(height: 25.0),
+            // Options
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
+              child: RoundButtonTextIcon(
+                  text: Text("Options", style: kButtonNormalTextStyle),
+                  fillColor: kButtonNormalFillColor,
+                  icon: FontAwesomeIcons.cog,
+                  iconColor: kButtonNormalIconColor,
+                  onTap: () {
+                    //print("TEST");
+                  }),
+            ),
+            SizedBox(height: 25.0),
+            // Logout button
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
+              child: RoundButtonTextIcon(
+                text: Text("Log Out", style: kButtonNormalTextStyle),
+                fillColor: kButtonNormalFillColor,
+                icon: Icons.directions_run,
+                iconColor: kButtonNormalIconColor,
+                onTap: () async {
+                  print("Logging Out");
+                  FirebaseUser user = await FirebaseAuth.instance.currentUser();
+
+                  // They were not signed in the first place (how did the get in?)
+                  if (user == null) Navigator.pushNamed(context, '/');
+
+                  print(user.email);
+                  print(user.isEmailVerified);
+                  print(user.displayName);
+                  try {
+                    FirebaseAuth.instance.signOut();
+                    Navigator.pushNamed(context, "/");
+                  } catch (e) {
+                    print(e);
+                  }
+                },
               ),
-            ],
-          ),
-        ),
-        SizedBox(height: 40.0),
-        // Vote friendly button
-        Padding(
-          padding: const EdgeInsets.only(
-              left: kButtonPaddingLeft, right: kButtonPaddingRight),
-          child: RoundButtonTextIcon(
-              text: Text("Vote Friendly", style: kButtonActionTextStyle),
-              fillColor: Colors.pinkAccent,
-              icon: Icons.favorite,
-              iconColor: Colors.white,
-              onTap: () {}),
-        ),
-        SizedBox(height: 25.0),
-        // Selfie request button
-        Padding(
-          padding: const EdgeInsets.only(
-              left: kButtonPaddingLeft, right: kButtonPaddingRight),
-          child: RoundButtonTextIcon(
-              text: Text("Selfie Request", style: kButtonActionTextStyle),
-              fillColor: Colors.pinkAccent,
-              icon: Icons.camera_alt,
-              iconColor: Colors.white,
-              onTap: () {
-                // print("TEST");
-              }),
-        ),
-        SizedBox(height: 25.0),
-        // Photography request button
-        Padding(
-          padding: const EdgeInsets.only(
-              left: kButtonPaddingLeft, right: kButtonPaddingRight),
-          child: RoundButtonTextIcon(
-              text: Text("Photography Request", style: kButtonActionTextStyle),
-              fillColor: Colors.pinkAccent,
-              icon: Icons.linked_camera,
-              iconColor: Colors.white,
-              onTap: () async {
-                print("Logging Out");
-                FirebaseUser user = await FirebaseAuth.instance.currentUser();
-                print(user.email);
-                print(user.isEmailVerified);
-                print(user.displayName);
-                try {
-                  FirebaseAuth.instance.signOut();
-                  Navigator.pushNamed(context, "/");
-                } catch (e) {
-                  print(e);
-                }
-              }),
-        ),
-        SizedBox(height: 25.0),
-        // Options
-        Padding(
-          padding: const EdgeInsets.only(
-              left: kButtonPaddingLeft, right: kButtonPaddingRight),
-          child: RoundButtonTextIcon(
-              text: Text("Options", style: kButtonNormalTextStyle),
-              fillColor: kButtonNormalFillColor,
-              icon: FontAwesomeIcons.cog,
-              iconColor: kButtonNormalIconColor,
-              onTap: () {
-                //print("TEST");
-              }),
-        ),
-        SizedBox(height: 25.0),
-        // Logout button
-        Padding(
-          padding: const EdgeInsets.only(
-              left: kButtonPaddingLeft, right: kButtonPaddingRight),
-          child: RoundButtonTextIcon(
-            text: Text("Log Out", style: kButtonNormalTextStyle),
-            fillColor: kButtonNormalFillColor,
-            icon: Icons.directions_run,
-            iconColor: kButtonNormalIconColor,
-            onTap: () async {
-              print("Logging Out");
-              FirebaseUser user = await FirebaseAuth.instance.currentUser();
-
-              // They were not signed in the first place (how did the get in?)
-              if (user == null) Navigator.pushNamed(context, '/');
-
-              print(user.email);
-              print(user.isEmailVerified);
-              print(user.displayName);
-              try {
-                FirebaseAuth.instance.signOut();
-                Navigator.pushNamed(context, "/");
-              } catch (e) {
-                print(e);
-              }
-            },
-          ),
-        ),
-        SizedBox(height: 250),
+            ),
+            SizedBox(height: 250),
+          ],
+        )
       ],
     );
   }

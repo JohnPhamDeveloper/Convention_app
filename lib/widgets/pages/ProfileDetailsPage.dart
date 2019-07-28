@@ -17,20 +17,12 @@ class ProfileDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<LoggedInUser>(builder: (context, loggedInUser, child) {
-      return ListView(
-        children: <Widget>[
-          HeroProfileDetails(
-            userCircleImage: loggedInUser.getHashMap[FirestoreManager.keyPhotos]
-                [0],
-            rarityBorder:
-                loggedInUser.getHashMap[FirestoreManager.keyRarityBorder],
-            displayName:
-                loggedInUser.getHashMap[FirestoreManager.keyDisplayName],
-            friendliness:
-                loggedInUser.getHashMap[FirestoreManager.keyFriendliness],
-            fame: loggedInUser.getHashMap[FirestoreManager.keyFame],
-          ),
-        ],
+      return HeroProfileDetails(
+        userCircleImage: loggedInUser.getHashMap[FirestoreManager.keyPhotos][0],
+        rarityBorder: loggedInUser.getHashMap[FirestoreManager.keyRarityBorder],
+        displayName: loggedInUser.getHashMap[FirestoreManager.keyDisplayName],
+        friendliness: loggedInUser.getHashMap[FirestoreManager.keyFriendliness],
+        fame: loggedInUser.getHashMap[FirestoreManager.keyFame],
       );
     });
   }

@@ -1,18 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:cosplay_app/widgets/notification/NotificationDot.dart';
+import 'package:cosplay_app/widgets/ImageContainer.dart';
 
-class HeroProfile extends StatelessWidget {
-  final List<Widget> userImages;
+class HeroProfileStart extends StatelessWidget {
+  final String heroName;
+  final List<dynamic> userImages;
+  final List<ImageContainer> userImagesContainer = List<ImageContainer>();
   final String name;
   final int friendliness;
   final int fame;
+  final EdgeInsets bottomLeftItemPadding;
 
-  HeroProfile(
+  HeroProfileStart(
       {@required this.userImages,
       @required this.name,
       @required this.friendliness,
-      @required this.fame});
+      this.heroName = "",
+      this.bottomLeftItemPadding =
+          const EdgeInsets.only(left: 20.0, bottom: 80.0),
+      @required this.fame}) {
+    for (String url in userImages) {
+      userImagesContainer.add(createImageContainerWidgetFromURL(url));
+    }
+  }
+
+  ImageContainer createImageContainerWidgetFromURL(String url) {
+    return ImageContainer(
+      image: url,
+      height: double.infinity,
+      width: double.infinity,
+    );
+  }
+
+  Widget dotHeroRender() {
+    if (heroName.isNotEmpty) {
+      return Hero(
+        tag: heroName,
+        child: NotificationDot(innerColor: Colors.pinkAccent),
+      );
+    }
+
+    return NotificationDot(innerColor: Colors.pinkAccent);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +51,7 @@ class HeroProfile extends StatelessWidget {
         // Carousel
         Swiper(
           itemBuilder: (BuildContext context, int index) {
-            return userImages[index];
+            return userImagesContainer[index];
           },
           itemCount: userImages.length,
           pagination: SwiperPagination(
@@ -32,7 +62,7 @@ class HeroProfile extends StatelessWidget {
         ),
         // User information bottom left
         Padding(
-          padding: const EdgeInsets.only(left: 20.0, bottom: 80.0),
+          padding: bottomLeftItemPadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
@@ -63,11 +93,12 @@ class HeroProfile extends StatelessWidget {
             ],
           ),
         ),
+        // Dot
         Align(
           alignment: Alignment.topRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 20.0, top: 20.0),
-            child: NotificationDot(innerColor: Colors.pinkAccent),
+            child: dotHeroRender(),
           ),
         ),
       ],
@@ -75,7 +106,7 @@ class HeroProfile extends StatelessWidget {
   }
 }
 
-final Color kTextStrokeColor = Colors.black12;
+final Color kTextStrokeColor = Colors.black26;
 final double kTextStrokeBlur = 1.0;
 final List<Shadow> kTextStrokeOutlines = [
   Shadow(

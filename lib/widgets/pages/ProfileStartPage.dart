@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:cosplay_app/widgets/ImageContainer.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:provider/provider.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
-import 'package:cosplay_app/widgets/HeroProfile.dart';
+import 'package:cosplay_app/widgets/HeroProfileStart.dart';
 
 class ProfileStartPage extends StatefulWidget {
   @override
@@ -11,33 +10,16 @@ class ProfileStartPage extends StatefulWidget {
 }
 
 class _ProfileStartPageState extends State<ProfileStartPage> {
-  List<ImageContainer>
-      userImageWidgets; // Widget that builds itself based on the photosURL information
+  List<dynamic> userImageUrls = List<dynamic>();
 
   @override
   void initState() {
     super.initState();
-    userImageWidgets = List<ImageContainer>();
-  }
-
-  ImageContainer createImageContainerWidgetFromURL(String url) {
-    return ImageContainer(
-      image: url,
-      height: double.infinity,
-      width: double.infinity,
-    );
   }
 
   // Generate image widgets for the carousel from the logged in users image references
   void updateUserImageWidgets(LoggedInUser loggedInUser) {
-    List<ImageContainer> newUserImageWidgets = List<ImageContainer>();
-    List<dynamic> urls = loggedInUser.getHashMap[FirestoreManager.keyPhotos];
-
-    for (String url in urls) {
-      newUserImageWidgets.add(createImageContainerWidgetFromURL(url));
-    }
-
-    userImageWidgets = newUserImageWidgets;
+    userImageUrls = loggedInUser.getHashMap[FirestoreManager.keyPhotos];
   }
 
   @override
@@ -48,8 +30,8 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
     print(loggedInUser);
     return Consumer<LoggedInUser>(builder: (context, loggedInUser, child) {
       updateUserImageWidgets(loggedInUser);
-      return HeroProfile(
-        userImages: userImageWidgets,
+      return HeroProfileStart(
+        userImages: userImageUrls,
         name: loggedInUser.getHashMap[FirestoreManager.keyDisplayName],
         friendliness: loggedInUser.getHashMap[FirestoreManager.keyFriendliness],
         fame: loggedInUser.getHashMap[FirestoreManager.keyFame],
