@@ -11,6 +11,7 @@ class UserSearchInfo extends StatelessWidget {
   final String seriesName;
   final String cost;
   final int friendliness;
+  final Key key;
 
   UserSearchInfo(
       {this.backgroundImage,
@@ -18,7 +19,9 @@ class UserSearchInfo extends StatelessWidget {
       this.seriesName,
       this.cosplayName,
       this.friendliness,
-      this.cost});
+      this.key,
+      this.cost})
+      : super(key: key);
 
   Text renderTextIfNoImage() {
     if (backgroundImage == null) {

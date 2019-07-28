@@ -129,6 +129,7 @@ class _CosplayerSearchSectionState extends State<CosplayerSearchSection> {
             cosplayName: user.getHashMap[FirestoreManager.keyCosplayName],
             friendliness: user.getHashMap[FirestoreManager.keyFriendliness],
             cost: user.getHashMap[FirestoreManager.keyCosplayerCost],
+            key: UniqueKey(),
           );
 
           print("adding widget");
