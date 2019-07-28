@@ -23,7 +23,7 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
 
   ImageContainer createImageContainerWidgetFromURL(String url) {
     return ImageContainer(
-      image: NetworkImage(url),
+      image: url,
       height: double.infinity,
       width: double.infinity,
     );

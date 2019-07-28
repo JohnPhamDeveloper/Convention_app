@@ -122,8 +122,7 @@ class _CosplayerSearchSectionState extends State<CosplayerSearchSection> {
 
           // Create userinfo widet
           UserSearchInfo widget = UserSearchInfo(
-            backgroundImage:
-                NetworkImage(user.getHashMap[FirestoreManager.keyPhotos][0]),
+            backgroundImage: user.getHashMap[FirestoreManager.keyPhotos][0],
             name: user.getHashMap[FirestoreManager.keyDisplayName],
             seriesName: user.getHashMap[FirestoreManager.keySeriesName],
             cosplayName: user.getHashMap[FirestoreManager.keyCosplayName],
@@ -258,8 +257,8 @@ class PhotographerSearchSection extends StatelessWidget {
           name: "Ettai Gonchat",
           yearsExperience: 12,
           monthsExperience: 2,
-          backgroundImage: NetworkImage(
-              "https://c.pxhere.com/images/29/3a/ab7eb8106f292a24d2a5d818c6a1-1418380.jpg!d"),
+          backgroundImage:
+              "https://c.pxhere.com/images/29/3a/ab7eb8106f292a24d2a5d818c6a1-1418380.jpg!d",
           friendliness: 324,
         ),
         PhotographerSearchInfo(
@@ -267,8 +266,8 @@ class PhotographerSearchSection extends StatelessWidget {
           yearsExperience: 1,
           monthsExperience: 2,
           cost: "Can Negotiate",
-          backgroundImage: NetworkImage(
-              "https://c.pxhere.com/images/c7/21/c8e22db330eb09e78970ac8b2ce2-1456325.jpg!d"),
+          backgroundImage:
+              "https://c.pxhere.com/images/c7/21/c8e22db330eb09e78970ac8b2ce2-1456325.jpg!d",
           friendliness: 153,
         ),
         PhotographerSearchInfo(
@@ -276,8 +275,8 @@ class PhotographerSearchSection extends StatelessWidget {
           yearsExperience: 2,
           monthsExperience: 3,
           cost: "\$52.12 / hr",
-          backgroundImage: NetworkImage(
-              "https://c.pxhere.com/images/52/27/c8e31718a7e13b915f72689e7911-1424101.jpg!d"),
+          backgroundImage:
+              "https://c.pxhere.com/images/52/27/c8e31718a7e13b915f72689e7911-1424101.jpg!d",
           friendliness: 45,
         ),
         PhotographerSearchInfo(
@@ -285,8 +284,8 @@ class PhotographerSearchSection extends StatelessWidget {
           yearsExperience: 4,
           monthsExperience: 6,
           cost: "\$92.12 / session",
-          backgroundImage: NetworkImage(
-              "https://c.pxhere.com/photos/9d/fd/photographer_camera_photo_photos_foto_lens_take_a_photograph_electronic_equipment-942701.jpg!d"),
+          backgroundImage:
+              "https://c.pxhere.com/photos/9d/fd/photographer_camera_photo_photos_foto_lens_take_a_photograph_electronic_equipment-942701.jpg!d",
           friendliness: 32,
         ),
         PhotographerSearchInfo(
@@ -295,16 +294,16 @@ class PhotographerSearchSection extends StatelessWidget {
           yearsExperience: 8,
           monthsExperience: 1,
           cost: "Not Shooting",
-          backgroundImage: NetworkImage(
-              "https://c.pxhere.com/photos/b3/2d/camera_digital_equipment_female_girl_isolated_lens_people-1260617.jpg!d"),
+          backgroundImage:
+              "https://c.pxhere.com/photos/b3/2d/camera_digital_equipment_female_girl_isolated_lens_people-1260617.jpg!d",
           friendliness: 74,
         ),
         PhotographerSearchInfo(
           name: "Teer San",
           yearsExperience: 3,
           monthsExperience: 3,
-          backgroundImage: NetworkImage(
-              "https://c.pxhere.com/photos/08/97/photographer_road_camera_girl_person-180399.jpg!d"),
+          backgroundImage:
+              "https://c.pxhere.com/photos/08/97/photographer_road_camera_girl_person-180399.jpg!d",
           friendliness: 1532,
         ),
         PhotographerSearchInfo(
@@ -312,24 +311,24 @@ class PhotographerSearchSection extends StatelessWidget {
           yearsExperience: 8,
           monthsExperience: 4,
           cost: "\$15.00 / hr",
-          backgroundImage: NetworkImage(
-              "https://c.pxhere.com/photos/62/c1/camera_photographer_person_photography_urban-133163.jpg!d"),
+          backgroundImage:
+              "https://c.pxhere.com/photos/62/c1/camera_photographer_person_photography_urban-133163.jpg!d",
           friendliness: 1532,
         ),
         PhotographerSearchInfo(
           name: "Erri Wan",
           yearsExperience: 1,
           monthsExperience: 3,
-          backgroundImage: NetworkImage(
-              "https://c.pxhere.com/photos/64/b4/photographer_photography_digital_camera_dslr_camera_digital_single_lens_reflex_camera_camera-964918.jpg!d"),
+          backgroundImage:
+              "https://c.pxhere.com/photos/64/b4/photographer_photography_digital_camera_dslr_camera_digital_single_lens_reflex_camera_camera-964918.jpg!d",
           friendliness: 99,
         ),
         PhotographerSearchInfo(
           name: "Ettai Gonchat",
           yearsExperience: 12,
           monthsExperience: 2,
-          backgroundImage: NetworkImage(
-              "https://c.pxhere.com/images/29/3a/ab7eb8106f292a24d2a5d818c6a1-1418380.jpg!d"),
+          backgroundImage:
+              "https://c.pxhere.com/images/29/3a/ab7eb8106f292a24d2a5d818c6a1-1418380.jpg!d",
           friendliness: 1532,
         ),
         SizedBox(height: 90.0),

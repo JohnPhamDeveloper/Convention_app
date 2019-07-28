@@ -5,7 +5,7 @@ import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 
 // COSPLAYER
 class UserSearchInfo extends StatelessWidget {
-  final ImageProvider backgroundImage;
+  final String backgroundImage;
   final String name;
   final String cosplayName;
   final String seriesName;
@@ -33,8 +33,9 @@ class UserSearchInfo extends StatelessWidget {
     }
   }
 
-  ImageProvider renderImage() {
-    if (backgroundImage == null) return AssetImage("assets/noImage.png");
+  String renderImage() {
+    if (backgroundImage == null)
+      return "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/300px-Icon-round-Question_mark.svg.png";
     return backgroundImage;
   }
 
@@ -136,7 +137,7 @@ class UserSearchInfo extends StatelessWidget {
 
 // Photographer
 class PhotographerSearchInfo extends StatelessWidget {
-  final ImageProvider backgroundImage;
+  final String backgroundImage;
   final String name;
   final int yearsExperience;
   final int monthsExperience;
@@ -159,10 +160,9 @@ class PhotographerSearchInfo extends StatelessWidget {
     }
   }
 
-  NetworkImage renderImage() {
+  String renderImage() {
     if (backgroundImage == null)
-      return NetworkImage(
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/1024px-Icon-round-Question_mark.svg.png");
+      return "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/1024px-Icon-round-Question_mark.svg.png";
     return backgroundImage;
   }
 

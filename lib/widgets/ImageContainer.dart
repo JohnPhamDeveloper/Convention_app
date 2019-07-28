@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cosplay_app/constants/constants.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class ImageContainer extends StatelessWidget {
-  final ImageProvider image;
+  final String image;
   final double borderRadius;
   final double borderWidth;
   final Color rarityBorderColor;
@@ -36,7 +37,7 @@ class ImageContainer extends StatelessWidget {
       spreadRadius: 0.0, // has the effect of extending the shadow
       offset: Offset(
         0.0, // horizontal, move right 10
-        0.0, // vertical, move down 10
+        10.0, // vertical, move down 10
       ),
     );
   }
@@ -44,17 +45,20 @@ class ImageContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width,
-      height: height,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          boxShadow: [renderShadow()],
-          border: Border.all(width: borderWidth, color: rarityBorderColor),
-          borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: image,
-          ),
+      foregroundDecoration: BoxDecoration(
+        border: Border.all(width: borderWidth, color: rarityBorderColor),
+        borderRadius: BorderRadius.circular(borderRadius),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: FadeInImage.memoryNetwork(
+          width: width,
+          height: height,
+          fadeInDuration: Duration(seconds: 1),
+          fadeInCurve: Curves.easeInOut,
+          fit: BoxFit.cover,
+          placeholder: kTransparentImage,
+          image: image,
         ),
       ),
     );

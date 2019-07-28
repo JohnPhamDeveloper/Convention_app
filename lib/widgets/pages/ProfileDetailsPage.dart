@@ -12,12 +12,13 @@ import 'package:provider/provider.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 
 class ProfileDetailsPage extends StatelessWidget {
-  ImageProvider renderUserImage(loggedInUser) {
+  String renderUserImage(loggedInUser) {
     List<dynamic> imageUrls =
         loggedInUser.getHashMap[FirestoreManager.keyPhotos];
-    if (imageUrls.isEmpty) return AssetImage("assets/noImage.png");
+    if (imageUrls.isEmpty)
+      return "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/300px-Icon-round-Question_mark.svg.png";
 
-    return NetworkImage(imageUrls[0]);
+    return imageUrls[0];
   }
 
   @override
