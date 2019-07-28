@@ -10,18 +10,20 @@ class UserSearchInfo extends StatelessWidget {
   final String cosplayName;
   final String seriesName;
   final String cost;
+  final int rarity;
   final int friendliness;
   final Key key;
 
-  UserSearchInfo(
-      {this.backgroundImage,
-      this.name,
-      this.seriesName,
-      this.cosplayName,
-      this.friendliness,
-      this.key,
-      this.cost})
-      : super(key: key);
+  UserSearchInfo({
+    this.backgroundImage,
+    this.name,
+    this.seriesName,
+    this.cosplayName,
+    this.friendliness,
+    this.key,
+    this.cost,
+    this.rarity,
+  }) : super(key: key);
 
   Text renderTextIfNoImage() {
     if (backgroundImage == null) {
@@ -52,7 +54,7 @@ class UserSearchInfo extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 0.0),
               child: ImageContainer(
                   borderWidth: 2.5,
-                  rarityBorderColor: kRarityBorders[0],
+                  rarityBorderColor: kRarityBorders[rarity],
                   borderRadius: 500.0,
                   image: renderImage(),
                   width: 60.0,
@@ -116,7 +118,7 @@ class UserSearchInfo extends StatelessWidget {
                   ),
                   SizedBox(height: 6),
                   Text(
-                    "\$42/hr",
+                    cost,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 11.0,

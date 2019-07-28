@@ -68,19 +68,56 @@ class _MainScreenState extends State<MainScreen> {
 
   // TODO DELEETE THIS MOCK USER
   void createMockUser() async {
-    await Firestore.instance.collection("users").document("testUser2").setData({
-      FirestoreManager.keyFame: 45,
-      FirestoreManager.keyFriendliness: 512,
-      FirestoreManager.keyDisplayName: "Netarno",
-      FirestoreManager.keyPhotos: [
-        "https://c.pxhere.com/photos/bb/92/boy_portrait_people_man_anime_face_35mm_comic-185893.jpg!d"
-      ],
-      FirestoreManager.keyIsCosplayer: true,
-      FirestoreManager.keyIsPhotographer: true,
-      FirestoreManager.keyRarityBorder: 0,
-      FirestoreManager.keyRealName: "Bobby Jones",
-      FirestoreManager.keyDateRegistered: DateTime.now(),
-    });
+    List<String> photoUrls = [
+      "https://c.pxhere.com/photos/bb/92/boy_portrait_people_man_anime_face_35mm_comic-185893.jpg!d"
+    ];
+    List<String> urls = [
+      "https://c.pxhere.com/photos/fb/84/50mm_anime_comic_comiccon_cosplay_costume_cute_face-343295.jpg!d"
+    ];
+    await FirestoreManager.createUserInDatabase(
+      documentName: "testUser2",
+      fame: 45,
+      friendliness: 512,
+      displayName: "Netarno",
+      photoUrls: photoUrls,
+      cosplayName: "Netarno",
+      seriesName: "Naruto",
+      isCosplayer: true,
+      isPhotographer: true,
+      rarityBorder: 3,
+      realName: "Bobby Jones",
+      cosplayerCost: "\$52.00/hr",
+      photographerCost: "\$42.00/hr",
+    );
+
+    await FirestoreManager.createUserInDatabase(
+      documentName: "testUser3",
+      fame: 66,
+      friendliness: 512,
+      displayName: "Renaldo",
+      cosplayName: "Gaia",
+      seriesName: "Finals Fantasy",
+      photoUrls: urls,
+      isCosplayer: true,
+      isPhotographer: true,
+      rarityBorder: 2,
+      realName: "Bobby Jones",
+      cosplayerCost: "\$12.00/hr",
+      photographerCost: '\$42.00/hr',
+    );
+//    await Firestore.instance.collection("users").document("testUser2").setData({
+//      FirestoreManager.keyFame: 45,
+//      FirestoreManager.keyFriendliness: 512,
+//      FirestoreManager.keyDisplayName: "Netarno",
+//      FirestoreManager.keyPhotos: [
+//        "https://c.pxhere.com/photos/bb/92/boy_portrait_people_man_anime_face_35mm_comic-185893.jpg!d"
+//      ],
+//      FirestoreManager.keyIsCosplayer: true,
+//      FirestoreManager.keyIsPhotographer: true,
+//      FirestoreManager.keyRarityBorder: 0,
+//      FirestoreManager.keyRealName: "Bobby Jones",
+//      FirestoreManager.keyDateRegistered: DateTime.now(),
+//    }, merge: true);
     print("Finished creating mock user");
   }
 

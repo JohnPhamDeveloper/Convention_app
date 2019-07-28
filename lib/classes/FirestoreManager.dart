@@ -21,6 +21,42 @@ class FirestoreManager {
   // All of database keys are stored in here (not sure if this is used)
   static HashMap<String, String> keys = HashMap<String, String>();
 
+  static Future<void> createUserInDatabase({
+    String documentName,
+    int fame,
+    int friendliness,
+    String displayName,
+    List<String> photoUrls,
+    bool isCosplayer,
+    bool isPhotographer,
+    String cosplayName,
+    String seriesName,
+    int rarityBorder,
+    String realName,
+    String cosplayerCost,
+    String photographerCost,
+  }) async {
+    await Firestore.instance
+        .collection("users")
+        .document(documentName)
+        .setData({
+      keyFame: fame,
+      keyFriendliness: friendliness,
+      keyDisplayName: displayName,
+      keyPhotos: photoUrls,
+      keyIsCosplayer: isCosplayer,
+      keyIsPhotographer: isPhotographer,
+      keyRarityBorder: rarityBorder,
+      keyRealName: realName,
+      keyCosplayName: cosplayName,
+      keySeriesName: seriesName,
+      keyCosplayerCost: cosplayerCost,
+      keyPhotographerCost: photographerCost,
+      keyDateRegistered: DateTime.now(),
+    }, merge: true);
+    print("Finished creating mock user");
+  }
+
   // Updates user information to the database information whenever
   // The database changes
   static void streamUserData(LoggedInUser loggedInUser, Function callback) {
