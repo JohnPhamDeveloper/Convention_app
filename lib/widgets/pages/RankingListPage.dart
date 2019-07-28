@@ -62,6 +62,7 @@ class _RankingListPageState extends State<RankingListPage>
             image: url,
             name: data[FirestoreManager.keyDisplayName],
             icon: icon,
+            rarityBorder: data[FirestoreManager.keyRarityBorder],
             value: data[orderBy],
             dotIsOn: true,
             key: UniqueKey(),
@@ -116,6 +117,7 @@ class RankCard extends StatelessWidget {
   final String image;
   final String name;
   final int value;
+  final int rarityBorder;
   final IconData icon;
   final bool dotIsOn;
   final Key key;
@@ -126,6 +128,7 @@ class RankCard extends StatelessWidget {
       this.name,
       this.icon,
       this.value,
+      this.rarityBorder,
       this.dotIsOn,
       this.key})
       : super(key: key);
@@ -143,7 +146,7 @@ class RankCard extends StatelessWidget {
                 borderWidth: 3.5,
                 borderRadius: 25.0,
                 enableShadows: true,
-                rarityBorderColor: kRarityBorders[0],
+                rarityBorderColor: kRarityBorders[rarityBorder],
                 width: 220,
                 image: image),
             // Dot

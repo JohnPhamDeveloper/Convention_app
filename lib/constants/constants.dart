@@ -37,9 +37,9 @@ const kCardPadding = 20.0;
 // RARITY BORDERS FOR PROFILE
 final kRarityBorders = [
   Colors.white, // TODO AFTER SHOWER UH CHANGE CONTACT ICON TO CIRCLEIMAGE
-  Colors.greenAccent,
-  Colors.deepPurpleAccent,
-  Colors.deepOrangeAccent,
+  Colors.green[500],
+  Colors.deepPurple[300],
+  Colors.deepOrange[300],
 ];
 
 TextStyle kTextStyleNotImportant() {
