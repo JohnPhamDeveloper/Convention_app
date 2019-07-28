@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cosplay_app/widgets/ScrollableTitle.dart';
 import 'package:cosplay_app/constants/constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cosplay_app/classes/FirestoreManager.dart';
 
 const List<NetworkImage> testImages = [
   NetworkImage(
@@ -27,6 +29,13 @@ class RankingListPage extends StatefulWidget {
 
 class _RankingListPageState extends State<RankingListPage>
     with AutomaticKeepAliveClientMixin {
+  @override
+  void initState() {
+    super.initState();
+//    Firestore.instance.collection("users").orderBy(
+//        FirestoreManager.keyFriendliness, descending: true)
+  }
+
   @override
   bool get wantKeepAlive => true;
 
