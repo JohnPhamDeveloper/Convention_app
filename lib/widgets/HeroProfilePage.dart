@@ -65,7 +65,7 @@ class _HeroProfilePageState extends State<HeroProfilePage>
       children: <Widget>[
         pageView,
         Padding(
-          padding: const EdgeInsets.only(right: 15.0, bottom: 140.0),
+          padding: const EdgeInsets.only(right: 20.0, bottom: 100.0),
           child: Align(
             alignment: Alignment.bottomRight,
             child: RotationTransition(
@@ -90,6 +90,21 @@ class _HeroProfilePageState extends State<HeroProfilePage>
             ),
           ),
         ),
+        Padding(
+          padding: EdgeInsets.only(top: 15.0, left: 15.0),
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: RoundButton(
+              padding: EdgeInsets.all(0),
+              icon: Icons.arrow_back,
+              iconColor: Colors.white,
+              fillColor: Colors.pinkAccent,
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        )
       ],
     );
   }
