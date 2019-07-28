@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:cosplay_app/widgets/notification/NotificationDot.dart';
 
 class ImageContainer extends StatelessWidget {
   final String image;
@@ -10,9 +11,25 @@ class ImageContainer extends StatelessWidget {
   final double height;
   final double width;
   final bool enableShadows;
+  final bool enableTopLeftDot;
+  final double topLeftDotOuterSize;
+  final double topLeftDotInnerSize;
+  final Color topLeftDotInnerColor;
+  final double topLeftDotLeft;
+  final double topLeftDotRight;
+  final double topLeftDotTop;
+  final double topLeftDotBottom;
 
   ImageContainer(
       {this.borderRadius = 0.0,
+      this.enableTopLeftDot = false,
+      this.topLeftDotInnerColor = Colors.green,
+      this.topLeftDotInnerSize = 5.0,
+      this.topLeftDotOuterSize = 15.0,
+      this.topLeftDotBottom,
+      this.topLeftDotLeft,
+      this.topLeftDotRight,
+      this.topLeftDotTop,
       this.width = 300,
       this.height = 300,
       this.enableShadows = true,
@@ -42,25 +59,48 @@ class ImageContainer extends StatelessWidget {
     );
   }
 
+  Widget renderStatusDot() {
+    if (enableTopLeftDot) {
+      return Positioned(
+        left: topLeftDotLeft,
+        right: topLeftDotRight,
+        top: topLeftDotTop,
+        bottom: topLeftDotBottom,
+        child: NotificationDot(
+          innerColor: topLeftDotInnerColor,
+          innerSize: topLeftDotInnerSize,
+          outerSize: topLeftDotOuterSize,
+        ),
+      );
+    }
+
+    return Container(width: 0, height: 0);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      foregroundDecoration: BoxDecoration(
-        border: Border.all(width: borderWidth, color: rarityBorderColor),
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(borderRadius),
-        child: FadeInImage.memoryNetwork(
-          width: width,
-          height: height,
-          fadeInDuration: Duration(seconds: 1),
-          fadeInCurve: Curves.easeInOut,
-          fit: BoxFit.cover,
-          placeholder: kTransparentImage,
-          image: image,
+    return Stack(
+      children: <Widget>[
+        Container(
+          foregroundDecoration: BoxDecoration(
+            border: Border.all(width: borderWidth, color: rarityBorderColor),
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(borderRadius),
+            child: FadeInImage.memoryNetwork(
+              width: width,
+              height: height,
+              fadeInDuration: Duration(seconds: 1),
+              fadeInCurve: Curves.easeInOut,
+              fit: BoxFit.cover,
+              placeholder: kTransparentImage,
+              image: image,
+            ),
+          ),
         ),
-      ),
+        renderStatusDot(),
+      ],
     );
   }
 }

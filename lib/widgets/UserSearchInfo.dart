@@ -7,8 +7,8 @@ import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 class UserSearchInfo extends StatelessWidget {
   final String backgroundImage;
   final String name;
-  final String cosplayName;
-  final String seriesName;
+  final String title;
+  final String subtitle;
   final String cost;
   final Function onTap;
   final int rarity;
@@ -16,30 +16,17 @@ class UserSearchInfo extends StatelessWidget {
   final Key key;
 
   UserSearchInfo({
-    this.backgroundImage,
+    this.backgroundImage =
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/300px-Icon-round-Question_mark.svg.png",
     @required this.onTap,
     this.name,
-    this.seriesName,
-    this.cosplayName,
+    this.subtitle,
+    this.title,
     this.friendliness,
     this.key,
     this.cost,
     this.rarity,
   }) : super(key: key);
-
-  Text renderTextIfNoImage() {
-    if (backgroundImage == null) {
-      return Text("?");
-    } else {
-      return Text("");
-    }
-  }
-
-  String renderImage() {
-    if (backgroundImage == null)
-      return "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/300px-Icon-round-Question_mark.svg.png";
-    return backgroundImage;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +44,13 @@ class UserSearchInfo extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 0.0),
               child: ImageContainer(
+                  enableTopLeftDot: true,
+                  topLeftDotBottom: 2,
+                  topLeftDotRight: 2,
                   borderWidth: 2.5,
                   rarityBorderColor: kRarityBorders[rarity],
                   borderRadius: 500.0,
-                  image: renderImage(),
+                  image: backgroundImage,
                   width: 60.0,
                   height: 60.0),
             ),
@@ -81,7 +71,7 @@ class UserSearchInfo extends StatelessWidget {
                   ),
                   SizedBox(height: 3.0),
                   Text(
-                    cosplayName,
+                    title,
                     style: TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.w400,
@@ -89,7 +79,7 @@ class UserSearchInfo extends StatelessWidget {
                   ),
                   SizedBox(height: 1.5),
                   Text(
-                    seriesName,
+                    subtitle,
                     style: TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.w400,
@@ -99,12 +89,13 @@ class UserSearchInfo extends StatelessWidget {
               ),
             ),
             SizedBox(width: 25.0),
-            // Friendly icon
+            // Friendly icon + cost
             Container(
               width: 85,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  // Icon
                   Row(
                     children: <Widget>[
                       Icon(Icons.sentiment_very_satisfied,
@@ -114,6 +105,7 @@ class UserSearchInfo extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 6),
+                  // Cost
                   Text(
                     cost,
                     style: TextStyle(

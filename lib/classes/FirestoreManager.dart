@@ -18,6 +18,12 @@ class FirestoreManager {
   static String keyCosplayerCost = 'cosplayerCost';
   static String keyPhotographerCost = 'photographerCost';
 
+  // Not in database yet
+  static String keyPhotographyYearsExperience = 'photographyYearsExperience';
+  static String keyPhotographyMonthsExperience = 'photographyMonthsExperience';
+  static String keyCosplayYearsExperience = 'cosplayYearsExperience';
+  static String keyCosplayMonthsExperience = 'cosplayMonthsExperience';
+
   // All of database keys are stored in here (not sure if this is used)
   static HashMap<String, String> keys = HashMap<String, String>();
 

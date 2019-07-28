@@ -2,15 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:cosplay_app/widgets/MyNavbar.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cosplay_app/widgets/UserSearchInfo.dart';
-import 'package:cosplay_app/constants/constants.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cosplay_app/widgets/RoundButton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
-import 'package:cosplay_app/widgets/HeroProfileStart.dart';
-import 'package:cosplay_app/widgets/HeroProfileDetails.dart';
-import 'package:cosplay_app/widgets/HeroProfilePage.dart';
 import 'package:cosplay_app/classes/HeroCreator.dart';
 
 class SearchPage extends StatefulWidget {
@@ -103,21 +99,24 @@ class CosplayerSearchSection extends StatefulWidget {
 }
 
 class _CosplayerSearchSectionState extends State<CosplayerSearchSection> {
-  List<Widget> userSearchInfoWidgets = List<Widget>();
+  List<Widget> cosplayerSearchInfoWidgets = List<Widget>();
+  List<Widget> photographerSearchInfoWidgets = List<Widget>();
 
   @override
   void initState() {
     super.initState();
-    createSearchUsers(context);
+    createSearchUsers(context, FirestoreManager.keyIsCosplayer);
+    createSearchUsers(context, FirestoreManager.keyIsPhotographer);
   }
 
-  void createSearchUsers(BuildContext context) {
+  void createSearchUsers(BuildContext context, String userType) {
     // Go through every person in the users (though we'll change this to users around us)
     // Check if they are a cosplayer, if they are, then put into cosplayer list
     //List<LoggedInUser> userList = List<LoggedInUser>();
     LoggedInUser user = LoggedInUser();
     Firestore.instance.collection("users").getDocuments().then((snapshot) {
       snapshot.documents.forEach((docSnapshot) {
+        // Handle cosplayer data
         if (docSnapshot.data[FirestoreManager.keyIsCosplayer] == true) {
           // Copy each data into user object
           docSnapshot.data.forEach((key, value) {
@@ -128,8 +127,8 @@ class _CosplayerSearchSectionState extends State<CosplayerSearchSection> {
           UserSearchInfo widget = UserSearchInfo(
             backgroundImage: user.getHashMap[FirestoreManager.keyPhotos][0],
             name: user.getHashMap[FirestoreManager.keyDisplayName],
-            seriesName: user.getHashMap[FirestoreManager.keySeriesName],
-            cosplayName: user.getHashMap[FirestoreManager.keyCosplayName],
+            subtitle: user.getHashMap[FirestoreManager.keySeriesName],
+            title: user.getHashMap[FirestoreManager.keyCosplayName],
             friendliness: user.getHashMap[FirestoreManager.keyFriendliness],
             cost: user.getHashMap[FirestoreManager.keyCosplayerCost],
             rarity: user.getHashMap[FirestoreManager.keyRarityBorder],
@@ -139,15 +138,37 @@ class _CosplayerSearchSectionState extends State<CosplayerSearchSection> {
             },
             key: UniqueKey(),
           );
-          userSearchInfoWidgets.add(widget);
+          cosplayerSearchInfoWidgets.add(widget);
+        }
+        // Handle photographer data
+        else if (FirestoreManager.keyIsPhotographer == true) {
+          docSnapshot.data.forEach((key, value) {
+            user.getHashMap[key] = value;
+          });
+
+          UserSearchInfo widget = UserSearchInfo(
+            backgroundImage: user.getHashMap[FirestoreManager.keyPhotos][0],
+            name: user.getHashMap[FirestoreManager.keyDisplayName],
+            subtitle: user.getHashMap[FirestoreManager.keySeriesName],
+            title: user.getHashMap[FirestoreManager.keyCosplayYearsExperience],
+            friendliness: user.getHashMap[FirestoreManager.keyFriendliness],
+            cost: user.getHashMap[FirestoreManager.keyCosplayerCost],
+            rarity: user.getHashMap[FirestoreManager.keyRarityBorder],
+            onTap: () {
+              HeroCreator.pushProfileIntoView(
+                  UniqueKey(), docSnapshot, context);
+            },
+            key: UniqueKey(),
+          );
+          photographerSearchInfoWidgets.add(widget);
         }
       });
       // done storing all of users information, now we can setState to rebuild
       // and display it
       setState(() {
         print("Triggering rebuild");
-        print(userSearchInfoWidgets.length);
-        userSearchInfoWidgets.add(
+        print(cosplayerSearchInfoWidgets.length);
+        cosplayerSearchInfoWidgets.add(
           SizedBox(height: 90.0),
         );
       });
@@ -157,9 +178,9 @@ class _CosplayerSearchSectionState extends State<CosplayerSearchSection> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: userSearchInfoWidgets.length,
+      itemCount: cosplayerSearchInfoWidgets.length,
       itemBuilder: (context, index) {
-        return userSearchInfoWidgets[index];
+        return cosplayerSearchInfoWidgets[index];
       },
     );
   }
