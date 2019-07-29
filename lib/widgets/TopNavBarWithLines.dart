@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:cosplay_app/widgets/NavButton.dart';
 
-class MyNavbar extends StatefulWidget {
+class TopNavBarWithLines extends StatefulWidget {
   final BuildContext context;
   final Function onCosplayersTap;
   final Function onPhotographersTap;
   final int index;
 
-  MyNavbar(
+  TopNavBarWithLines(
       {@required this.context,
       @required this.onCosplayersTap,
       @required this.onPhotographersTap,
       this.index});
 
   @override
-  _MyNavbarState createState() => _MyNavbarState();
+  _TopNavBarWithLinesState createState() => _TopNavBarWithLinesState();
 }
 
-class _MyNavbarState extends State<MyNavbar>
+class _TopNavBarWithLinesState extends State<TopNavBarWithLines>
     with SingleTickerProviderStateMixin {
   double navBarHeight = 80.0;
   double gap = 10.0;
@@ -65,7 +65,7 @@ class _MyNavbarState extends State<MyNavbar>
   }
 
   @override
-  void didUpdateWidget(MyNavbar oldWidget) {
+  void didUpdateWidget(TopNavBarWithLines oldWidget) {
     super.didUpdateWidget(oldWidget);
     // user didnt click on button to nav, they used page swipe
     if (oldWidget.index != widget.index) {

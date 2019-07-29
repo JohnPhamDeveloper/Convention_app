@@ -48,6 +48,7 @@ dev_dependencies:
   cloud_firestore: ^0.12.7+1
   provider: ^3.0.0+1
   transparent_image: ^1.0.0
+  google_maps_flutter: ^0.5.19+2
 
 
 

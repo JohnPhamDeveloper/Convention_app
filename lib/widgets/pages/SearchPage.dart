@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cosplay_app/widgets/MyNavbar.dart';
+import 'package:cosplay_app/widgets/TopNavBarWithLines.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cosplay_app/widgets/UserSearchInfo.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/classes/HeroCreator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -17,6 +18,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage>
     with AutomaticKeepAliveClientMixin {
   PageController pageController;
+  GoogleMapController googleMapController;
   PageView pageView;
   int navIndex = 0;
 
@@ -49,51 +51,83 @@ class _SearchPageState extends State<SearchPage>
     super.dispose();
   }
 
+  _onMapCreated(GoogleMapController googleMapController) {
+    this.googleMapController = googleMapController;
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Stack(
+    return Column(
       children: <Widget>[
-        Column(
-          children: <Widget>[
-            MyNavbar(
-              context: context,
-              index: navIndex,
-              onCosplayersTap: () {
-                pageController.animateToPage(
-                  0,
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOut,
-                );
-              },
-              onPhotographersTap: () {
-                pageController.animateToPage(
-                  1,
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOut,
-                );
-              },
+        Flexible(
+          flex: 2,
+          child: GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: LatLng(37.3289618, -121.8895222),
+              zoom: 12.0,
             ),
-            Expanded(child: pageView),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 15.0, bottom: 100.0),
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: RoundButton(
-              icon: FontAwesomeIcons.cog,
-              iconColor: Colors.white,
-              fillColor: Colors.pinkAccent,
-              onTap: () {},
-            ),
+            onMapCreated: _onMapCreated,
+            myLocationEnabled: true,
+            mapType: MapType.normal,
           ),
-        )
+        ),
+        Flexible(
+          flex: 3,
+          child: Stack(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  TopNavBarWithLines(
+                    context: context,
+                    index: navIndex,
+                    onCosplayersTap: () {
+                      pageController.animateToPage(
+                        0,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                    onPhotographersTap: () {
+                      pageController.animateToPage(
+                        1,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                  ),
+                  Expanded(child: pageView),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 15.0, bottom: 100.0),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: RoundButton(
+                    icon: FontAwesomeIcons.cog,
+                    iconColor: Colors.white,
+                    fillColor: Colors.pinkAccent,
+                    onTap: () {},
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ],
     );
   }
 }
 
+// SEARCH SECTION ITEM ----------------- BREAK INTO NEW FILE
+//
+//
+//
+//
+//
+//
+//
+//
 class SearchSectionItem extends StatefulWidget {
   final String userType;
 
@@ -108,7 +142,6 @@ class _SearchSectionItemState extends State<SearchSectionItem>
   List<Widget> searchInfoWidgets = List<Widget>();
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 
   @override
