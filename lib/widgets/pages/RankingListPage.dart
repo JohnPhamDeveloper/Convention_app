@@ -46,7 +46,7 @@ class _RankingListPageState extends State<RankingListPage>
           RankCard card = RankCard(
             documentSnapshot: data,
             heroName: dotHeroName,
-            imageHeroName: imageHeroName,
+            //imageHeroName: imageHeroName,
             image: url,
             name: data[FirestoreManager.keyDisplayName],
             icon: icon,

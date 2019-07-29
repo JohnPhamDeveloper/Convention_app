@@ -12,26 +12,42 @@ class ImageContainer extends StatelessWidget {
   final double height;
   final double width;
   final bool enableShadows;
-  final bool enableTopLeftDot;
-  final double topLeftDotOuterSize;
-  final double topLeftDotInnerSize;
-  final Color topLeftDotInnerColor;
-  final double topLeftDotLeft;
-  final double topLeftDotRight;
-  final double topLeftDotTop;
-  final double topLeftDotBottom;
+  final bool enableStatusDot;
+  final double statusDotOuterSize;
+  final double statusDotInnerSize;
+  final Color statusDotInnerColor;
+  final double statusDotLeft;
+  final double statusDotRight;
+  final double statusDotTop;
+  final double statusDotBottom;
+  final bool enableSelfieDot;
+  final double selfieDotOuterSize;
+  final double selfieDotInnerSize;
+  final Color selfieDotInnerColor;
+  final double selfieDotLeft;
+  final double selfieDotRight;
+  final double selfieDotTop;
+  final double selfieDotBottom;
 
   ImageContainer(
       {this.borderRadius = 0.0,
-      this.enableTopLeftDot = false,
-      this.topLeftDotInnerColor = Colors.green,
-      this.topLeftDotInnerSize = 5.0,
-      this.topLeftDotOuterSize = 15.0,
+      this.enableStatusDot = false,
+      this.statusDotInnerColor = Colors.green,
+      this.statusDotInnerSize = 5.0,
+      this.statusDotOuterSize = 15.0,
       this.heroName = "",
-      this.topLeftDotBottom,
-      this.topLeftDotLeft,
-      this.topLeftDotRight,
-      this.topLeftDotTop,
+      this.statusDotBottom,
+      this.statusDotLeft,
+      this.statusDotRight,
+      this.statusDotTop,
+      this.selfieDotBottom,
+      this.selfieDotInnerColor = Colors.pinkAccent,
+      this.selfieDotInnerSize = 5.0,
+      this.selfieDotLeft,
+      this.selfieDotOuterSize = 15.0,
+      this.selfieDotRight,
+      this.selfieDotTop,
+      this.enableSelfieDot = false,
       this.width = 300,
       this.height = 300,
       this.enableShadows = true,
@@ -62,16 +78,34 @@ class ImageContainer extends StatelessWidget {
   }
 
   Widget renderStatusDot() {
-    if (enableTopLeftDot) {
+    if (enableStatusDot) {
       return Positioned(
-        left: topLeftDotLeft,
-        right: topLeftDotRight,
-        top: topLeftDotTop,
-        bottom: topLeftDotBottom,
+        left: statusDotLeft,
+        right: statusDotRight,
+        top: statusDotTop,
+        bottom: statusDotBottom,
         child: NotificationDot(
-          innerColor: topLeftDotInnerColor,
-          innerSize: topLeftDotInnerSize,
-          outerSize: topLeftDotOuterSize,
+          innerColor: statusDotInnerColor,
+          innerSize: statusDotInnerSize,
+          outerSize: statusDotOuterSize,
+        ),
+      );
+    }
+
+    return Container(width: 0, height: 0);
+  }
+
+  Widget renderSelfieDot() {
+    if (enableSelfieDot) {
+      return Positioned(
+        left: selfieDotLeft,
+        right: selfieDotRight,
+        top: selfieDotTop,
+        bottom: selfieDotBottom,
+        child: NotificationDot(
+          innerColor: selfieDotInnerColor,
+          innerSize: selfieDotInnerSize,
+          outerSize: selfieDotOuterSize,
         ),
       );
     }
@@ -102,6 +136,7 @@ class ImageContainer extends StatelessWidget {
             ),
           ),
           renderStatusDot(),
+          renderSelfieDot(),
         ],
       );
     } else {
@@ -129,6 +164,7 @@ class ImageContainer extends StatelessWidget {
               ),
             ),
             renderStatusDot(),
+            renderSelfieDot(),
           ],
         ),
       );

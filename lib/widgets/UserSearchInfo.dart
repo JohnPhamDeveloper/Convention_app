@@ -21,14 +21,25 @@ class UserSearchInfo extends StatelessWidget {
         "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/300px-Icon-round-Question_mark.svg.png",
     this.imageHeroName = "",
     @required this.onTap,
-    this.name,
-    this.subtitle,
-    this.title,
-    this.friendliness,
+    this.name = "empty",
+    this.subtitle = "",
+    this.title = "empty",
+    this.friendliness = 0,
     this.key,
-    this.cost,
+    this.cost = "?",
     this.rarity,
   }) : super(key: key);
+
+  renderSubtitle() {
+    if (subtitle.isNotEmpty) {
+      return Text(
+        subtitle,
+        style: TextStyle(
+            fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.white),
+      );
+    }
+    return Container(width: 0, height: 0);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +58,12 @@ class UserSearchInfo extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 0.0),
               child: ImageContainer(
                   heroName: imageHeroName,
-                  enableTopLeftDot: true,
-                  topLeftDotBottom: 2,
-                  topLeftDotRight: 2,
+                  enableStatusDot: true,
+                  enableSelfieDot: true,
+                  selfieDotLeft: 0,
+                  selfieDotBottom: 2,
+                  statusDotBottom: 2,
+                  statusDotRight: 2,
                   borderWidth: 2.5,
                   rarityBorderColor: kRarityBorders[rarity],
                   borderRadius: 500.0,
@@ -73,6 +87,7 @@ class UserSearchInfo extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 3.0),
+                  // title
                   Text(
                     title,
                     style: TextStyle(
@@ -81,13 +96,8 @@ class UserSearchInfo extends StatelessWidget {
                         color: Colors.white),
                   ),
                   SizedBox(height: 1.5),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white),
-                  ),
+                  // subtitle
+                  renderSubtitle(),
                 ],
               ),
             ),

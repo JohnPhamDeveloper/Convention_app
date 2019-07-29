@@ -35,7 +35,7 @@ class RankCard extends StatelessWidget {
     @required this.dotIsOn,
     @required this.key,
   }) : super(key: key) {
-    createClickedProfile();
+    //createClickedProfileBeforeHand();
   }
 
   Widget renderHeroDot() {
@@ -58,10 +58,15 @@ class RankCard extends StatelessWidget {
   }
 
   // Precreate profiles for no lag when clicking on a ranked user
-  void createClickedProfile() {
+  void createClickedProfileBeforeHand() {
     _start = HeroCreator.createHeroProfileStart(
         heroName, imageHeroName, documentSnapshot);
     _details = HeroCreator.createHeroProfileDetails(documentSnapshot);
+  }
+
+  void createClickedProfileOnlyOnTap(BuildContext context) {
+    HeroCreator.pushProfileIntoView(
+        heroName, imageHeroName, documentSnapshot, context);
   }
 
   @override
@@ -73,7 +78,8 @@ class RankCard extends StatelessWidget {
         hoverColor: Colors.transparent,
         onTap: () {
           ///onTap();
-          HeroCreator.pushProfileIntoView2(_start, _details, context);
+          // HeroCreator.pushProfileIntoView2(_start, _details, context);
+          createClickedProfileOnlyOnTap(context);
         },
         child: Stack(
           children: <Widget>[

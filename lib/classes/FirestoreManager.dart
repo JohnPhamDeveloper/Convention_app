@@ -17,8 +17,6 @@ class FirestoreManager {
   static String keySeriesName = 'seriesName';
   static String keyCosplayerCost = 'cosplayerCost';
   static String keyPhotographerCost = 'photographerCost';
-
-  // Not in database yet
   static String keyPhotographyYearsExperience = 'photographyYearsExperience';
   static String keyPhotographyMonthsExperience = 'photographyMonthsExperience';
   static String keyCosplayYearsExperience = 'cosplayYearsExperience';
@@ -41,6 +39,10 @@ class FirestoreManager {
     String realName,
     String cosplayerCost,
     String photographerCost,
+    int photographyYearsExperience,
+    int photographyMonthsExperience,
+    int cosplayYearsExperience,
+    int cosplayMonthsExperience,
   }) async {
     await Firestore.instance
         .collection("users")
@@ -58,6 +60,10 @@ class FirestoreManager {
       keySeriesName: seriesName,
       keyCosplayerCost: cosplayerCost,
       keyPhotographerCost: photographerCost,
+      keyPhotographyYearsExperience: photographyYearsExperience,
+      keyPhotographyMonthsExperience: photographyMonthsExperience,
+      keyCosplayYearsExperience: cosplayMonthsExperience,
+      keyCosplayYearsExperience: cosplayYearsExperience,
       keyDateRegistered: DateTime.now(),
     }, merge: true);
     print("Finished creating mock user");

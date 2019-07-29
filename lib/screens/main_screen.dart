@@ -63,168 +63,196 @@ class _MainScreenState extends State<MainScreen> {
     // Set loading is called if data is successfuly updated into loggedInUser
     FirestoreManager.streamUserData(loggedInUser, setLoading);
 
-    // createMockUser();
+    createMockUser();
   }
 
   // TODO DELEETE THIS MOCK USER
-//  void createMockUser() async {
-//    List<String> photoUrls = [
-//      "https://c.pxhere.com/photos/bb/92/boy_portrait_people_man_anime_face_35mm_comic-185893.jpg!d"
-//    ];
-//    List<String> urls = [
-//      "https://c.pxhere.com/photos/fb/84/50mm_anime_comic_comiccon_cosplay_costume_cute_face-343295.jpg!d"
-//    ];
-//
-//    List<String> urls2 = [
-//      "https://c.pxhere.com/photos/0b/f9/anime_girl_japan_japanese_tokyo_cosplay-266599.jpg!d"
-//    ];
-//
-//    List<String> urls3 = [
-//      "https://c.pxhere.com/photos/eb/33/china_girls_game_anime_cute_girl_japanese_costume-187564.jpg!d"
-//    ];
-//
-//    List<String> urls4 = [
-//      "https://c.pxhere.com/photos/ff/89/girls_game_anime_cute_girl_japanese_costume_comic-187663.jpg!d"
-//    ];
-//
-//    List<String> urls5 = [
-//      "https://c.pxhere.com/photos/d4/02/auto_pc_nikon_nikkor_f25_105mm-146568.jpg!d"
-//    ];
-//
-//    List<String> urls6 = [
-//      "https://c.pxhere.com/photos/bb/92/boy_portrait_people_man_anime_face_35mm_comic-185893.jpg!d"
-//    ];
-//
-//    List<String> urls7 = [
-//      "https://c.pxhere.com/photos/8a/12/girls_cute_girl_hair_japanese_costume_comic_expo-432382.jpg!d"
-//    ];
-//
-//    await FirestoreManager.createUserInDatabase(
-//      documentName: "testUser2",
-//      fame: 45,
-//      friendliness: 512,
-//      displayName: "Netarno",
-//      photoUrls: photoUrls,
-//      cosplayName: "Netarno",
-//      seriesName: "Naruto",
-//      isCosplayer: true,
-//      isPhotographer: true,
-//      rarityBorder: 3,
-//      realName: "Bobby Jones",
-//      cosplayerCost: "\$52.00/hr",
-//      photographerCost: "\$42.00/hr",
-//    );
-//
-//    await FirestoreManager.createUserInDatabase(
-//      documentName: "testUser3",
-//      fame: 66,
-//      friendliness: 512,
-//      displayName: "Renaldo",
-//      cosplayName: "Gaia",
-//      seriesName: "Final Fantasy",
-//      photoUrls: urls,
-//      isCosplayer: true,
-//      isPhotographer: true,
-//      rarityBorder: 2,
-//      realName: "Bobby Jones",
-//      cosplayerCost: "\$12.00/hr",
-//      photographerCost: '\$42.00/hr',
-//    );
-//
-//    await FirestoreManager.createUserInDatabase(
-//      documentName: "testUser4",
-//      fame: 32,
-//      friendliness: 783,
-//      displayName: "Chibata",
-//      cosplayName: "Luke",
-//      seriesName: "Tales of Abyss",
-//      photoUrls: urls2,
-//      isCosplayer: true,
-//      isPhotographer: true,
-//      rarityBorder: 1,
-//      realName: "Bobby Jones",
-//      cosplayerCost: "",
-//      photographerCost: '\$42.00/hr',
-//    );
-//
-//    await FirestoreManager.createUserInDatabase(
-//      documentName: "testUser5",
-//      fame: 74,
-//      friendliness: 52,
-//      displayName: "Peronoa",
-//      cosplayName: "Nago",
-//      seriesName: "Tree Hunters",
-//      photoUrls: urls3,
-//      isCosplayer: true,
-//      isPhotographer: true,
-//      rarityBorder: 1,
-//      realName: "Bobby Jones",
-//      cosplayerCost: "\$62.00/hr",
-//      photographerCost: '\$42.00/hr',
-//    );
-//
-//    await FirestoreManager.createUserInDatabase(
-//      documentName: "testUser6",
-//      fame: 82,
-//      friendliness: 74,
-//      displayName: "Peronoa",
-//      cosplayName: "Nago",
-//      seriesName: "Tree Hunters",
-//      photoUrls: urls4,
-//      isCosplayer: true,
-//      isPhotographer: true,
-//      rarityBorder: 2,
-//      realName: "Bobby Jones",
-//      cosplayerCost: "",
-//      photographerCost: '\$42.00/hr',
-//    );
-//
-//    await FirestoreManager.createUserInDatabase(
-//      documentName: "testUser7",
-//      fame: 727,
-//      friendliness: 193,
-//      displayName: "Gueon",
-//      cosplayName: "Beqna",
-//      seriesName: "Attack On Titan",
-//      photoUrls: urls5,
-//      isCosplayer: true,
-//      isPhotographer: true,
-//      rarityBorder: 3,
-//      realName: "Bobby Jones",
-//      cosplayerCost: "",
-//      photographerCost: '\$42.00/hr',
-//    );
-//
-//    await FirestoreManager.createUserInDatabase(
-//      documentName: "testUser8",
-//      fame: 273,
-//      friendliness: 472,
-//      displayName: "LooLoo",
-//      cosplayName: "Teeno",
-//      seriesName: "Original Cosplay",
-//      photoUrls: urls7,
-//      isCosplayer: true,
-//      isPhotographer: true,
-//      rarityBorder: 0,
-//      realName: "Bobby Jones",
-//      cosplayerCost: "\$24.00/hr",
-//      photographerCost: '\$42.00/hr',
-//    );
-////    await Firestore.instance.collection("users").document("testUser2").setData({
-////      FirestoreManager.keyFame: 45,
-////      FirestoreManager.keyFriendliness: 512,
-////      FirestoreManager.keyDisplayName: "Netarno",
-////      FirestoreManager.keyPhotos: [
-////        "https://c.pxhere.com/photos/bb/92/boy_portrait_people_man_anime_face_35mm_comic-185893.jpg!d"
-////      ],
-////      FirestoreManager.keyIsCosplayer: true,
-////      FirestoreManager.keyIsPhotographer: true,
-////      FirestoreManager.keyRarityBorder: 0,
-////      FirestoreManager.keyRealName: "Bobby Jones",
-////      FirestoreManager.keyDateRegistered: DateTime.now(),
-////    }, merge: true);
-//    print("Finished creating mock user");
-//  }
+  void createMockUser() async {
+    List<String> photoUrls = [
+      "https://c.pxhere.com/images/29/3a/ab7eb8106f292a24d2a5d818c6a1-1418380.jpg!d"
+    ];
+    List<String> urls = [
+      "https://c.pxhere.com/images/c7/21/c8e22db330eb09e78970ac8b2ce2-1456325.jpg!d"
+    ];
+
+    List<String> urls2 = [
+      "https://c.pxhere.com/images/52/27/c8e31718a7e13b915f72689e7911-1424101.jpg!d"
+    ];
+
+    List<String> urls3 = [
+      "https://c.pxhere.com/photos/9d/fd/photographer_camera_photo_photos_foto_lens_take_a_photograph_electronic_equipment-942701.jpg!d"
+    ];
+
+    List<String> urls4 = [
+      "https://c.pxhere.com/photos/b3/2d/camera_digital_equipment_female_girl_isolated_lens_people-1260617.jpg!d"
+    ];
+
+    List<String> urls5 = [
+      "https://c.pxhere.com/photos/08/97/photographer_road_camera_girl_person-180399.jpg!d"
+    ];
+
+    List<String> urls6 = [
+      "https://c.pxhere.com/photos/62/c1/camera_photographer_person_photography_urban-133163.jpg!d"
+    ];
+
+    List<String> urls7 = [
+      "https://c.pxhere.com/photos/64/b4/photographer_photography_digital_camera_dslr_camera_digital_single_lens_reflex_camera_camera-964918.jpg!d"
+    ];
+
+    await FirestoreManager.createUserInDatabase(
+      documentName: "testUser10",
+      fame: 45,
+      friendliness: 512,
+      displayName: "Netarno",
+      photoUrls: photoUrls,
+      cosplayName: "Netarno",
+      seriesName: "Naruto",
+      isCosplayer: false,
+      isPhotographer: true,
+      rarityBorder: 3,
+      realName: "Bobby Jones",
+      cosplayerCost: "\$52.00/hr",
+      photographerCost: "\$42.00/hr",
+      photographyMonthsExperience: 2,
+      photographyYearsExperience: 5,
+      cosplayMonthsExperience: 0,
+      cosplayYearsExperience: 0,
+    );
+
+    await FirestoreManager.createUserInDatabase(
+      documentName: "testUser11",
+      fame: 66,
+      friendliness: 512,
+      displayName: "Renaldo",
+      cosplayName: "Gaia",
+      seriesName: "Final Fantasy",
+      photoUrls: urls,
+      isCosplayer: false,
+      isPhotographer: true,
+      rarityBorder: 2,
+      realName: "Bobby Jones",
+      cosplayerCost: "\$12.00/hr",
+      photographerCost: '\$42.00/hr',
+      photographyMonthsExperience: 3,
+      photographyYearsExperience: 7,
+      cosplayMonthsExperience: 0,
+      cosplayYearsExperience: 0,
+    );
+
+    await FirestoreManager.createUserInDatabase(
+      documentName: "testUser12",
+      fame: 32,
+      friendliness: 783,
+      displayName: "Chibata",
+      cosplayName: "Luke",
+      seriesName: "Tales of Abyss",
+      photoUrls: urls2,
+      isCosplayer: false,
+      isPhotographer: true,
+      rarityBorder: 1,
+      realName: "Bobby Jones",
+      cosplayerCost: "",
+      photographerCost: '\$42.00/hr',
+      photographyMonthsExperience: 4,
+      photographyYearsExperience: 1,
+      cosplayMonthsExperience: 0,
+      cosplayYearsExperience: 0,
+    );
+
+    await FirestoreManager.createUserInDatabase(
+      documentName: "testUser13",
+      fame: 74,
+      friendliness: 52,
+      displayName: "Peronoa",
+      cosplayName: "Nago",
+      seriesName: "Tree Hunters",
+      photoUrls: urls3,
+      isCosplayer: false,
+      isPhotographer: true,
+      rarityBorder: 1,
+      realName: "Bobby Jones",
+      cosplayerCost: "\$62.00/hr",
+      photographerCost: '\$42.00/hr',
+      photographyMonthsExperience: 2,
+      photographyYearsExperience: 6,
+      cosplayMonthsExperience: 0,
+      cosplayYearsExperience: 0,
+    );
+
+    await FirestoreManager.createUserInDatabase(
+      documentName: "testUser14",
+      fame: 82,
+      friendliness: 74,
+      displayName: "Peronoa",
+      cosplayName: "Nago",
+      seriesName: "Tree Hunters",
+      photoUrls: urls4,
+      isCosplayer: false,
+      isPhotographer: true,
+      rarityBorder: 2,
+      realName: "Bobby Jones",
+      cosplayerCost: "",
+      photographerCost: '\$42.00/hr',
+      photographyMonthsExperience: 2,
+      photographyYearsExperience: 3,
+      cosplayMonthsExperience: 0,
+      cosplayYearsExperience: 0,
+    );
+
+    await FirestoreManager.createUserInDatabase(
+      documentName: "testUser15",
+      fame: 727,
+      friendliness: 193,
+      displayName: "Gueon",
+      cosplayName: "Beqna",
+      seriesName: "Attack On Titan",
+      photoUrls: urls5,
+      isCosplayer: false,
+      isPhotographer: true,
+      rarityBorder: 3,
+      realName: "Bobby Jones",
+      cosplayerCost: "",
+      photographerCost: '\$42.00/hr',
+      photographyMonthsExperience: 4,
+      photographyYearsExperience: 1,
+      cosplayMonthsExperience: 0,
+      cosplayYearsExperience: 0,
+    );
+
+    await FirestoreManager.createUserInDatabase(
+      documentName: "testUser16",
+      fame: 273,
+      friendliness: 472,
+      displayName: "LooLoo",
+      cosplayName: "Teeno",
+      seriesName: "Original Cosplay",
+      photoUrls: urls7,
+      isCosplayer: false,
+      isPhotographer: true,
+      rarityBorder: 0,
+      realName: "Bobby Jones",
+      cosplayerCost: "\$24.00/hr",
+      photographerCost: '\$42.00/hr',
+      photographyMonthsExperience: 3,
+      photographyYearsExperience: 2,
+      cosplayMonthsExperience: 0,
+      cosplayYearsExperience: 0,
+    );
+//    await Firestore.instance.collection("users").document("testUser2").setData({
+//      FirestoreManager.keyFame: 45,
+//      FirestoreManager.keyFriendliness: 512,
+//      FirestoreManager.keyDisplayName: "Netarno",
+//      FirestoreManager.keyPhotos: [
+//        "https://c.pxhere.com/photos/bb/92/boy_portrait_people_man_anime_face_35mm_comic-185893.jpg!d"
+//      ],
+//      FirestoreManager.keyIsCosplayer: true,
+//      FirestoreManager.keyIsPhotographer: true,
+//      FirestoreManager.keyRarityBorder: 0,
+//      FirestoreManager.keyRealName: "Bobby Jones",
+//      FirestoreManager.keyDateRegistered: DateTime.now(),
+//    }, merge: true);
+    print("Finished creating mock user");
+  }
 
   void setLoading() {
     //print("how many times is this called?");
