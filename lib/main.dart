@@ -17,6 +17,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        sliderTheme: SliderThemeData.fromPrimaryColors(
+            primaryColor: Colors.cyan[300],
+            primaryColorDark: Colors.black,
+            primaryColorLight: Colors.cyan[300],
+            valueIndicatorTextStyle: TextStyle(color: Colors.white)),
         primarySwatch: Colors.cyan,
         primaryColor: Colors.cyan[300],
         accentColor: Colors.limeAccent[200],

@@ -63,7 +63,7 @@ class _MainScreenState extends State<MainScreen> {
     // Set loading is called if data is successfuly updated into loggedInUser
     FirestoreManager.streamUserData(loggedInUser, setLoading);
 
-    createMockUser();
+    //createMockUser();
   }
 
   // TODO DELEETE THIS MOCK USER

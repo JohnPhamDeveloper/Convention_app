@@ -8,7 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/classes/HeroCreator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cosplay_app/widgets/FireMap.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -18,7 +18,6 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage>
     with AutomaticKeepAliveClientMixin {
   PageController pageController;
-  GoogleMapController googleMapController;
   PageView pageView;
   int navIndex = 0;
 
@@ -51,10 +50,6 @@ class _SearchPageState extends State<SearchPage>
     super.dispose();
   }
 
-  _onMapCreated(GoogleMapController googleMapController) {
-    this.googleMapController = googleMapController;
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -62,15 +57,7 @@ class _SearchPageState extends State<SearchPage>
       children: <Widget>[
         Flexible(
           flex: 2,
-          child: GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: LatLng(37.3289618, -121.8895222),
-              zoom: 12.0,
-            ),
-            onMapCreated: _onMapCreated,
-            myLocationEnabled: true,
-            mapType: MapType.normal,
-          ),
+          child: FireMap(),
         ),
         Flexible(
           flex: 3,
