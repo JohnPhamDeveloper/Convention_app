@@ -37,9 +37,13 @@ class HeroProfileDetails extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: ImageContainer(
                   enableStatusDot: true,
+                  enableSelfieDot: true,
                   statusDotOuterSize: 25.0,
                   statusDotRight: 15,
                   statusDotBottom: 10,
+                  selfieDotOuterSize: 25.0,
+                  selfieDotLeft: 15,
+                  selfieDotBottom: 10,
                   borderWidth: 3.5,
                   rarityBorderColor: kRarityBorders[rarityBorder],
                   borderRadius: 500.0,
