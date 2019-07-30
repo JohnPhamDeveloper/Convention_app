@@ -32,10 +32,25 @@ class HeroCreator {
       DocumentSnapshot data, BuildContext context, LoggedInUser currentLoggedInUser) {
     bool isLookingAtOwnProfile = _checkSame(currentLoggedInUser, data);
 
+    // Go into our list of references in selfieRequests and check
+    // if that profile we're trying to push into view is in out selfieRequest list
+    // then a new button will replace the "Selfie request" with "Accept selfie"
+    // Also need to construct a "onSelfieAcceptTap"
+    List<dynamic> loggedInUserSelfieReferences = currentLoggedInUser.getHashMap[FirestoreManager.keySelfieRequests];
+    loggedInUserSelfieReferences.forEach((ref) {
+      if (ref == data.reference) {
+        print("USER EXISTS IN THE LIST");
+      } else {
+        print("THIS USER DOES NOT EXISTS IN THE LIST OF REFERENCES FOR THE LOGGED IN USER");
+      }
+    });
+
     return HeroProfileDetails(
       onSelfieRequestTap: () {
         _onSelfieTap(currentLoggedInUser, data);
       },
+//      onSelfieAcceptTap: (){},
+//      isInSelfieRequestList: ,
       isLoggedInUser: isLookingAtOwnProfile,
       userCircleImage: data[FirestoreManager.keyPhotos][0],
       rarityBorder: data[FirestoreManager.keyRarityBorder],
@@ -85,8 +100,6 @@ class HeroCreator {
   static void _onSelfieTap(LoggedInUser loggedInUser, DocumentSnapshot otherUserData) async {
     DocumentReference loggedInUserRef;
 
-    print("OnSelfieTap");
-
     // Get the DocumentReference to the loggedInuser
     await Firestore.instance
         .collection("users")
@@ -94,7 +107,6 @@ class HeroCreator {
         .getDocuments()
         .then((snapshot) {
       loggedInUserRef = snapshot.documents[0].reference;
-      print("Got reference to loggedInUser... $loggedInUserRef");
     });
 
     // Add the DocumentReference to the selfieRequests list for otherUser
@@ -107,19 +119,7 @@ class HeroCreator {
         'selfieRequests': [loggedInUserRef],
       }, merge: true);
     });
-
-//    Firestore.instance
-//        .collection('users')
-//        .document(otherUserData['documentID'])
-//        .setData({
-//      'selfieRequests': [loggedInUserRef, loggedInUserRef]
-//    }, merge: true);
   }
-
-//  static DocumentReference _getDocumentReferenceByDocumentID(
-//      String documentID) {
-//    return Firestore.instance.collection('users').document(documentID);
-//  }
 
   static _checkSame(LoggedInUser loggedInUser, DocumentSnapshot otherUser) {
     String otherUserName = otherUser[FirestoreManager.keyDisplayName];

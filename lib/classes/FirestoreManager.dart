@@ -21,7 +21,7 @@ class FirestoreManager {
   static String keyPhotographyMonthsExperience = 'photographyMonthsExperience';
   static String keyCosplayYearsExperience = 'cosplayYearsExperience';
   static String keyCosplayMonthsExperience = 'cosplayMonthsExperience';
-  static String keyDocumentID = "documentID";
+  static String keySelfieRequests = 'selfieRequests';
 
   // (delete) not useful
   static HashMap<String, String> keys = HashMap<String, String>();
@@ -45,10 +45,7 @@ class FirestoreManager {
     int cosplayYearsExperience,
     int cosplayMonthsExperience,
   }) async {
-    await Firestore.instance
-        .collection("users")
-        .document(documentName)
-        .setData({
+    await Firestore.instance.collection("users").document(documentName).setData({
       keyFame: fame,
       keyFriendliness: friendliness,
       keyDisplayName: displayName,
@@ -76,7 +73,7 @@ class FirestoreManager {
   static void streamUserData(LoggedInUser loggedInUser, Function callback) {
     Firestore.instance
         .collection("users")
-        .where(FirestoreManager.keyDisplayName, isEqualTo: "Hakunom")
+        .where(FirestoreManager.keyDisplayName, isEqualTo: "Renaldo")
         .getDocuments()
         .asStream()
         .listen((doc) {
@@ -105,8 +102,7 @@ class FirestoreManager {
   }
 
   // Takes all documentSnapshots and copies to loggedInUser
-  static _copyUserDatabaseInformationToLocalData(
-      DocumentSnapshot documentSnapshot, LoggedInUser loggedInUser) {
+  static _copyUserDatabaseInformationToLocalData(DocumentSnapshot documentSnapshot, LoggedInUser loggedInUser) {
     documentSnapshot.data.forEach((key, value) {
       print("Updating $key...");
       FirestoreManager.keys[key] = key; // (delete) Not useful
