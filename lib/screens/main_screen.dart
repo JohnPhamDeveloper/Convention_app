@@ -51,10 +51,10 @@ class _MainScreenState extends State<MainScreen> {
       physics: new NeverScrollableScrollPhysics(),
       controller: preloadPageController,
       children: <Widget>[
-        RankingListPage(),
-        SearchPage(),
-        FamePage(),
-        NotificationPage(),
+//        RankingListPage(),
+//        SearchPage(),
+//        FamePage(),
+//        NotificationPage(),
         ProfilePage(),
       ],
     );
@@ -68,16 +68,10 @@ class _MainScreenState extends State<MainScreen> {
 
   // TODO DELEETE THIS MOCK USER
   void createMockUser() async {
-    List<String> photoUrls = [
-      "https://c.pxhere.com/images/29/3a/ab7eb8106f292a24d2a5d818c6a1-1418380.jpg!d"
-    ];
-    List<String> urls = [
-      "https://c.pxhere.com/images/c7/21/c8e22db330eb09e78970ac8b2ce2-1456325.jpg!d"
-    ];
+    List<String> photoUrls = ["https://c.pxhere.com/images/29/3a/ab7eb8106f292a24d2a5d818c6a1-1418380.jpg!d"];
+    List<String> urls = ["https://c.pxhere.com/images/c7/21/c8e22db330eb09e78970ac8b2ce2-1456325.jpg!d"];
 
-    List<String> urls2 = [
-      "https://c.pxhere.com/images/52/27/c8e31718a7e13b915f72689e7911-1424101.jpg!d"
-    ];
+    List<String> urls2 = ["https://c.pxhere.com/images/52/27/c8e31718a7e13b915f72689e7911-1424101.jpg!d"];
 
     List<String> urls3 = [
       "https://c.pxhere.com/photos/9d/fd/photographer_camera_photo_photos_foto_lens_take_a_photograph_electronic_equipment-942701.jpg!d"
@@ -87,13 +81,9 @@ class _MainScreenState extends State<MainScreen> {
       "https://c.pxhere.com/photos/b3/2d/camera_digital_equipment_female_girl_isolated_lens_people-1260617.jpg!d"
     ];
 
-    List<String> urls5 = [
-      "https://c.pxhere.com/photos/08/97/photographer_road_camera_girl_person-180399.jpg!d"
-    ];
+    List<String> urls5 = ["https://c.pxhere.com/photos/08/97/photographer_road_camera_girl_person-180399.jpg!d"];
 
-    List<String> urls6 = [
-      "https://c.pxhere.com/photos/62/c1/camera_photographer_person_photography_urban-133163.jpg!d"
-    ];
+    List<String> urls6 = ["https://c.pxhere.com/photos/62/c1/camera_photographer_person_photography_urban-133163.jpg!d"];
 
     List<String> urls7 = [
       "https://c.pxhere.com/photos/64/b4/photographer_photography_digital_camera_dslr_camera_digital_single_lens_reflex_camera_camera-964918.jpg!d"

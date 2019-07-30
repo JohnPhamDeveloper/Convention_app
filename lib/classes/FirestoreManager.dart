@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
+import 'package:cosplay_app/classes/FirestoreReadcheck.dart';
 import 'dart:collection';
 
 class FirestoreManager {
@@ -75,6 +76,7 @@ class FirestoreManager {
     Firestore.instance
         .collection("users")
         .where(FirestoreManager.keyDisplayName, isEqualTo: "Chibata")
+        .limit(1)
         .getDocuments()
         .asStream()
         .listen((doc) {
@@ -105,6 +107,8 @@ class FirestoreManager {
   // Takes all documentSnapshots and copies to loggedInUser
   static _copyUserDatabaseInformationToLocalData(DocumentSnapshot documentSnapshot, LoggedInUser loggedInUser) {
     documentSnapshot.data.forEach((key, value) {
+      FirestoreReadcheck.userProfileReads++;
+      FirestoreReadcheck.printUserProfileReads();
       print("Updating $key...$value");
       FirestoreManager.keys[key] = key; // (delete) Not useful
       loggedInUser.getHashMap[key] = value;

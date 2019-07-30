@@ -16,8 +16,7 @@ class SearchPage extends StatefulWidget {
   _SearchPageState createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage>
-    with AutomaticKeepAliveClientMixin {
+class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMixin {
   PageController pageController;
   PageView pageView;
   int navIndex = 0;
@@ -124,8 +123,7 @@ class SearchSectionItem extends StatefulWidget {
   _SearchSectionItemState createState() => _SearchSectionItemState();
 }
 
-class _SearchSectionItemState extends State<SearchSectionItem>
-    with AutomaticKeepAliveClientMixin {
+class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKeepAliveClientMixin {
   List<Widget> searchInfoWidgets = List<Widget>();
 
   @override
@@ -137,12 +135,19 @@ class _SearchSectionItemState extends State<SearchSectionItem>
     createSearchUsers(context);
   }
 
+  // Initial creation of search users on app launch
   void createSearchUsers(BuildContext context) {
     // Go through every person in the users (though we'll change this to users around us)
     // Check if they are a cosplayer, if they are, then put into cosplayer list
     //List<LoggedInUser> userList = List<LoggedInUser>();
     LoggedInUser user = LoggedInUser();
 
+    // TODO should only get user around the radius of the user
+    //
+    //
+    //
+    //
+    //
     Firestore.instance.collection("users").getDocuments().then((snapshot) {
       // Go through each user in the database
       snapshot.documents.forEach((docSnapshot) {
@@ -150,7 +155,6 @@ class _SearchSectionItemState extends State<SearchSectionItem>
         docSnapshot.data.forEach((key, value) {
           user.getHashMap[key] = value;
         });
-
         // Copy each data into user object
         String key = UniqueKey().toString();
         String dotHeroName = key + 'dot';
@@ -158,22 +162,17 @@ class _SearchSectionItemState extends State<SearchSectionItem>
 
         // All of the data in our database
         bool isCosplayer = user.getHashMap[FirestoreManager.keyIsCosplayer];
-        bool isPhotographer =
-            user.getHashMap[FirestoreManager.keyIsPhotographer];
+        bool isPhotographer = user.getHashMap[FirestoreManager.keyIsPhotographer];
         String circleImageUrl = user.getHashMap[FirestoreManager.keyPhotos][0];
         String name = user.getHashMap[FirestoreManager.keyDisplayName];
         String subtitle = user.getHashMap[FirestoreManager.keySeriesName];
         String title = user.getHashMap[FirestoreManager.keyCosplayName];
         int friendliness = user.getHashMap[FirestoreManager.keyFriendliness];
-        String cosplayerCost =
-            user.getHashMap[FirestoreManager.keyCosplayerCost];
-        String photographerCost =
-            user.getHashMap[FirestoreManager.keyPhotographerCost];
+        String cosplayerCost = user.getHashMap[FirestoreManager.keyCosplayerCost];
+        String photographerCost = user.getHashMap[FirestoreManager.keyPhotographerCost];
         int rarity = user.getHashMap[FirestoreManager.keyRarityBorder];
-        int photographyYears =
-            user.getHashMap[FirestoreManager.keyPhotographyYearsExperience];
-        int photographyMonths =
-            user.getHashMap[FirestoreManager.keyPhotographyMonthsExperience];
+        int photographyYears = user.getHashMap[FirestoreManager.keyPhotographyYearsExperience];
+        int photographyMonths = user.getHashMap[FirestoreManager.keyPhotographyMonthsExperience];
 
         // Handle cosplayer data
         if (widget.userType == FirestoreManager.keyIsCosplayer && isCosplayer) {
@@ -187,16 +186,14 @@ class _SearchSectionItemState extends State<SearchSectionItem>
             cost: cosplayerCost,
             rarity: rarity,
             onTap: () {
-              HeroCreator.pushProfileIntoView(
-                  dotHeroName, imageHeroName, docSnapshot, context);
+              HeroCreator.pushProfileIntoView(dotHeroName, imageHeroName, docSnapshot.reference, context);
             },
             key: UniqueKey(),
           );
           searchInfoWidgets.add(widget);
         }
         // Handle photographer data
-        else if (widget.userType == FirestoreManager.keyIsPhotographer &&
-            isPhotographer) {
+        else if (widget.userType == FirestoreManager.keyIsPhotographer && isPhotographer) {
           createDataForPhotographer(
             circleImageUrl,
             name,
@@ -245,8 +242,7 @@ class _SearchSectionItemState extends State<SearchSectionItem>
       cost: photographerCost,
       rarity: rarity,
       onTap: () {
-        HeroCreator.pushProfileIntoView(
-            dotHeroName, imageHeroName, docSnapshot, context);
+        HeroCreator.pushProfileIntoView(dotHeroName, imageHeroName, docSnapshot, context);
       },
       key: UniqueKey(),
     );

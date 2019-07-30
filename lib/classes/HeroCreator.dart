@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:provider/provider.dart';
+import 'package:cosplay_app/classes/FirestoreReadcheck.dart';
 
 // Used for creating the hero widgets to show the selected user's profile
 // into view
@@ -49,7 +50,7 @@ class HeroCreator {
       }
     });
 
-    print(loggedInUserOutgoingSelfieReferences);
+    print('${loggedInUserOutgoingSelfieReferences.length} length of outgoing selfie references');
     loggedInUserOutgoingSelfieReferences.forEach((reference) {
       print('${reference.toString()} ...');
       if (reference == otherUserDocumentSnapshot.reference) {
@@ -87,16 +88,17 @@ class HeroCreator {
   }
 
   // Construct HeroProfile widget from the information on the clicked avatar
-  static pushProfileIntoView(String dotHeroName, String imageHeroName, DocumentSnapshot data, BuildContext context) {
-    // bool isLoggedInUser = false;
+  static pushProfileIntoView(
+      String dotHeroName, String imageHeroName, DocumentReference otherUserDataReference, BuildContext context) async {
+    DocumentSnapshot otherUserDataSnapshot = await otherUserDataReference.get();
 
-    // Check if the current logged in user is the profile they're trying
-    // to bring up (themselves)
     LoggedInUser currentLoggedInUser = Provider.of<LoggedInUser>(context);
 
-    HeroProfileStart heroProfileStart = HeroCreator.createHeroProfileStart(dotHeroName, imageHeroName, data, currentLoggedInUser);
+    HeroProfileStart heroProfileStart =
+        HeroCreator.createHeroProfileStart(dotHeroName, imageHeroName, otherUserDataSnapshot, currentLoggedInUser);
 
-    HeroProfileDetails heroProfileDetails = HeroCreator.createHeroProfileDetails(data, context, currentLoggedInUser);
+    HeroProfileDetails heroProfileDetails =
+        HeroCreator.createHeroProfileDetails(otherUserDataSnapshot, context, currentLoggedInUser);
     Widget clickedProfile = HeroCreator.wrapInScaffold([heroProfileStart, heroProfileDetails], context);
 
     // Push that profile into view
@@ -120,8 +122,11 @@ class HeroCreator {
     await Firestore.instance
         .collection("users")
         .where(FirestoreManager.keyDisplayName, isEqualTo: loggedInUser.getHashMap[FirestoreManager.keyDisplayName])
+        .limit(1) // We should only be getting one document here.
         .getDocuments()
         .then((snapshot) {
+      FirestoreReadcheck.heroCreatorReads++;
+      FirestoreReadcheck.printHeroCreatorReads();
       loggedInUserRef = snapshot.documents[0].reference;
     });
 
@@ -129,9 +134,14 @@ class HeroCreator {
     await Firestore.instance
         .collection("users")
         .where(FirestoreManager.keyDisplayName, isEqualTo: otherUserData[FirestoreManager.keyDisplayName])
+        .limit(1)
         .getDocuments()
         .then((snapshot) {
       otherUserRef = snapshot.documents[0].reference;
+      FirestoreReadcheck.heroCreatorReads++;
+      FirestoreReadcheck.heroCreatorWrites++;
+      FirestoreReadcheck.printHeroCreatorReads();
+      FirestoreReadcheck.printHeroCreatorWrites();
       otherUserRef.updateData({
         FirestoreManager.keyIncomingSelfieRequests: FieldValue.arrayUnion([loggedInUserRef]),
       });
