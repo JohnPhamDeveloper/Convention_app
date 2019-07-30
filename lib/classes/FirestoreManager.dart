@@ -24,6 +24,7 @@ class FirestoreManager {
   static String keyCosplayMonthsExperience = 'cosplayMonthsExperience';
   static String keyIncomingSelfieRequests = 'incomingSelfieRequests';
   static String keyOutgoingSelfieRequests = 'outgoingSelfieRequests';
+  static String keyDocumentReference = 'documentReference';
 
   // (delete) not useful
   static HashMap<String, String> keys = HashMap<String, String>();
@@ -75,7 +76,7 @@ class FirestoreManager {
   static void streamUserData(LoggedInUser loggedInUser, Function callback) {
     Firestore.instance
         .collection("users")
-        .where(FirestoreManager.keyDisplayName, isEqualTo: "Chibata")
+        .where(FirestoreManager.keyDisplayName, isEqualTo: "Hakunom")
         .limit(1)
         .snapshots()
         .listen((doc) {
@@ -107,8 +108,10 @@ class FirestoreManager {
 
   // Takes all documentSnapshots and copies to loggedInUser
   static _copyUserDatabaseInformationToLocalData(DocumentSnapshot documentSnapshot, LoggedInUser loggedInUser) {
+    loggedInUser.getHashMap[FirestoreManager.keyDocumentReference] = documentSnapshot.reference;
+    //print("PRE: ${loggedInUser.getHashMap[FirestoreManager.keyDocumentReference]}");
     documentSnapshot.data.forEach((key, value) {
-      print("Updating $key...$value");
+      //print("Updating $key...$value");
       FirestoreManager.keys[key] = key; // (delete) Not useful
       loggedInUser.getHashMap[key] = value;
     });

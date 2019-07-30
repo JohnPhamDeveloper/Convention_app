@@ -43,6 +43,7 @@ class HeroCreator {
     List<dynamic> loggedInUserOutgoingSelfieReferences =
         currentLoggedInUser.getHashMap[FirestoreManager.keyOutgoingSelfieRequests];
 
+    // Check if other use sent a selfie request
     loggedInUserIncomingSelfieReferences.forEach((reference) {
       if (reference == otherUserDocumentSnapshot.reference) {
         isOtherUserInCurrentUserIncomingSelfieRequestList = true;
@@ -50,7 +51,7 @@ class HeroCreator {
       }
     });
 
-    print('${loggedInUserOutgoingSelfieReferences.length} length of outgoing selfie references');
+    // Check if loggedInuser sent a selfie request to other user
     loggedInUserOutgoingSelfieReferences.forEach((reference) {
       print('${reference.toString()} ...');
       if (reference == otherUserDocumentSnapshot.reference) {
@@ -63,9 +64,11 @@ class HeroCreator {
       onSelfieIncomingRequestTap: () {
         _onSelfieRequestTap(currentLoggedInUser, otherUserDocumentSnapshot);
       },
-      onSelfieIncomingAcceptTap: () {},
-      isInSelfieIncomingRequestList: isOtherUserInCurrentUserIncomingSelfieRequestList,
-      isInSelfieOutgoingRequestList: isOtherUserInCurrentUserOutgoingSelfieRequestList,
+      onSelfieIncomingAcceptTap: () {
+        _onSelfieAcceptTap(currentLoggedInUser, otherUserDocumentSnapshot);
+      },
+      isInLoggedInUserSelfieIncomingRequestList: isOtherUserInCurrentUserIncomingSelfieRequestList,
+      isInLoggedInUserSelfieOutgoingRequestList: isOtherUserInCurrentUserOutgoingSelfieRequestList,
       isLoggedInUser: isLookingAtOwnProfile,
       userCircleImage: otherUserDocumentSnapshot[FirestoreManager.keyPhotos][0],
       rarityBorder: otherUserDocumentSnapshot[FirestoreManager.keyRarityBorder],
@@ -120,22 +123,20 @@ class HeroCreator {
 
   // Request selfie from that user
   static void _onSelfieRequestTap(LoggedInUser loggedInUser, DocumentSnapshot otherUserData) async {
-    DocumentReference loggedInUserRef;
+    DocumentReference loggedInUserRef = loggedInUser.getHashMap[FirestoreManager.keyDocumentReference];
     DocumentReference otherUserRef;
+    await _putLoggedInUserIntoOtherUserIncomingSelfieRequestList(loggedInUserRef, otherUserRef, otherUserData);
+  }
 
-    // Get the DocumentReference to the loggedInUser (person sending the selfie request)
-    await Firestore.instance
-        .collection("users")
-        .where(FirestoreManager.keyDisplayName, isEqualTo: loggedInUser.getHashMap[FirestoreManager.keyDisplayName])
-        .limit(1) // We should only be getting one document here.
-        .getDocuments()
-        .then((snapshot) {
-      FirestoreReadcheck.heroCreatorReads++;
-      FirestoreReadcheck.printHeroCreatorReads();
-      loggedInUserRef = snapshot.documents[0].reference;
-    });
+  static void _onSelfieAcceptTap(LoggedInUser loggedInUser, DocumentSnapshot otherUserData) async {
+    DocumentReference loggedInUserRef = loggedInUser.getHashMap[FirestoreManager.keyDocumentReference];
+    DocumentReference otherUserRef;
+    await _putLoggedInUserIntoOtherUserIncomingSelfieRequestList(loggedInUserRef, otherUserRef, otherUserData);
+    // await _putOtherUserIntoLoggedInUserOutgoingSelfieRequestList(loggedInUserRef, otherUserRef);
+  }
 
-    // Add the DocumentReference to the selfieRequests list for otherUser (person receiving selfie request)
+  static _putLoggedInUserIntoOtherUserIncomingSelfieRequestList(
+      DocumentReference loggedInUserRef, DocumentReference otherUserRef, DocumentSnapshot otherUserData) async {
     await Firestore.instance
         .collection("users")
         .where(FirestoreManager.keyDisplayName, isEqualTo: otherUserData[FirestoreManager.keyDisplayName])
@@ -152,13 +153,10 @@ class HeroCreator {
       });
     });
 
-    // Add the otherUser to the loggedInUser outgoing selfie requests
     await loggedInUserRef.updateData({
       FirestoreManager.keyOutgoingSelfieRequests: FieldValue.arrayUnion([otherUserRef]),
     });
   }
-
-  static void _onSelfieAcceptTap() {}
 
   static _checkSame(LoggedInUser loggedInUser, DocumentSnapshot otherUser) {
     String otherUserName = otherUser[FirestoreManager.keyDisplayName];

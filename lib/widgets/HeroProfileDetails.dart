@@ -16,15 +16,15 @@ class HeroProfileDetails extends StatefulWidget {
   final int friendliness;
   final int fame;
   final Function onSelfieIncomingRequestTap;
-  final bool isInSelfieIncomingRequestList;
+  final bool isInLoggedInUserSelfieIncomingRequestList;
   final Function onSelfieIncomingAcceptTap;
-  final bool isInSelfieOutgoingRequestList;
+  final bool isInLoggedInUserSelfieOutgoingRequestList;
 
   HeroProfileDetails({
     @required this.userCircleImage,
-    @required this.isInSelfieOutgoingRequestList,
+    @required this.isInLoggedInUserSelfieOutgoingRequestList,
     @required this.onSelfieIncomingAcceptTap,
-    @required this.isInSelfieIncomingRequestList,
+    @required this.isInLoggedInUserSelfieIncomingRequestList,
     @required this.onSelfieIncomingRequestTap,
     @required this.rarityBorder,
     @required this.displayName,
@@ -314,20 +314,30 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
   }
 
   Widget _renderSelfieButton() {
+    // Both users sent a selfie request to eachother and are now sharing location
+    if (widget.isInLoggedInUserSelfieIncomingRequestList && widget.isInLoggedInUserSelfieOutgoingRequestList) {
+      return ActionButton(
+        fillColor: Colors.pinkAccent,
+        icon: Icons.camera_alt,
+        text: Text("Finish Selfie", style: kButtonActionTextStyle),
+        onTap: () {},
+        iconColor: Colors.white,
+      );
+    }
     // other user sent a request to current user
-    if (widget.isInSelfieIncomingRequestList) {
+    if (widget.isInLoggedInUserSelfieIncomingRequestList) {
       return ActionButton(
         fillColor: Colors.pinkAccent,
         icon: Icons.camera_alt,
         text: Text("Accept Selfie", style: kButtonActionTextStyle),
         onTap: () {
-          widget.onSelfieIncomingRequestTap();
+          widget.onSelfieIncomingAcceptTap();
         },
         iconColor: Colors.white,
       );
     }
     // current user sent a request to other user
-    else if (widget.isInSelfieOutgoingRequestList) {
+    else if (widget.isInLoggedInUserSelfieOutgoingRequestList) {
       return ActionButton(
         fillColor: Colors.grey[300],
         icon: Icons.camera_alt,
