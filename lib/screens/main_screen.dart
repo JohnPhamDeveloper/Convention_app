@@ -52,15 +52,16 @@ class _MainScreenState extends State<MainScreen> {
       controller: preloadPageController,
       children: <Widget>[
 //        RankingListPage(),
-//        SearchPage(),
+        SearchPage(),
 //        FamePage(),
 //        NotificationPage(),
-        ProfilePage(),
+        //  ProfilePage(),
       ],
     );
 
     // Get data from database for logged in user when it changes
     // Set loading is called if data is successfuly updated into loggedInUser
+    print("BEgin user stream");
     FirestoreManager.streamUserData(loggedInUser, setLoading);
 
     //createMockUser();

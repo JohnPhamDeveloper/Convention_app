@@ -6,6 +6,10 @@ class FirestoreReadcheck {
   static int heroCreatorReads = 0;
   static int heroCreatorWrites = 0;
 
+  static printSearchInfoPageReads() {
+    print("Search info page reads: $searchInfoPageReads");
+  }
+
   static printUserProfileReads() {
     print("User profile reads: $userProfileReads");
   }

@@ -77,11 +77,12 @@ class FirestoreManager {
         .collection("users")
         .where(FirestoreManager.keyDisplayName, isEqualTo: "Chibata")
         .limit(1)
-        .getDocuments()
-        .asStream()
+        .snapshots()
         .listen((doc) {
       print("---------------Database Updated----------------------");
       print("Updating local logged in user information");
+      FirestoreReadcheck.userProfileReads++;
+      FirestoreReadcheck.printUserProfileReads();
       // Go through each document in the user and update the local data
       _copyUserDatabaseInformationToLocalData(doc.documents[0], loggedInUser);
       callback();
@@ -107,8 +108,6 @@ class FirestoreManager {
   // Takes all documentSnapshots and copies to loggedInUser
   static _copyUserDatabaseInformationToLocalData(DocumentSnapshot documentSnapshot, LoggedInUser loggedInUser) {
     documentSnapshot.data.forEach((key, value) {
-      FirestoreReadcheck.userProfileReads++;
-      FirestoreReadcheck.printUserProfileReads();
       print("Updating $key...$value");
       FirestoreManager.keys[key] = key; // (delete) Not useful
       loggedInUser.getHashMap[key] = value;

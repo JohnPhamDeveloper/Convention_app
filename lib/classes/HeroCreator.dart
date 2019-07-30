@@ -90,7 +90,12 @@ class HeroCreator {
   // Construct HeroProfile widget from the information on the clicked avatar
   static pushProfileIntoView(
       String dotHeroName, String imageHeroName, DocumentReference otherUserDataReference, BuildContext context) async {
+    // Get latest snapshot of the user from the database
+    print("getting latest database information?");
     DocumentSnapshot otherUserDataSnapshot = await otherUserDataReference.get();
+    print(otherUserDataSnapshot.data[FirestoreManager.keyIncomingSelfieRequests]);
+    FirestoreReadcheck.heroCreatorReads++;
+    FirestoreReadcheck.printHeroCreatorReads();
 
     LoggedInUser currentLoggedInUser = Provider.of<LoggedInUser>(context);
 
@@ -106,12 +111,12 @@ class HeroCreator {
   }
 
   // Construct HeroProfile widget from the information on the clicked avatar
-  static pushProfileIntoView2(HeroProfileStart start, HeroProfileDetails details, BuildContext context) {
-    Widget clickedProfile = HeroCreator.wrapInScaffold([start, details], context);
-
-    // Push that profile into view
-    Navigator.push(context, MaterialPageRoute(builder: (context) => clickedProfile));
-  }
+//  static pushProfileIntoView2(HeroProfileStart start, HeroProfileDetails details, BuildContext context) {
+//    Widget clickedProfile = HeroCreator.wrapInScaffold([start, details], context);
+//
+//    // Push that profile into view
+//    Navigator.push(context, MaterialPageRoute(builder: (context) => clickedProfile));
+//  }
 
   // Request selfie from that user
   static void _onSelfieRequestTap(LoggedInUser loggedInUser, DocumentSnapshot otherUserData) async {

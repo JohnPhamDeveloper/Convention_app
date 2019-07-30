@@ -10,6 +10,7 @@ import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/classes/HeroCreator.dart';
 import 'package:cosplay_app/widgets/FireMap.dart';
 import 'package:provider/provider.dart';
+import 'package:cosplay_app/classes/FirestoreReadcheck.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -150,7 +151,10 @@ class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKee
     //
     Firestore.instance.collection("users").getDocuments().then((snapshot) {
       // Go through each user in the database
+
       snapshot.documents.forEach((docSnapshot) {
+        FirestoreReadcheck.searchInfoPageReads++;
+        FirestoreReadcheck.printSearchInfoPageReads();
         // Go through all data for the current user and put into our user object
         docSnapshot.data.forEach((key, value) {
           user.getHashMap[key] = value;
@@ -242,7 +246,7 @@ class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKee
       cost: photographerCost,
       rarity: rarity,
       onTap: () {
-        HeroCreator.pushProfileIntoView(dotHeroName, imageHeroName, docSnapshot, context);
+        HeroCreator.pushProfileIntoView(dotHeroName, imageHeroName, docSnapshot.reference, context);
       },
       key: UniqueKey(),
     );

@@ -65,8 +65,7 @@ class RankCard extends StatelessWidget {
 //  }
 
   void createClickedProfileOnlyOnTap(BuildContext context) {
-    HeroCreator.pushProfileIntoView(
-        heroName, imageHeroName, documentSnapshot, context);
+    HeroCreator.pushProfileIntoView(heroName, imageHeroName, documentSnapshot.reference, context);
   }
 
   @override
@@ -84,19 +83,17 @@ class RankCard extends StatelessWidget {
         child: Stack(
           children: <Widget>[
             Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 3.0,
-                      spreadRadius: 0.0,
-                      offset: Offset(
-                        7.0, // horizontal, move right 10
-                        7.0, // vertical, move down 10
-                      ),
-                    )
-                  ]),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(25.0), boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 3.0,
+                  spreadRadius: 0.0,
+                  offset: Offset(
+                    7.0, // horizontal, move right 10
+                    7.0, // vertical, move down 10
+                  ),
+                )
+              ]),
               child: ImageContainer(
                   heroName: imageHeroName,
                   borderWidth: 3.5,
@@ -153,11 +150,8 @@ final TextStyle kProfileOverlayNameStyle = TextStyle(
   shadows: kTextStrokeOutlines,
 );
 
-final TextStyle kProfileOverlayTextStyle = TextStyle(
-    fontSize: 17.0,
-    color: Colors.white,
-    fontWeight: FontWeight.w700,
-    shadows: kTextStrokeOutlines);
+final TextStyle kProfileOverlayTextStyle =
+    TextStyle(fontSize: 17.0, color: Colors.white, fontWeight: FontWeight.w700, shadows: kTextStrokeOutlines);
 
 final Color kTextStrokeColor = Colors.black54;
 final double kTextStrokeBlur = 5.0;
