@@ -129,103 +129,101 @@ class HeroProfileDetails extends StatelessWidget {
             ),
             SizedBox(height: 40.0),
             // Vote friendly button
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
-              child: RoundButtonTextIcon(
-                  text: Text("Vote Friendly", style: kButtonActionTextStyle),
-                  fillColor: Colors.pinkAccent,
-                  icon: Icons.favorite,
-                  iconColor: Colors.white,
-                  onTap: () {}),
+            ActionButton(
+              fillColor: Colors.pinkAccent,
+              icon: Icons.favorite,
+              text: Text("Vote Friendly", style: kButtonActionTextStyle),
+              onTap: () {},
+              iconColor: Colors.white,
             ),
             SizedBox(height: 25.0),
             // Selfie request button
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
-              child: RoundButtonTextIcon(
-                  text: Text("Selfie Request", style: kButtonActionTextStyle),
-                  fillColor: Colors.pinkAccent,
-                  icon: Icons.camera_alt,
-                  iconColor: Colors.white,
-                  onTap: () {
-                    // print("TEST");
-                  }),
+            ActionButton(
+              fillColor: Colors.pinkAccent,
+              icon: Icons.camera_alt,
+              text: Text("Selfie Request", style: kButtonActionTextStyle),
+              onTap: () {},
+              iconColor: Colors.white,
             ),
             SizedBox(height: 25.0),
             // Photography request button
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
-              child: RoundButtonTextIcon(
-                  text: Text("Photography Request",
-                      style: kButtonActionTextStyle),
-                  fillColor: Colors.pinkAccent,
-                  icon: Icons.linked_camera,
-                  iconColor: Colors.white,
-                  onTap: () async {
-                    print("Logging Out");
-                    FirebaseUser user =
-                        await FirebaseAuth.instance.currentUser();
-                    print(user.email);
-                    print(user.isEmailVerified);
-                    print(user.displayName);
-                    try {
-                      FirebaseAuth.instance.signOut();
-                      Navigator.pushNamed(context, "/");
-                    } catch (e) {
-                      print(e);
-                    }
-                  }),
+            ActionButton(
+              fillColor: Colors.pinkAccent,
+              icon: Icons.linked_camera,
+              text: Text("Photography Request", style: kButtonActionTextStyle),
+              onTap: () {},
+              iconColor: Colors.white,
             ),
             SizedBox(height: 25.0),
             // Options
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
-              child: RoundButtonTextIcon(
-                  text: Text("Options", style: kButtonNormalTextStyle),
-                  fillColor: kButtonNormalFillColor,
-                  icon: FontAwesomeIcons.cog,
-                  iconColor: kButtonNormalIconColor,
-                  onTap: () {
-                    //print("TEST");
-                  }),
+            ActionButton(
+              fillColor: kButtonNormalFillColor,
+              icon: FontAwesomeIcons.cog,
+              text: Text("Options", style: kButtonNormalTextStyle),
+              onTap: () {},
+              iconColor: kButtonNormalIconColor,
             ),
             SizedBox(height: 25.0),
             // Logout button
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: kButtonPaddingLeft, right: kButtonPaddingRight),
-              child: RoundButtonTextIcon(
-                text: Text("Log Out", style: kButtonNormalTextStyle),
-                fillColor: kButtonNormalFillColor,
-                icon: Icons.directions_run,
-                iconColor: kButtonNormalIconColor,
-                onTap: () async {
-                  print("Logging Out");
-                  FirebaseUser user = await FirebaseAuth.instance.currentUser();
+            ActionButton(
+              fillColor: kButtonNormalFillColor,
+              icon: Icons.directions_run,
+              text: Text("Log Out", style: kButtonNormalTextStyle),
+              onTap: () async {
+                print("Logging Out");
+                FirebaseUser user = await FirebaseAuth.instance.currentUser();
 
-                  // They were not signed in the first place (how did the get in?)
-                  if (user == null) Navigator.pushNamed(context, '/');
+                // They were not signed in the first place (how did the get in?)
+                if (user == null) Navigator.pushNamed(context, '/');
 
-                  print(user.email);
-                  print(user.isEmailVerified);
-                  print(user.displayName);
-                  try {
-                    FirebaseAuth.instance.signOut();
-                    Navigator.pushNamed(context, "/");
-                  } catch (e) {
-                    print(e);
-                  }
-                },
-              ),
+                print(user.email);
+                print(user.isEmailVerified);
+                print(user.displayName);
+                try {
+                  FirebaseAuth.instance.signOut();
+                  Navigator.pushNamed(context, "/");
+                } catch (e) {
+                  print(e);
+                }
+              },
+              iconColor: kButtonNormalIconColor,
             ),
             SizedBox(height: 250),
           ],
         )
       ],
+    );
+  }
+}
+
+class ActionButton extends StatelessWidget {
+  final Color fillColor;
+  final Text text;
+  final IconData icon;
+  final Function onTap;
+  final Color iconColor;
+
+  ActionButton(
+      {this.fillColor,
+      this.text,
+      @required this.onTap,
+      this.icon,
+      this.iconColor});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+          left: kButtonPaddingLeft, right: kButtonPaddingRight),
+      child: RoundButtonTextIcon(
+          text: text,
+          fillColor: fillColor,
+          icon: icon,
+          iconColor: iconColor,
+          onTap: () {
+            // todo handle selfie request button
+            onTap();
+          }),
     );
   }
 }

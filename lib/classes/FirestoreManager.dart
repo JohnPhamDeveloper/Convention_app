@@ -22,7 +22,7 @@ class FirestoreManager {
   static String keyCosplayYearsExperience = 'cosplayYearsExperience';
   static String keyCosplayMonthsExperience = 'cosplayMonthsExperience';
 
-  // All of database keys are stored in here (not sure if this is used)
+  // (delete) not useful
   static HashMap<String, String> keys = HashMap<String, String>();
 
   static Future<void> createUserInDatabase({
@@ -69,8 +69,9 @@ class FirestoreManager {
     print("Finished creating mock user");
   }
 
-  // Updates user information to the database information whenever
-  // The database changes
+  // Updates local user information using the database information whenever
+  // the database changes (stream)
+  // Callback is called when data is done loading
   static void streamUserData(LoggedInUser loggedInUser, Function callback) {
     try {
       Firestore.instance
@@ -80,16 +81,23 @@ class FirestoreManager {
           .listen((doc) {
         print("---------------Database Updated----------------------");
         print("Updating local logged in user information");
-        doc.data.forEach((key, value) {
-          print("Updating $key...");
-          FirestoreManager.keys[key] = key;
-          loggedInUser.getHashMap[key] = value;
-        });
+        // Go through each document in the user and update the local data
+        _copyUserDatabaseInformationToLocalData(doc, loggedInUser);
         callback();
       });
     } catch (e) {
       print(e);
     }
+  }
+
+  // Takes all documentSnapshots and copies to loggedInUser
+  static _copyUserDatabaseInformationToLocalData(
+      DocumentSnapshot documentSnapshot, LoggedInUser loggedInUser) {
+    documentSnapshot.data.forEach((key, value) {
+      print("Updating $key...");
+      FirestoreManager.keys[key] = key; // (delete) Not useful
+      loggedInUser.getHashMap[key] = value;
+    });
   }
 
   // Gets information from database and returns that information in a LoggedInUser object
