@@ -74,21 +74,34 @@ class FirestoreManager {
   // the database changes (stream)
   // Callback is called when data is done loading
   static void streamUserData(LoggedInUser loggedInUser, Function callback) {
-    try {
-      Firestore.instance
-          .collection("users")
-          .document('testUser3')
-          .snapshots()
-          .listen((doc) {
-        print("---------------Database Updated----------------------");
-        print("Updating local logged in user information");
-        // Go through each document in the user and update the local data
-        _copyUserDatabaseInformationToLocalData(doc, loggedInUser);
-        callback();
-      });
-    } catch (e) {
-      print(e);
-    }
+    Firestore.instance
+        .collection("users")
+        .where(FirestoreManager.keyDisplayName, isEqualTo: "Hakunom")
+        .getDocuments()
+        .asStream()
+        .listen((doc) {
+      print("---------------Database Updated----------------------");
+      print("Updating local logged in user information");
+      // Go through each document in the user and update the local data
+      _copyUserDatabaseInformationToLocalData(doc.documents[0], loggedInUser);
+      callback();
+    });
+//
+//    try {
+//      Firestore.instance
+//          .collection("users")
+//          .document('testUser3')
+//          .snapshots()
+//          .listen((doc) {
+//        print("---------------Database Updated----------------------");
+//        print("Updating local logged in user information");
+//        // Go through each document in the user and update the local data
+//        _copyUserDatabaseInformationToLocalData(doc, loggedInUser);
+//        callback();
+//      });
+//    } catch (e) {
+//      print(e);
+//    }
   }
 
   // Takes all documentSnapshots and copies to loggedInUser

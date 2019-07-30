@@ -12,6 +12,7 @@ class ProfileDetailsPage extends StatelessWidget {
     return Consumer<LoggedInUser>(builder: (context, loggedInUser, child) {
       return HeroProfileDetails(
         isLoggedInUser: true,
+        onSelfieRequestTap: () {},
         userCircleImage: loggedInUser.getHashMap[FirestoreManager.keyPhotos][0],
         rarityBorder: loggedInUser.getHashMap[FirestoreManager.keyRarityBorder],
         displayName: loggedInUser.getHashMap[FirestoreManager.keyDisplayName],

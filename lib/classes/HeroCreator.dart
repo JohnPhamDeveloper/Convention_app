@@ -12,10 +12,12 @@ import 'package:provider/provider.dart';
 class HeroCreator {
   // Creates the two pages
   // Start is the first page and Details is the second page
-  static HeroProfileStart createHeroProfileStart(String dotHeroName,
-      String imageHeroName, DocumentSnapshot data, bool isLoggedInUser) {
+  static HeroProfileStart createHeroProfileStart(
+      String dotHeroName, String imageHeroName, DocumentSnapshot data, LoggedInUser currentLoggedInUser) {
+    bool isLookingAtOwnProfile = _checkSame(currentLoggedInUser, data);
+
     return HeroProfileStart(
-      isLoggedInUser: isLoggedInUser,
+      isLoggedInUser: isLookingAtOwnProfile,
       heroName: dotHeroName,
       imageHeroName: imageHeroName,
       userImages: data[FirestoreManager.keyPhotos],
@@ -27,27 +29,14 @@ class HeroCreator {
   }
 
   static HeroProfileDetails createHeroProfileDetails(
-      DocumentSnapshot data,
-      bool isLoggedInUser,
-      BuildContext context,
-      String loggedInUserDocumentID) {
+      DocumentSnapshot data, BuildContext context, LoggedInUser currentLoggedInUser) {
+    bool isLookingAtOwnProfile = _checkSame(currentLoggedInUser, data);
+
     return HeroProfileDetails(
       onSelfieRequestTap: () {
-        print(loggedInUserDocumentID);
-
-        // getUserByDocumentID
-        DocumentReference loggedInUserRef = Firestore.instance
-            .collection('users')
-            .document(loggedInUserDocumentID);
-        print(data);
-        Firestore.instance
-            .collection('users')
-            .document(data['documentID'])
-            .setData({
-          'selfieRequests': [loggedInUserRef, loggedInUserRef]
-        }, merge: true);
+        _onSelfieTap(currentLoggedInUser, data);
       },
-      isLoggedInUser: isLoggedInUser,
+      isLoggedInUser: isLookingAtOwnProfile,
       userCircleImage: data[FirestoreManager.keyPhotos][0],
       rarityBorder: data[FirestoreManager.keyRarityBorder],
       displayName: data[FirestoreManager.keyDisplayName],
@@ -69,41 +58,72 @@ class HeroCreator {
   }
 
   // Construct HeroProfile widget from the information on the clicked avatar
-  static pushProfileIntoView(String dotHeroName, String imageHeroName,
-      DocumentSnapshot data, BuildContext context) {
-    bool isLoggedInUser = false;
+  static pushProfileIntoView(String dotHeroName, String imageHeroName, DocumentSnapshot data, BuildContext context) {
+    // bool isLoggedInUser = false;
 
     // Check if the current logged in user is the profile they're trying
     // to bring up (themselves)
     LoggedInUser currentLoggedInUser = Provider.of<LoggedInUser>(context);
-    if (data[FirestoreManager.keyDisplayName] ==
-        currentLoggedInUser.getHashMap[FirestoreManager.keyDisplayName]) {
-      print("LOGGED IN USER FOUND ---------------------");
-      isLoggedInUser = true;
-    }
 
-    HeroProfileStart heroProfileStart = HeroCreator.createHeroProfileStart(
-        dotHeroName, imageHeroName, data, isLoggedInUser);
+    HeroProfileStart heroProfileStart = HeroCreator.createHeroProfileStart(dotHeroName, imageHeroName, data, currentLoggedInUser);
 
-    HeroProfileDetails heroProfileDetails =
-        HeroCreator.createHeroProfileDetails(data, isLoggedInUser, context,
-            currentLoggedInUser.getHashMap[FirestoreManager.keyDocumentID]);
-    Widget clickedProfile = HeroCreator.wrapInScaffold(
-        [heroProfileStart, heroProfileDetails], context);
+    HeroProfileDetails heroProfileDetails = HeroCreator.createHeroProfileDetails(data, context, currentLoggedInUser);
+    Widget clickedProfile = HeroCreator.wrapInScaffold([heroProfileStart, heroProfileDetails], context);
 
     // Push that profile into view
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => clickedProfile));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => clickedProfile));
   }
 
   // Construct HeroProfile widget from the information on the clicked avatar
-  static pushProfileIntoView2(HeroProfileStart start,
-      HeroProfileDetails details, BuildContext context) {
-    Widget clickedProfile =
-        HeroCreator.wrapInScaffold([start, details], context);
+  static pushProfileIntoView2(HeroProfileStart start, HeroProfileDetails details, BuildContext context) {
+    Widget clickedProfile = HeroCreator.wrapInScaffold([start, details], context);
 
     // Push that profile into view
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => clickedProfile));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => clickedProfile));
+  }
+
+  static void _onSelfieTap(LoggedInUser loggedInUser, DocumentSnapshot otherUserData) async {
+    DocumentReference loggedInUserRef;
+
+    print("OnSelfieTap");
+
+    // Get the DocumentReference to the loggedInuser
+    await Firestore.instance
+        .collection("users")
+        .where(FirestoreManager.keyDisplayName, isEqualTo: loggedInUser.getHashMap[FirestoreManager.keyDisplayName])
+        .getDocuments()
+        .then((snapshot) {
+      loggedInUserRef = snapshot.documents[0].reference;
+      print("Got reference to loggedInUser... $loggedInUserRef");
+    });
+
+    // Add the DocumentReference to the selfieRequests list for otherUser
+    await Firestore.instance
+        .collection("users")
+        .where(FirestoreManager.keyDisplayName, isEqualTo: otherUserData[FirestoreManager.keyDisplayName])
+        .getDocuments()
+        .then((snapshot) {
+      snapshot.documents[0].reference.setData({
+        'selfieRequests': [loggedInUserRef],
+      }, merge: true);
+    });
+
+//    Firestore.instance
+//        .collection('users')
+//        .document(otherUserData['documentID'])
+//        .setData({
+//      'selfieRequests': [loggedInUserRef, loggedInUserRef]
+//    }, merge: true);
+  }
+
+//  static DocumentReference _getDocumentReferenceByDocumentID(
+//      String documentID) {
+//    return Firestore.instance.collection('users').document(documentID);
+//  }
+
+  static _checkSame(LoggedInUser loggedInUser, DocumentSnapshot otherUser) {
+    String otherUserName = otherUser[FirestoreManager.keyDisplayName];
+    String currentLoggedInUserName = loggedInUser.getHashMap[FirestoreManager.keyDisplayName];
+    return otherUserName == currentLoggedInUserName;
   }
 }
