@@ -30,14 +30,12 @@ class HeroCreator {
 
   static HeroProfileDetails createHeroProfileDetails(
       DocumentSnapshot otherUserDocumentSnapshot, BuildContext context, LoggedInUser currentLoggedInUser) {
+    // Build a profile with different buttons if they're looking at themselves
     bool isLookingAtOwnProfile = _checkSame(currentLoggedInUser, otherUserDocumentSnapshot);
-    bool isOtherUserInIncomingSelfieRequestList = false;
-    bool isOtherUserInOutgoingSelfieRequestList = false;
 
-    // Go into our list of references in selfieRequests and check
-    // if that profile we're trying to push into view is in out selfieRequest list
-    // then a new button will replace the "Selfie request" with "Accept selfie"
-    // Also need to construct a "onSelfieAcceptTap"
+    bool isOtherUserInCurrentUserIncomingSelfieRequestList = false;
+    bool isOtherUserInCurrentUserOutgoingSelfieRequestList = false;
+
     List<dynamic> loggedInUserIncomingSelfieReferences =
         currentLoggedInUser.getHashMap[FirestoreManager.keyIncomingSelfieRequests];
 
@@ -46,15 +44,17 @@ class HeroCreator {
 
     loggedInUserIncomingSelfieReferences.forEach((reference) {
       if (reference == otherUserDocumentSnapshot.reference) {
-        isOtherUserInIncomingSelfieRequestList = true;
-        return;
+        isOtherUserInCurrentUserIncomingSelfieRequestList = true;
+        print("Other user sent a selfie request to current user");
       }
     });
 
+    print(loggedInUserOutgoingSelfieReferences);
     loggedInUserOutgoingSelfieReferences.forEach((reference) {
+      print('${reference.toString()} ...');
       if (reference == otherUserDocumentSnapshot.reference) {
-        isOtherUserInOutgoingSelfieRequestList = true;
-        return;
+        isOtherUserInCurrentUserOutgoingSelfieRequestList = true;
+        print("Other user recieved a selfie request from current user");
       }
     });
 
@@ -63,8 +63,8 @@ class HeroCreator {
         _onSelfieRequestTap(currentLoggedInUser, otherUserDocumentSnapshot);
       },
       onSelfieIncomingAcceptTap: () {},
-      isInSelfieIncomingRequestList: isOtherUserInIncomingSelfieRequestList,
-      isInSelfieOutgoingRequestList: isOtherUserInOutgoingSelfieRequestList,
+      isInSelfieIncomingRequestList: isOtherUserInCurrentUserIncomingSelfieRequestList,
+      isInSelfieOutgoingRequestList: isOtherUserInCurrentUserOutgoingSelfieRequestList,
       isLoggedInUser: isLookingAtOwnProfile,
       userCircleImage: otherUserDocumentSnapshot[FirestoreManager.keyPhotos][0],
       rarityBorder: otherUserDocumentSnapshot[FirestoreManager.keyRarityBorder],
@@ -132,15 +132,15 @@ class HeroCreator {
         .getDocuments()
         .then((snapshot) {
       otherUserRef = snapshot.documents[0].reference;
-      otherUserRef.setData({
-        FirestoreManager.keyIncomingSelfieRequests: [loggedInUserRef],
-      }, merge: true);
+      otherUserRef.updateData({
+        FirestoreManager.keyIncomingSelfieRequests: FieldValue.arrayUnion([loggedInUserRef]),
+      });
     });
 
     // Add the otherUser to the loggedInUser outgoing selfie requests
-    await loggedInUserRef.setData({
-      FirestoreManager.keyOutgoingSelfieRequests: [otherUserRef],
-    }, merge: true);
+    await loggedInUserRef.updateData({
+      FirestoreManager.keyOutgoingSelfieRequests: FieldValue.arrayUnion([otherUserRef]),
+    });
   }
 
   static void _onSelfieAcceptTap() {}
