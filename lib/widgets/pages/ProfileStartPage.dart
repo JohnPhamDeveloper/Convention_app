@@ -31,6 +31,7 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
     return Consumer<LoggedInUser>(builder: (context, loggedInUser, child) {
       updateUserImageWidgets(loggedInUser);
       return HeroProfileStart(
+        isLoggedInUser: true,
         userImages: userImageUrls,
         name: loggedInUser.getHashMap[FirestoreManager.keyDisplayName],
         friendliness: loggedInUser.getHashMap[FirestoreManager.keyFriendliness],

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:cosplay_app/widgets/ImageContainer.dart';
 import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
+import 'package:provider/provider.dart';
+import 'package:cosplay_app/classes/LoggedInUser.dart';
+import 'package:cosplay_app/classes/FirestoreManager.dart';
 
 // COSPLAYER
-class UserSearchInfo extends StatelessWidget {
+class UserSearchInfo extends StatefulWidget {
   final String imageHeroName;
   final String backgroundImage;
   final String name;
@@ -30,10 +33,18 @@ class UserSearchInfo extends StatelessWidget {
     this.rarity,
   }) : super(key: key);
 
+  @override
+  _UserSearchInfoState createState() => _UserSearchInfoState();
+}
+
+class _UserSearchInfoState extends State<UserSearchInfo> {
+  bool _isLoggedInUser = false;
+//  Color _selfieDotColor = Colors.pinkAccent;
+
   renderSubtitle() {
-    if (subtitle.isNotEmpty) {
+    if (widget.subtitle.isNotEmpty) {
       return Text(
-        subtitle,
+        widget.subtitle,
         style: TextStyle(
             fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.white),
       );
@@ -42,11 +53,28 @@ class UserSearchInfo extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Check if the user is the logged in user
+    LoggedInUser currentLoggedInUser = Provider.of<LoggedInUser>(context);
+    if (widget.name ==
+        currentLoggedInUser.getHashMap[FirestoreManager.keyDisplayName]) {
+      print("LOGGED IN USER FOUND ---------------------");
+      _isLoggedInUser = true;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return InkWell(
       splashColor: Colors.grey[100],
       onTap: () {
-        onTap();
+        widget.onTap();
       },
       child: Padding(
         padding: const EdgeInsets.only(
@@ -57,17 +85,18 @@ class UserSearchInfo extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 0.0),
               child: ImageContainer(
-                  heroName: imageHeroName,
+                  heroName: widget.imageHeroName,
                   enableStatusDot: true,
-                  enableSelfieDot: true,
+                  enableSelfieDot: !_isLoggedInUser,
+                  selfieDotInnerColor: Colors.pinkAccent,
                   selfieDotLeft: 0,
                   selfieDotBottom: 2,
                   statusDotBottom: 2,
                   statusDotRight: 2,
                   borderWidth: 2.5,
-                  rarityBorderColor: kRarityBorders[rarity],
+                  rarityBorderColor: kRarityBorders[widget.rarity],
                   borderRadius: 500.0,
-                  image: backgroundImage,
+                  image: widget.backgroundImage,
                   width: 60.0,
                   height: 60.0),
             ),
@@ -78,7 +107,7 @@ class UserSearchInfo extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    name,
+                    widget.name,
                     style: TextStyle(
                       fontSize: 17.0,
                       fontWeight: FontWeight.w600,
@@ -89,7 +118,7 @@ class UserSearchInfo extends StatelessWidget {
                   SizedBox(height: 3.0),
                   // title
                   Text(
-                    title,
+                    widget.title,
                     style: TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.w400,
@@ -114,13 +143,13 @@ class UserSearchInfo extends StatelessWidget {
                       Icon(Icons.sentiment_very_satisfied,
                           color: Colors.grey[50]),
                       SizedBox(width: 5.0),
-                      Text(friendliness.toString()),
+                      Text(widget.friendliness.toString()),
                     ],
                   ),
                   SizedBox(height: 6),
                   // Cost
                   Text(
-                    cost,
+                    widget.cost,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 11.0,

@@ -5,6 +5,7 @@ import 'package:cosplay_app/widgets/ImageContainer.dart';
 import 'package:cosplay_app/widgets/IconText.dart';
 
 class HeroProfileStart extends StatelessWidget {
+  final bool isLoggedInUser;
   final String heroName;
   final String imageHeroName;
   final List<dynamic> userImages;
@@ -16,6 +17,7 @@ class HeroProfileStart extends StatelessWidget {
 
   HeroProfileStart(
       {@required this.userImages,
+      this.isLoggedInUser = false,
       @required this.name,
       this.imageHeroName = "",
       @required this.friendliness,
@@ -49,11 +51,17 @@ class HeroProfileStart extends StatelessWidget {
     if (heroName.isNotEmpty) {
       return Hero(
         tag: heroName,
-        child: NotificationDot(innerColor: Colors.pinkAccent),
+        child: NotificationDot(
+          innerColor: Colors.pinkAccent,
+          disable: isLoggedInUser,
+        ),
       );
     }
 
-    return NotificationDot(innerColor: Colors.pinkAccent);
+    return NotificationDot(
+      innerColor: Colors.pinkAccent,
+      disable: isLoggedInUser,
+    );
   }
 
   @override

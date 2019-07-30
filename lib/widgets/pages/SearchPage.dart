@@ -9,6 +9,7 @@ import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/classes/HeroCreator.dart';
 import 'package:cosplay_app/widgets/FireMap.dart';
+import 'package:provider/provider.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -34,7 +35,6 @@ class _SearchPageState extends State<SearchPage>
           navIndex = index;
         });
       },
-      //physics: new NeverScrollableScrollPhysics(),
       controller: pageController,
       children: <Widget>[
         SearchSectionItem(userType: FirestoreManager.keyIsCosplayer),
@@ -142,6 +142,7 @@ class _SearchSectionItemState extends State<SearchSectionItem>
     // Check if they are a cosplayer, if they are, then put into cosplayer list
     //List<LoggedInUser> userList = List<LoggedInUser>();
     LoggedInUser user = LoggedInUser();
+
     Firestore.instance.collection("users").getDocuments().then((snapshot) {
       // Go through each user in the database
       snapshot.documents.forEach((docSnapshot) {
@@ -197,17 +198,18 @@ class _SearchSectionItemState extends State<SearchSectionItem>
         else if (widget.userType == FirestoreManager.keyIsPhotographer &&
             isPhotographer) {
           createDataForPhotographer(
-              circleImageUrl,
-              name,
-              photographyYears,
-              photographyMonths,
-              friendliness,
-              photographerCost,
-              rarity,
-              dotHeroName,
-              imageHeroName,
-              docSnapshot,
-              context);
+            circleImageUrl,
+            name,
+            photographyYears,
+            photographyMonths,
+            friendliness,
+            photographerCost,
+            rarity,
+            dotHeroName,
+            imageHeroName,
+            docSnapshot,
+            context,
+          );
         }
       });
       // done storing all of users information, now we can setState to rebuild

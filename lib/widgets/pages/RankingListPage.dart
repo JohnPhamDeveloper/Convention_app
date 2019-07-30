@@ -4,7 +4,6 @@ import 'package:cosplay_app/constants/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/widgets/RankCard.dart';
-import 'package:cosplay_app/classes/HeroCreator.dart';
 
 class RankingListPage extends StatefulWidget {
   @override

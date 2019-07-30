@@ -21,6 +21,7 @@ class FirestoreManager {
   static String keyPhotographyMonthsExperience = 'photographyMonthsExperience';
   static String keyCosplayYearsExperience = 'cosplayYearsExperience';
   static String keyCosplayMonthsExperience = 'cosplayMonthsExperience';
+  static String keyDocumentID = "documentID";
 
   // (delete) not useful
   static HashMap<String, String> keys = HashMap<String, String>();
@@ -76,7 +77,7 @@ class FirestoreManager {
     try {
       Firestore.instance
           .collection("users")
-          .document('testUser1')
+          .document('testUser3')
           .snapshots()
           .listen((doc) {
         print("---------------Database Updated----------------------");

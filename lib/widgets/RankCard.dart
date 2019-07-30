@@ -58,11 +58,11 @@ class RankCard extends StatelessWidget {
   }
 
   // Precreate profiles for no lag when clicking on a ranked user
-  void createClickedProfileBeforeHand() {
-    _start = HeroCreator.createHeroProfileStart(
-        heroName, imageHeroName, documentSnapshot);
-    _details = HeroCreator.createHeroProfileDetails(documentSnapshot);
-  }
+//  void createClickedProfileBeforeHand() {
+//    _start = HeroCreator.createHeroProfileStart(
+//        heroName, imageHeroName, documentSnapshot);
+//    _details = HeroCreator.createHeroProfileDetails(documentSnapshot);
+//  }
 
   void createClickedProfileOnlyOnTap(BuildContext context) {
     HeroCreator.pushProfileIntoView(
