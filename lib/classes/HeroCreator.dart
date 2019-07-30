@@ -29,34 +29,48 @@ class HeroCreator {
   }
 
   static HeroProfileDetails createHeroProfileDetails(
-      DocumentSnapshot data, BuildContext context, LoggedInUser currentLoggedInUser) {
-    bool isLookingAtOwnProfile = _checkSame(currentLoggedInUser, data);
+      DocumentSnapshot otherUserDocumentSnapshot, BuildContext context, LoggedInUser currentLoggedInUser) {
+    bool isLookingAtOwnProfile = _checkSame(currentLoggedInUser, otherUserDocumentSnapshot);
+    bool isOtherUserInIncomingSelfieRequestList = false;
+    bool isOtherUserInOutgoingSelfieRequestList = false;
 
     // Go into our list of references in selfieRequests and check
     // if that profile we're trying to push into view is in out selfieRequest list
     // then a new button will replace the "Selfie request" with "Accept selfie"
     // Also need to construct a "onSelfieAcceptTap"
-    List<dynamic> loggedInUserSelfieReferences = currentLoggedInUser.getHashMap[FirestoreManager.keySelfieRequests];
-    loggedInUserSelfieReferences.forEach((ref) {
-      if (ref == data.reference) {
-        print("USER EXISTS IN THE LIST");
-      } else {
-        print("THIS USER DOES NOT EXISTS IN THE LIST OF REFERENCES FOR THE LOGGED IN USER");
+    List<dynamic> loggedInUserIncomingSelfieReferences =
+        currentLoggedInUser.getHashMap[FirestoreManager.keyIncomingSelfieRequests];
+
+    List<dynamic> loggedInUserOutgoingSelfieReferences =
+        currentLoggedInUser.getHashMap[FirestoreManager.keyOutgoingSelfieRequests];
+
+    loggedInUserIncomingSelfieReferences.forEach((reference) {
+      if (reference == otherUserDocumentSnapshot.reference) {
+        isOtherUserInIncomingSelfieRequestList = true;
+        return;
+      }
+    });
+
+    loggedInUserOutgoingSelfieReferences.forEach((reference) {
+      if (reference == otherUserDocumentSnapshot.reference) {
+        isOtherUserInOutgoingSelfieRequestList = true;
+        return;
       }
     });
 
     return HeroProfileDetails(
-      onSelfieRequestTap: () {
-        _onSelfieTap(currentLoggedInUser, data);
+      onSelfieIncomingRequestTap: () {
+        _onSelfieRequestTap(currentLoggedInUser, otherUserDocumentSnapshot);
       },
-//      onSelfieAcceptTap: (){},
-//      isInSelfieRequestList: ,
+      onSelfieIncomingAcceptTap: () {},
+      isInSelfieIncomingRequestList: isOtherUserInIncomingSelfieRequestList,
+      isInSelfieOutgoingRequestList: isOtherUserInOutgoingSelfieRequestList,
       isLoggedInUser: isLookingAtOwnProfile,
-      userCircleImage: data[FirestoreManager.keyPhotos][0],
-      rarityBorder: data[FirestoreManager.keyRarityBorder],
-      displayName: data[FirestoreManager.keyDisplayName],
-      friendliness: data[FirestoreManager.keyFriendliness],
-      fame: data[FirestoreManager.keyFame],
+      userCircleImage: otherUserDocumentSnapshot[FirestoreManager.keyPhotos][0],
+      rarityBorder: otherUserDocumentSnapshot[FirestoreManager.keyRarityBorder],
+      displayName: otherUserDocumentSnapshot[FirestoreManager.keyDisplayName],
+      friendliness: otherUserDocumentSnapshot[FirestoreManager.keyFriendliness],
+      fame: otherUserDocumentSnapshot[FirestoreManager.keyFame],
     );
   }
 
@@ -97,10 +111,12 @@ class HeroCreator {
     Navigator.push(context, MaterialPageRoute(builder: (context) => clickedProfile));
   }
 
-  static void _onSelfieTap(LoggedInUser loggedInUser, DocumentSnapshot otherUserData) async {
+  // Request selfie from that user
+  static void _onSelfieRequestTap(LoggedInUser loggedInUser, DocumentSnapshot otherUserData) async {
     DocumentReference loggedInUserRef;
+    DocumentReference otherUserRef;
 
-    // Get the DocumentReference to the loggedInuser
+    // Get the DocumentReference to the loggedInUser (person sending the selfie request)
     await Firestore.instance
         .collection("users")
         .where(FirestoreManager.keyDisplayName, isEqualTo: loggedInUser.getHashMap[FirestoreManager.keyDisplayName])
@@ -109,17 +125,25 @@ class HeroCreator {
       loggedInUserRef = snapshot.documents[0].reference;
     });
 
-    // Add the DocumentReference to the selfieRequests list for otherUser
+    // Add the DocumentReference to the selfieRequests list for otherUser (person receiving selfie request)
     await Firestore.instance
         .collection("users")
         .where(FirestoreManager.keyDisplayName, isEqualTo: otherUserData[FirestoreManager.keyDisplayName])
         .getDocuments()
         .then((snapshot) {
-      snapshot.documents[0].reference.setData({
-        'selfieRequests': [loggedInUserRef],
+      otherUserRef = snapshot.documents[0].reference;
+      otherUserRef.setData({
+        FirestoreManager.keyIncomingSelfieRequests: [loggedInUserRef],
       }, merge: true);
     });
+
+    // Add the otherUser to the loggedInUser outgoing selfie requests
+    await loggedInUserRef.setData({
+      FirestoreManager.keyOutgoingSelfieRequests: [otherUserRef],
+    }, merge: true);
   }
+
+  static void _onSelfieAcceptTap() {}
 
   static _checkSame(LoggedInUser loggedInUser, DocumentSnapshot otherUser) {
     String otherUserName = otherUser[FirestoreManager.keyDisplayName];

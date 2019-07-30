@@ -8,18 +8,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:cosplay_app/widgets/ActionButton.dart';
 
-class HeroProfileDetails extends StatelessWidget {
+class HeroProfileDetails extends StatefulWidget {
   final bool isLoggedInUser;
   final String userCircleImage;
   final String displayName;
   final int rarityBorder;
   final int friendliness;
   final int fame;
-  final Function onSelfieRequestTap;
+  final Function onSelfieIncomingRequestTap;
+  final bool isInSelfieIncomingRequestList;
+  final Function onSelfieIncomingAcceptTap;
+  final bool isInSelfieOutgoingRequestList;
 
   HeroProfileDetails({
     @required this.userCircleImage,
-    @required this.onSelfieRequestTap,
+    @required this.isInSelfieOutgoingRequestList,
+    @required this.onSelfieIncomingAcceptTap,
+    @required this.isInSelfieIncomingRequestList,
+    @required this.onSelfieIncomingRequestTap,
     @required this.rarityBorder,
     @required this.displayName,
     @required this.friendliness,
@@ -27,11 +33,16 @@ class HeroProfileDetails extends StatelessWidget {
     this.isLoggedInUser = false,
   });
 
-  // Render different buttons depending on if the profile
-  // logged in user, photographer, cosplayer, or congoer
+  @override
+  _HeroProfileDetailsState createState() => _HeroProfileDetailsState();
+}
+
+class _HeroProfileDetailsState extends State<HeroProfileDetails> {
+  bool clickedOnOutgoingSelfieButton = false;
+
   Widget _renderPage(BuildContext context) {
-    print(isLoggedInUser);
-    if (isLoggedInUser) {
+    print(widget.isLoggedInUser);
+    if (widget.isLoggedInUser) {
       return _renderLoggedInUserPage(context);
     }
     return _renderOtherUserPage();
@@ -48,7 +59,7 @@ class HeroProfileDetails extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 10.0),
               child: ImageContainer(
                   enableStatusDot: true,
-                  enableSelfieDot: isLoggedInUser ? false : true,
+                  enableSelfieDot: widget.isLoggedInUser ? false : true,
                   statusDotOuterSize: 25.0,
                   statusDotRight: 15,
                   statusDotBottom: 10,
@@ -56,16 +67,16 @@ class HeroProfileDetails extends StatelessWidget {
                   selfieDotLeft: 15,
                   selfieDotBottom: 10,
                   borderWidth: 3.5,
-                  rarityBorderColor: kRarityBorders[rarityBorder],
+                  rarityBorderColor: kRarityBorders[widget.rarityBorder],
                   borderRadius: 500.0,
-                  image: userCircleImage,
+                  image: widget.userCircleImage,
                   width: 160.0,
                   height: 160.0),
             ),
             SizedBox(height: 20.0),
             // Name
             Text(
-              displayName,
+              widget.displayName,
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0),
             ),
             SizedBox(height: 15.0),
@@ -76,16 +87,14 @@ class HeroProfileDetails extends StatelessWidget {
                     size: 45.0,
                     icon: FontAwesomeIcons.instagram,
                     iconSize: 25.0,
-                    padding: EdgeInsets.only(
-                        left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
+                    padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
                     onTap: () {}),
                 SizedBox(width: 20.0),
                 RoundButton(
                     size: 45.0,
                     icon: FontAwesomeIcons.twitter,
                     iconSize: 25.0,
-                    padding: EdgeInsets.only(
-                        left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
+                    padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
                     onTap: () {}),
               ],
             ),
@@ -94,10 +103,9 @@ class HeroProfileDetails extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                TitleData(
-                    title: "Friendliness", number: friendliness, width: 150.0),
+                TitleData(title: "Friendliness", number: widget.friendliness, width: 150.0),
                 SizedBox(width: 30),
-                TitleData(title: "Fame", number: fame, width: 150.0)
+                TitleData(title: "Fame", number: widget.fame, width: 150.0)
               ],
             ),
             SizedBox(height: 30.0),
@@ -198,16 +206,16 @@ class HeroProfileDetails extends StatelessWidget {
                   selfieDotLeft: 15,
                   selfieDotBottom: 10,
                   borderWidth: 3.5,
-                  rarityBorderColor: kRarityBorders[rarityBorder],
+                  rarityBorderColor: kRarityBorders[widget.rarityBorder],
                   borderRadius: 500.0,
-                  image: userCircleImage,
+                  image: widget.userCircleImage,
                   width: 160.0,
                   height: 160.0),
             ),
             SizedBox(height: 20.0),
             // Name
             Text(
-              displayName,
+              widget.displayName,
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0),
             ),
             SizedBox(height: 15.0),
@@ -218,16 +226,14 @@ class HeroProfileDetails extends StatelessWidget {
                     size: 45.0,
                     icon: FontAwesomeIcons.instagram,
                     iconSize: 25.0,
-                    padding: EdgeInsets.only(
-                        left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
+                    padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
                     onTap: () {}),
                 SizedBox(width: 20.0),
                 RoundButton(
                     size: 45.0,
                     icon: FontAwesomeIcons.twitter,
                     iconSize: 25.0,
-                    padding: EdgeInsets.only(
-                        left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
+                    padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
                     onTap: () {}),
               ],
             ),
@@ -236,10 +242,9 @@ class HeroProfileDetails extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                TitleData(
-                    title: "Friendliness", number: friendliness, width: 150.0),
+                TitleData(title: "Friendliness", number: widget.friendliness, width: 150.0),
                 SizedBox(width: 30),
-                TitleData(title: "Fame", number: fame, width: 150.0)
+                TitleData(title: "Fame", number: widget.fame, width: 150.0)
               ],
             ),
             SizedBox(height: 30.0),
@@ -291,15 +296,7 @@ class HeroProfileDetails extends StatelessWidget {
             ),
             SizedBox(height: 25.0),
             // Selfie request button
-            ActionButton(
-              fillColor: Colors.pinkAccent,
-              icon: Icons.camera_alt,
-              text: Text("Selfie Request", style: kButtonActionTextStyle),
-              onTap: () {
-                onSelfieRequestTap();
-              },
-              iconColor: Colors.white,
-            ),
+            _renderSelfieButton(),
             SizedBox(height: 25.0),
             // Photography request button
             ActionButton(
@@ -314,6 +311,52 @@ class HeroProfileDetails extends StatelessWidget {
         )
       ],
     );
+  }
+
+  Widget _renderSelfieButton() {
+    // other user sent a request to current user
+    if (widget.isInSelfieIncomingRequestList) {
+      return ActionButton(
+        fillColor: Colors.pinkAccent,
+        icon: Icons.camera_alt,
+        text: Text("Accept Selfie", style: kButtonActionTextStyle),
+        onTap: () {
+          widget.onSelfieIncomingRequestTap();
+        },
+        iconColor: Colors.white,
+      );
+    }
+    // current user sent a request to other user
+    else if (widget.isInSelfieOutgoingRequestList) {
+      return ActionButton(
+        fillColor: Colors.grey[300],
+        icon: Icons.camera_alt,
+        text: Text("Requested Selfie", style: kButtonActionTextStyle),
+        onTap: () {},
+        iconColor: Colors.white,
+      );
+    } else if (!clickedOnOutgoingSelfieButton) {
+      return ActionButton(
+        fillColor: Colors.pinkAccent,
+        icon: Icons.camera_alt,
+        text: Text("Selfie Request", style: kButtonActionTextStyle),
+        onTap: () {
+          widget.onSelfieIncomingRequestTap();
+          setState(() {
+            clickedOnOutgoingSelfieButton = true;
+          });
+        },
+        iconColor: Colors.white,
+      );
+    } else {
+      return ActionButton(
+        fillColor: Colors.grey[300],
+        icon: Icons.camera_alt,
+        text: Text("Requested Selfie", style: kButtonActionTextStyle),
+        onTap: () {},
+        iconColor: Colors.white,
+      );
+    }
   }
 
   @override
@@ -353,13 +396,21 @@ class TitleData extends StatelessWidget {
           SizedBox(height: 1.0),
           Text(
             convertNumberToString(),
-            style: TextStyle(
-                fontSize: 25.0,
-                color: Colors.cyan[300],
-                fontWeight: FontWeight.w600),
+            style: TextStyle(fontSize: 25.0, color: Colors.cyan[300], fontWeight: FontWeight.w600),
           ),
         ],
       ),
     );
   }
 }
+
+// Pink buttons
+const TextStyle kButtonActionTextStyle = TextStyle(fontWeight: FontWeight.w500, fontSize: 22.0, color: Colors.white);
+
+// Disabled
+final TextStyle kButtonDisabledTextStyle = TextStyle(fontWeight: FontWeight.w500, fontSize: 22.0, color: Colors.grey[300]);
+const kButtonNormalFillColor = Colors.white;
+const kButtonNormalIconColor = Colors.black54;
+
+// White buttons
+const TextStyle kButtonNormalTextStyle = TextStyle(fontWeight: FontWeight.w500, fontSize: 22.0, color: Colors.black54);
