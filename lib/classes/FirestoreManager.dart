@@ -103,7 +103,7 @@ class FirestoreManager {
       // Create timer here and pass into updatePosition
       // Whenever this stream emits new data, cancel the timer then create a new one
 
-      _updatePosition(loggedInUser);
+      _updatePosition(loggedInUser, doc.documents[0]);
 
       // callback notifies listeners of loggedInUser
       callback();
@@ -168,7 +168,7 @@ class FirestoreManager {
     });
   }
 
-  static _updatePosition(LoggedInUser loggedInUser) {
+  static _updatePosition(LoggedInUser loggedInUser, DocumentSnapshot documentSnapshot) {
     // TODO NEED SEPERATIONS
     if (_isInSelfieMode(loggedInUser)) {
       loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] = true;
@@ -188,18 +188,9 @@ class FirestoreManager {
           double lng = pos.longitude;
 
           GeoFirePoint newGeoPoint = geo.point(latitude: lat, longitude: lng);
+          print("newGeoPoint: ${newGeoPoint.longitude} ${newGeoPoint.latitude}");
+          // TODO uncomment this for database update location
           //documentSnapshot.reference.setData({FirestoreManager.keyPosition: newGeoPoint.data}, merge: true);
-          // Only update position if the users current position is different from the snapshot
-//        GeoPoint oldGeoPoint = documentSnapshot.data[FirestoreManager.keyPosition]['geopoint'];
-//        if (oldGeoPoint == null) print("OLDGEOPOINT IS NULL THIS SHOULD NOT BE POSSIBLE.");
-//        print("oldGeoPoint ${oldGeoPoint.longitude} ${oldGeoPoint.latitude}");
-//        print("newGeoPoint ${newGeoPoint.longitude} ${newGeoPoint.latitude}");
-//        if (oldGeoPoint.latitude == newGeoPoint.latitude && oldGeoPoint.longitude == newGeoPoint.longitude) {
-//          print("Geopoints are the same... not updating database...");
-//        } else {
-//          print("Geopoint are different... updating database with new position");
-//          /
-//        }
         });
       } else {
         print("Location update timer already exist DO NOT RECREATE");
@@ -231,9 +222,6 @@ class FirestoreManager {
     // Check if there exists a user thats in outgoing and in incoming
     for (int i = 0; i < outgoingSelfieList.length; i++) {
       if (incomingSelfieMap.containsKey(outgoingSelfieList[i])) {
-        //print("INCOMING HAS SOMEONE IN OUTGOING");
-        //print("INCOMING ${incomingSelfieMap.length}");
-        //print("OUTGOING ${outgoingSelfieList.length}");
         // If there exist such a user, then we're still in selfie mode
         usersToShareLocationWith[i] = outgoingSelfieList[i];
         inSelfieMode = true;
