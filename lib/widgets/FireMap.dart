@@ -56,21 +56,51 @@ class _FireMapState extends State<FireMap> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // Todo need to be on a timer
+    _createMarkersOnMap();
+  }
+
+  _createMarkersOnMap() {
     LoggedInUser loggedInUser = LoggedInUser();
     loggedInUser = Provider.of<LoggedInUser>(context);
     print("_______________________________________________________FIREMAP DIDCHANGEDEPENDENCIES");
     // Contains reference to other users
     List<DocumentReference> usersToShareLocationWith = loggedInUser.getHashMap[FirestoreManager.keyUsersToShareLocationWith];
-//     print("Does this exists? ${usersToShareLocationWith");
-    //print(loggedInUser.getHashMap[FirestoreManager.keyUsersToShareLocationWith]);
     // Go through each reference and get their geoposition
     for (int i = 0; i < usersToShareLocationWith.length; i++) {
-      usersToShareLocationWith[i].get().then((snapshot) {
-        print("Printing other users position _+_+_+_+_+_+_+_");
-        GeoPoint otherUserGeoPoint = snapshot.data['position']['geopoint'];
-        print(otherUserGeoPoint.latitude);
+      // Create marker for each users position
+      usersToShareLocationWith[i].get().then((snapshot) async {
+        await _createMarkerWithOtherUserInformation(snapshot);
+        print('adding marker on map');
       });
     }
+  }
+
+  _createMarkerWithOtherUserInformation(DocumentSnapshot snapshot) async {
+    print("Printing other users position _+_+_+_+_+_+_+_");
+    GeoPoint otherUserGeoPoint = snapshot.data['position']['geopoint'];
+    Location location = Location();
+    LocationData position = await location.getLocation();
+    // double distance = snapshot.data['distance'];
+    double distance = geo
+        .point(latitude: otherUserGeoPoint.latitude, longitude: otherUserGeoPoint.longitude)
+        .distance(lat: position.latitude, lng: position.longitude);
+    print(distance);
+    final MarkerId markerId = MarkerId(UniqueKey().toString());
+
+    // Create marker at that position
+    Marker marker = Marker(
+      markerId: markerId,
+      position: LatLng(otherUserGeoPoint.latitude, otherUserGeoPoint.longitude),
+      icon: otherUserIconOnMap,
+      //icon: BitmapDescriptor.defaultMarker,
+      infoWindow: InfoWindow(
+        title: "Magic Marker",
+        snippet: "$distance km ${distance / 1.609} miles",
+      ),
+    );
+
+    markers[markerId] = marker;
   }
 
   @override
