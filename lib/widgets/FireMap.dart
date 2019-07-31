@@ -4,6 +4,9 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import "package:cloud_firestore/cloud_firestore.dart";
 import 'package:rxdart/rxdart.dart';
 import 'package:location/location.dart';
+import 'package:cosplay_app/classes/LoggedInUser.dart';
+import 'package:cosplay_app/classes/FirestoreManager.dart';
+import 'package:provider/provider.dart';
 import 'dart:async';
 
 /// Structure:
@@ -23,6 +26,10 @@ import 'dart:async';
 /// As a result, radius.switchMap will be called again and find all
 /// documents around that new radius.
 
+/// How to make it so loggedInUser gets the information of the "usersToShareLocationWIth" every 10 seconds?
+/// 1) loggedInUser.getusersToSharelOcationsWith[i].getLocation
+/// 2) where to create timer? What does this timer do? Get a reference to each usersToshareLocWith
+/// 3) For each reference, get currentLocation in database
 class FireMap extends StatefulWidget {
   @override
   _FireMapState createState() => _FireMapState();
@@ -31,6 +38,7 @@ class FireMap extends StatefulWidget {
 class _FireMapState extends State<FireMap> {
   GoogleMapController mapController;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  LoggedInUser loggedInUser;
   Location location = Location();
   Firestore firestore = Firestore.instance;
   Geoflutterfire geo = Geoflutterfire();
@@ -42,11 +50,42 @@ class _FireMapState extends State<FireMap> {
   BehaviorSubject<double> radius = BehaviorSubject<double>.seeded(1.0);
   Stream<Query> query;
 
+  // loggedInuser.getHashMap[FirestoreManager.getUserToShareLocWith[
+  // for every user, use their reference to get geopoint (ref.get.data['posititon'][['geopoint']
+  ///
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    LoggedInUser loggedInUser = LoggedInUser();
+    loggedInUser = Provider.of<LoggedInUser>(context);
+    print("_______________________________________________________FIREMAP DIDCHANGEDEPENDENCIES");
+    // Contains reference to other users
+    List<DocumentReference> usersToShareLocationWith = loggedInUser.getHashMap[FirestoreManager.keyUsersToShareLocationWith];
+//     print("Does this exists? ${usersToShareLocationWith");
+    //print(loggedInUser.getHashMap[FirestoreManager.keyUsersToShareLocationWith]);
+    // Go through each reference and get their geoposition
+    for (int i = 0; i < usersToShareLocationWith.length; i++) {
+      usersToShareLocationWith[i].get().then((snapshot) {
+        print("Printing other users position _+_+_+_+_+_+_+_");
+        GeoPoint otherUserGeoPoint = snapshot.data['position']['geopoint'];
+        print(otherUserGeoPoint.latitude);
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    _initOtherUserIcon();
+
+    /// Go through each person in the reference
+    /// use the reference to get that person's location
+    /// What to do with that reference? We need the lat and lng to create where the marker is going to be
+    /// How to generate marker? use the Marker class from googlemaps to create a marker with the LatAndLng
+    /// How to display the marker? add it to the markers array in FireMap()
+
+    _initOtherUserIcon(); // Other user icons on the map (green dot)
     _startQuery();
+    //Firestore.instance.collection('ee').document('awda').get().then((value){value.reference.get()})
   }
 
   _startQuery() async {

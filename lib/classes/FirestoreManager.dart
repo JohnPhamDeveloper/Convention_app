@@ -6,6 +6,14 @@ import 'package:location/location.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'dart:collection';
 
+/// Each user must get the current location of the other user, how?
+/// Have a "usersToShareLocationWith" which gets added during the comparison for incoming/outgoing selfie (updatelocation method)
+/// That will store a reference to each user
+/// Then we will use the reference to fetch the location of each user along with name and stuff to generate the marker info
+/// Have to make a read request for each user though (so 3 users in array would equal 3 read request every 10 seconds)
+/// Then generate a marker on the user screen for each of those users at the given geoPoints
+/// Update screen & markers every 10 seconds
+
 class FirestoreManager {
   static String username = "testUser1"; // Or phone number
   static String keyDisplayName = "displayName";
@@ -103,7 +111,7 @@ class FirestoreManager {
       // Create timer here and pass into updatePosition
       // Whenever this stream emits new data, cancel the timer then create a new one
 
-      _updatePosition(loggedInUser, doc.documents[0]);
+      _starPositionUpdateTimer(loggedInUser, doc.documents[0]);
 
       // callback notifies listeners of loggedInUser
       callback();
@@ -160,7 +168,6 @@ class FirestoreManager {
   // Takes all documentSnapshots and copies to loggedInUser
   static _copyUserDatabaseInformationToLocalData(DocumentSnapshot documentSnapshot, LoggedInUser loggedInUser) {
     loggedInUser.getHashMap[FirestoreManager.keyDocumentReference] = documentSnapshot.reference;
-    //print("PRE: ${loggedInUser.getHashMap[FirestoreManager.keyDocumentReference]}");
     documentSnapshot.data.forEach((key, value) {
       //print("Updating $key...$value");
       FirestoreManager.keys[key] = key; // (delete) Not useful
@@ -168,34 +175,25 @@ class FirestoreManager {
     });
   }
 
-  static _updatePosition(LoggedInUser loggedInUser, DocumentSnapshot documentSnapshot) {
+  static _starPositionUpdateTimer(LoggedInUser loggedInUser, DocumentSnapshot documentSnapshot) async {
     // TODO NEED SEPERATIONS
     if (_isInSelfieMode(loggedInUser)) {
       loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] = true;
       if (_locationUpdateTimer == null) {
         print("Location update timer is null so create a timer");
+        // Initial position update
+        await _sendPositionToDatabase(documentSnapshot);
         _locationUpdateTimer = Timer.periodic(Duration(seconds: 10), (Timer t) async {
           if (loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] == false) {
             print("!_!+_!+_!+_!+!_ CANCELLING TIMER __+_++_+__+__+!_+!_+_+!__!+_+!_+!_!_");
             t.cancel();
           }
-          // TODO NOT OPTIMIZED!
           print("TIMER RAN _--------------------------------------------------_");
-          final Location location = Location();
-          final Geoflutterfire geo = Geoflutterfire();
-          final pos = await location.getLocation();
-          double lat = pos.latitude;
-          double lng = pos.longitude;
-
-          GeoFirePoint newGeoPoint = geo.point(latitude: lat, longitude: lng);
-          print("newGeoPoint: ${newGeoPoint.longitude} ${newGeoPoint.latitude}");
-          // TODO uncomment this for database update location
-          //documentSnapshot.reference.setData({FirestoreManager.keyPosition: newGeoPoint.data}, merge: true);
+          await _sendPositionToDatabase(documentSnapshot);
         });
       } else {
         print("Location update timer already exist DO NOT RECREATE");
       }
-
       print("IN SELFIE MODE + STARTING TIMER..................................");
     } else {
       loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] = false;
@@ -207,12 +205,26 @@ class FirestoreManager {
     }
   }
 
+  static _sendPositionToDatabase(DocumentSnapshot documentSnapshot) async {
+    // TODO NOT OPTIMIZED!
+    final Location location = Location();
+    final Geoflutterfire geo = Geoflutterfire();
+    final pos = await location.getLocation();
+    double lat = pos.latitude;
+    double lng = pos.longitude;
+
+    GeoFirePoint newGeoPoint = geo.point(latitude: lat, longitude: lng);
+    print("newGeoPoint: ${newGeoPoint.longitude} ${newGeoPoint.latitude}");
+    // TODO uncomment this for database update location
+    //await documentSnapshot.reference.setData({FirestoreManager.keyPosition: newGeoPoint.data}, merge: true);
+  }
+
   static bool _isInSelfieMode(LoggedInUser loggedInUser) {
     bool inSelfieMode = false;
     final List<dynamic> outgoingSelfieList = loggedInUser.getHashMap[FirestoreManager.keyOutgoingSelfieRequests];
     final List<dynamic> incomingSelfieList = loggedInUser.getHashMap[FirestoreManager.keyIncomingSelfieRequests];
     HashMap<DocumentReference, int> incomingSelfieMap = HashMap<DocumentReference, int>();
-    HashMap<int, DocumentReference> usersToShareLocationWith = HashMap<int, DocumentReference>();
+    List<DocumentReference> usersToShareLocationWith = List<DocumentReference>();
 
     // Copy incoming list to hashmap
     for (int i = 0; i < incomingSelfieList.length; i++) {
@@ -223,11 +235,12 @@ class FirestoreManager {
     for (int i = 0; i < outgoingSelfieList.length; i++) {
       if (incomingSelfieMap.containsKey(outgoingSelfieList[i])) {
         // If there exist such a user, then we're still in selfie mode
-        usersToShareLocationWith[i] = outgoingSelfieList[i];
+        usersToShareLocationWith.add(outgoingSelfieList[i]);
         inSelfieMode = true;
       }
     }
 
+    // TODO private information?
     loggedInUser.getHashMap[FirestoreManager.keyUsersToShareLocationWith] = usersToShareLocationWith;
     print("PRINTING USERS TO SHARE LOCATION WITH");
     print(usersToShareLocationWith);
