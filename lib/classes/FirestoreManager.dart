@@ -28,7 +28,8 @@ class FirestoreManager {
   static String keyIncomingSelfieRequests = 'incomingSelfieRequests';
   static String keyOutgoingSelfieRequests = 'outgoingSelfieRequests';
   static String keyDocumentReference = 'documentReference';
-  static String keyIsSharingLocation = 'isSharingLocation';
+  static String keyIsSharingLocation = 'isSharingLocation'; // not used?
+  static String keyPosition = 'position';
 
   // These keys are not in databases but calculated locally using the database information
   static String keyIsInSelfieMode = 'isInSelfieMode';
@@ -84,7 +85,7 @@ class FirestoreManager {
   static streamUserData(LoggedInUser loggedInUser, Function callback) {
     Firestore.instance
         .collection("users")
-        .where(FirestoreManager.keyDisplayName, isEqualTo: "Chibata")
+        .where(FirestoreManager.keyDisplayName, isEqualTo: "Hakunom")
         .limit(1)
         .snapshots()
         .listen((doc) {
@@ -167,6 +168,7 @@ class FirestoreManager {
       loggedInUser.getHashMap[key] = value;
     });
 
+    // TODO NEED SEPERATIONS
     print('checking....');
     if (_isInSelfieMode(loggedInUser)) {
       loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] = true;
@@ -175,6 +177,7 @@ class FirestoreManager {
           print("CANCELLING TIMERahwdioawhdiowadiowahdwadi");
           t.cancel();
         }
+        // TODO NOT OPTIMIZED!
         print("TIMER RAN _--------------------------------------------------_");
         final Location location = Location();
         final Geoflutterfire geo = Geoflutterfire();
@@ -182,10 +185,21 @@ class FirestoreManager {
         double lat = pos.latitude;
         double lng = pos.longitude;
 
-        GeoFirePoint point = geo.point(latitude: lat, longitude: lng);
+        GeoFirePoint newGeoPoint = geo.point(latitude: lat, longitude: lng);
 
         // Update position
-        // doc.documents[0].reference.setData({'position': point.data}, merge: true);
+        // Check if the point is the same as the one in the database
+        // If it is then we don't need to update location.
+        //if (documentSnapshot.data[FirestoreManager.keyPosition]) {}
+
+        // Only update position if the users current position is different from the snapshot
+        GeoPoint oldGeoPoint = documentSnapshot.data[FirestoreManager.keyPosition]['geopoint'];
+        if (oldGeoPoint.latitude != newGeoPoint.latitude && oldGeoPoint.longitude != newGeoPoint.longitude) {
+          print("Geopoints are the same... not updating database...");
+        } else {
+          print("Geopoint are different... updating database with new position");
+          documentSnapshot.reference.setData({FirestoreManager.keyPosition: newGeoPoint.data}, merge: true);
+        }
       });
       print("IN SELFIE MODE + STARTING TIMER..................................");
     } else {
