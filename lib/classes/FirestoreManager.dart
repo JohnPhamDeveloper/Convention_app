@@ -35,6 +35,8 @@ class FirestoreManager {
   static String keyIsInSelfieMode = 'isInSelfieMode';
   static String keyUsersToShareLocationWith = 'usersToShareLocationWith';
 
+  static Timer _locationUpdateTimer;
+
   // (delete) not useful
   static HashMap<String, String> keys = HashMap<String, String>();
 
@@ -94,17 +96,16 @@ class FirestoreManager {
       FirestoreReadcheck.userProfileReads++;
       FirestoreReadcheck.printUserProfileReads();
 
+      print('$_locationUpdateTimer yeye');
       // Go through each document in the user and update the local data
       _copyUserDatabaseInformationToLocalData(doc.documents[0], loggedInUser);
 
-      // after we copy all data to local data, check both our incoming and outoing arrays
-      // to see if there are similar users in our list.
-      // copy incoming array to hashmap
-      // iterate through outgoing and check if it exist in the incoming hashmap.
-      // if it exists then selfie mode is on; return
-      // if it doens't, keep going until we reach the end, then we'll set selfie mode to off
+      // Create timer here and pass into updatePosition
+      // Whenever this stream emits new data, cancel the timer then create a new one
 
-      // callback notifies listener
+      _updatePosition(loggedInUser);
+
+      // callback notifies listeners of loggedInUser
       callback();
     });
     // Create timer which runs every 10 seconds
@@ -158,8 +159,6 @@ class FirestoreManager {
 
   // Takes all documentSnapshots and copies to loggedInUser
   static _copyUserDatabaseInformationToLocalData(DocumentSnapshot documentSnapshot, LoggedInUser loggedInUser) {
-    // NOT NEEDED!?
-    // NOT NEEDED!?
     loggedInUser.getHashMap[FirestoreManager.keyDocumentReference] = documentSnapshot.reference;
     //print("PRE: ${loggedInUser.getHashMap[FirestoreManager.keyDocumentReference]}");
     documentSnapshot.data.forEach((key, value) {
@@ -167,44 +166,53 @@ class FirestoreManager {
       FirestoreManager.keys[key] = key; // (delete) Not useful
       loggedInUser.getHashMap[key] = value;
     });
+  }
 
+  static _updatePosition(LoggedInUser loggedInUser) {
     // TODO NEED SEPERATIONS
-    print('checking....');
     if (_isInSelfieMode(loggedInUser)) {
       loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] = true;
-      Timer.periodic(Duration(seconds: 10), (Timer t) async {
-        if (loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] == false) {
-          print("CANCELLING TIMERahwdioawhdiowadiowahdwadi");
-          t.cancel();
-        }
-        // TODO NOT OPTIMIZED!
-        print("TIMER RAN _--------------------------------------------------_");
-        final Location location = Location();
-        final Geoflutterfire geo = Geoflutterfire();
-        final pos = await location.getLocation();
-        double lat = pos.latitude;
-        double lng = pos.longitude;
+      if (_locationUpdateTimer == null) {
+        print("Location update timer is null so create a timer");
+        _locationUpdateTimer = Timer.periodic(Duration(seconds: 10), (Timer t) async {
+          if (loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] == false) {
+            print("!_!+_!+_!+_!+!_ CANCELLING TIMER __+_++_+__+__+!_+!_+_+!__!+_+!_+!_!_");
+            t.cancel();
+          }
+          // TODO NOT OPTIMIZED!
+          print("TIMER RAN _--------------------------------------------------_");
+          final Location location = Location();
+          final Geoflutterfire geo = Geoflutterfire();
+          final pos = await location.getLocation();
+          double lat = pos.latitude;
+          double lng = pos.longitude;
 
-        GeoFirePoint newGeoPoint = geo.point(latitude: lat, longitude: lng);
+          GeoFirePoint newGeoPoint = geo.point(latitude: lat, longitude: lng);
+          //documentSnapshot.reference.setData({FirestoreManager.keyPosition: newGeoPoint.data}, merge: true);
+          // Only update position if the users current position is different from the snapshot
+//        GeoPoint oldGeoPoint = documentSnapshot.data[FirestoreManager.keyPosition]['geopoint'];
+//        if (oldGeoPoint == null) print("OLDGEOPOINT IS NULL THIS SHOULD NOT BE POSSIBLE.");
+//        print("oldGeoPoint ${oldGeoPoint.longitude} ${oldGeoPoint.latitude}");
+//        print("newGeoPoint ${newGeoPoint.longitude} ${newGeoPoint.latitude}");
+//        if (oldGeoPoint.latitude == newGeoPoint.latitude && oldGeoPoint.longitude == newGeoPoint.longitude) {
+//          print("Geopoints are the same... not updating database...");
+//        } else {
+//          print("Geopoint are different... updating database with new position");
+//          /
+//        }
+        });
+      } else {
+        print("Location update timer already exist DO NOT RECREATE");
+      }
 
-        // Update position
-        // Check if the point is the same as the one in the database
-        // If it is then we don't need to update location.
-        //if (documentSnapshot.data[FirestoreManager.keyPosition]) {}
-
-        // Only update position if the users current position is different from the snapshot
-        GeoPoint oldGeoPoint = documentSnapshot.data[FirestoreManager.keyPosition]['geopoint'];
-        if (oldGeoPoint.latitude != newGeoPoint.latitude && oldGeoPoint.longitude != newGeoPoint.longitude) {
-          print("Geopoints are the same... not updating database...");
-        } else {
-          print("Geopoint are different... updating database with new position");
-          documentSnapshot.reference.setData({FirestoreManager.keyPosition: newGeoPoint.data}, merge: true);
-        }
-      });
       print("IN SELFIE MODE + STARTING TIMER..................................");
     } else {
       loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] = false;
-      print("NOT IN SEFIE MODE");
+      if (_locationUpdateTimer != null) {
+        print("Cancel update timer due to selfie mode being off (locationUpdateTimer != null)");
+        _locationUpdateTimer.cancel();
+      }
+      print("NOT IN SELFIE MODE");
     }
   }
 
@@ -223,9 +231,9 @@ class FirestoreManager {
     // Check if there exists a user thats in outgoing and in incoming
     for (int i = 0; i < outgoingSelfieList.length; i++) {
       if (incomingSelfieMap.containsKey(outgoingSelfieList[i])) {
-        print("INCOMING HAS SOMEONE IN OUTGOING");
-        print("INCOMING ${incomingSelfieMap.length}");
-        print("OUTGOING ${outgoingSelfieList.length}");
+        //print("INCOMING HAS SOMEONE IN OUTGOING");
+        //print("INCOMING ${incomingSelfieMap.length}");
+        //print("OUTGOING ${outgoingSelfieList.length}");
         // If there exist such a user, then we're still in selfie mode
         usersToShareLocationWith[i] = outgoingSelfieList[i];
         inSelfieMode = true;
@@ -233,7 +241,7 @@ class FirestoreManager {
     }
 
     loggedInUser.getHashMap[FirestoreManager.keyUsersToShareLocationWith] = usersToShareLocationWith;
-    print("PRINTING USERS TOS HARE LOC WITH");
+    print("PRINTING USERS TO SHARE LOCATION WITH");
     print(usersToShareLocationWith);
 
     // Not in selfie mode
