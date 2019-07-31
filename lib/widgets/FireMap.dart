@@ -50,9 +50,13 @@ class _FireMapState extends State<FireMap> {
   BehaviorSubject<double> radius = BehaviorSubject<double>.seeded(1.0);
   Stream<Query> query;
 
-  // loggedInuser.getHashMap[FirestoreManager.getUserToShareLocWith[
-  // for every user, use their reference to get geopoint (ref.get.data['posititon'][['geopoint']
-  ///
+  @override
+  void initState() {
+    super.initState();
+    _initOtherUserIcon(); // Other user icons on the map (green dot)
+    _startQuery();
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -79,6 +83,7 @@ class _FireMapState extends State<FireMap> {
   _createMarkerWithOtherUserInformation(DocumentSnapshot snapshot) async {
     print("Printing other users position _+_+_+_+_+_+_+_");
     GeoPoint otherUserGeoPoint = snapshot.data['position']['geopoint'];
+    String otherUserName = snapshot.data[FirestoreManager.keyDisplayName];
     Location location = Location();
     LocationData position = await location.getLocation();
     // double distance = snapshot.data['distance'];
@@ -95,27 +100,12 @@ class _FireMapState extends State<FireMap> {
       icon: otherUserIconOnMap,
       //icon: BitmapDescriptor.defaultMarker,
       infoWindow: InfoWindow(
-        title: "Magic Marker",
+        title: '$otherUserName',
         snippet: "$distance km ${distance / 1.609} miles",
       ),
     );
 
     markers[markerId] = marker;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    /// Go through each person in the reference
-    /// use the reference to get that person's location
-    /// What to do with that reference? We need the lat and lng to create where the marker is going to be
-    /// How to generate marker? use the Marker class from googlemaps to create a marker with the LatAndLng
-    /// How to display the marker? add it to the markers array in FireMap()
-
-    _initOtherUserIcon(); // Other user icons on the map (green dot)
-    _startQuery();
-    //Firestore.instance.collection('ee').document('awda').get().then((value){value.reference.get()})
   }
 
   _startQuery() async {
@@ -186,8 +176,9 @@ class _FireMapState extends State<FireMap> {
           snippet: "$distance km",
         ),
       );
-
-      markers[markerId] = marker;
+      setState(() {
+        markers[markerId] = marker;
+      });
     });
   }
 

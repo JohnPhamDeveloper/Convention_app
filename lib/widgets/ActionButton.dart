@@ -8,7 +8,13 @@ class ActionButton extends StatelessWidget {
   final Function onTap;
   final Color iconColor;
 
-  ActionButton({this.fillColor, this.text, @required this.onTap, this.icon, this.iconColor});
+  ActionButton({
+    this.fillColor,
+    this.text,
+    @required this.onTap,
+    this.icon,
+    this.iconColor = Colors.white,
+  });
 
   @override
   Widget build(BuildContext context) {

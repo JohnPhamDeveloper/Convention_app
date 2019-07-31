@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cosplay_app/widgets/ImageContainer.dart';
 import 'package:cosplay_app/widgets/RoundButton.dart';
-import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 import 'package:cosplay_app/widgets/medals/medals.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:cosplay_app/widgets/ActionButton.dart';
+import 'package:cosplay_app/widgets/TitleData.dart';
+import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 
 class HeroProfileDetails extends StatefulWidget {
   final bool isLoggedInUser;
@@ -313,106 +314,49 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
     );
   }
 
-  Widget _renderSelfieButton() {
-    // Both users sent a selfie request to eachother and are now sharing location
+  _renderSelfieButton() {
+    // Both users sent a selfie request to each other (matched)
     if (widget.isInLoggedInUserSelfieIncomingRequestList && widget.isInLoggedInUserSelfieOutgoingRequestList) {
-      return ActionButton(
-        fillColor: Colors.pinkAccent,
-        icon: Icons.camera_alt,
-        text: Text("Finish Selfie", style: kButtonActionTextStyle),
-        onTap: () {
-          ///
-        },
-        iconColor: Colors.white,
-      );
+      return _selfieButtonWrapper("Finish Selfie", () {});
     }
-    // other user sent a request to current user
+    // other user sent a request to logged in user
     if (widget.isInLoggedInUserSelfieIncomingRequestList) {
-      return ActionButton(
-        fillColor: Colors.pinkAccent,
-        icon: Icons.camera_alt,
-        text: Text("Accept Selfie", style: kButtonActionTextStyle),
-        onTap: () {
-          widget.onSelfieIncomingAcceptTap();
-        },
-        iconColor: Colors.white,
-      );
+      return _selfieButtonWrapper("Accept Selfie", () {
+        widget.onSelfieIncomingAcceptTap();
+      });
     }
-    // current user sent a request to other user
+    // logged in user sent a request to other user
     else if (widget.isInLoggedInUserSelfieOutgoingRequestList) {
-      return ActionButton(
-        fillColor: Colors.grey[300],
-        icon: Icons.camera_alt,
-        text: Text("Requested Selfie", style: kButtonActionTextStyle),
-        onTap: () {},
-        iconColor: Colors.white,
-      );
-    } else if (!clickedOnOutgoingSelfieButton) {
-      return ActionButton(
-        fillColor: Colors.pinkAccent,
-        icon: Icons.camera_alt,
-        text: Text("Selfie Request", style: kButtonActionTextStyle),
-        onTap: () {
-          widget.onSelfieIncomingRequestTap();
-          setState(() {
-            clickedOnOutgoingSelfieButton = true;
-          });
-        },
-        iconColor: Colors.white,
-      );
-    } else {
-      return ActionButton(
-        fillColor: Colors.grey[300],
-        icon: Icons.camera_alt,
-        text: Text("Requested Selfie", style: kButtonActionTextStyle),
-        onTap: () {},
-        iconColor: Colors.white,
-      );
+      return _selfieButtonWrapper("Requested Selfie", () {}, fillColor: Colors.grey[300]);
     }
+    // Already clicked on requested selfie button so don't allow another click
+    else if (!clickedOnOutgoingSelfieButton) {
+      return _selfieButtonWrapper("Selfie Request", () {
+        widget.onSelfieIncomingRequestTap();
+        setState(() {
+          clickedOnOutgoingSelfieButton = true;
+        });
+      });
+    } else {
+      return _selfieButtonWrapper("Requested Selfie", () {}, fillColor: Colors.grey[300]);
+    }
+  }
+
+  // Wrapper to prevent duplicate fields for selfie button
+  _selfieButtonWrapper(String text, Function onTap, {Color fillColor = Colors.pinkAccent}) {
+    return ActionButton(
+      fillColor: fillColor,
+      icon: Icons.camera_alt,
+      text: Text(text, style: kButtonActionTextStyle),
+      onTap: () {
+        onTap();
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return _renderPage(context);
-  }
-}
-
-// Column widget which displays a title on top and an number on bottom
-class TitleData extends StatelessWidget {
-  final String title;
-  final int number;
-  final double width;
-
-  TitleData({@required this.title, @required this.number, this.width});
-
-  String convertNumberToString() {
-    return number.toString();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CircularBox(
-      padding: EdgeInsets.only(top: 10, bottom: 10),
-      width: width,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18.0,
-              color: Colors.black54,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          SizedBox(height: 1.0),
-          Text(
-            convertNumberToString(),
-            style: TextStyle(fontSize: 25.0, color: Colors.cyan[300], fontWeight: FontWeight.w600),
-          ),
-        ],
-      ),
-    );
   }
 }
 

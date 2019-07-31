@@ -93,29 +93,28 @@ class FirestoreManager {
   // the database changes (stream)
   // Callback is called when data is done loading
   static streamUserData(LoggedInUser loggedInUser, Function callback) {
-    Firestore.instance
-        .collection("users")
-        .where(FirestoreManager.keyDisplayName, isEqualTo: "Hakunom")
-        .limit(1)
-        .snapshots()
-        .listen((doc) {
-      print("---------------Database Updated----------------------");
-      print("Updating local logged in user information");
-      FirestoreReadcheck.userProfileReads++;
-      FirestoreReadcheck.printUserProfileReads();
+    // Going into our user collection and finding a user by their display name
+    _getUserByDisplayName("Hakunom").snapshots().listen(
+      (doc) {
+        print("---------------Database Updated----------------------");
+        print("Updating local logged in user information");
+        FirestoreReadcheck.userProfileReads++;
+        FirestoreReadcheck.printUserProfileReads();
 
-      print('$_locationUpdateTimer yeye');
-      // Go through each document in the user and update the local data
-      _copyUserDatabaseInformationToLocalData(doc.documents[0], loggedInUser);
+        print('$_locationUpdateTimer yeye');
+        // Go through each document in the user and update the local data
+        _copyUserDatabaseInformationToLocalData(doc.documents[0], loggedInUser);
 
-      // Create timer here and pass into updatePosition
-      // Whenever this stream emits new data, cancel the timer then create a new one
+        // Create timer here and pass into updatePosition
+        // Whenever this stream emits new data, cancel the timer then create a new one
 
-      _starPositionUpdateTimer(loggedInUser, doc.documents[0]);
+        _startPositionUpdateTimer(loggedInUser, doc.documents[0]);
 
-      // callback notifies listeners of loggedInUser
-      callback();
-    });
+        // callback notifies listeners of loggedInUser
+        callback();
+      },
+    );
+
     // Create timer which runs every 10 seconds
     // When should timer stop? When sharing location is off
     // When do we turn it off? When the user is not in selfie mode (or other modes)
@@ -175,7 +174,7 @@ class FirestoreManager {
     });
   }
 
-  static _starPositionUpdateTimer(LoggedInUser loggedInUser, DocumentSnapshot documentSnapshot) async {
+  static _startPositionUpdateTimer(LoggedInUser loggedInUser, DocumentSnapshot documentSnapshot) async {
     // TODO NEED SEPERATIONS
     if (_isInSelfieMode(loggedInUser)) {
       loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] = true;
@@ -247,6 +246,10 @@ class FirestoreManager {
 
     // Not in selfie mode
     return inSelfieMode;
+  }
+
+  static Query _getUserByDisplayName(String name) {
+    return Firestore.instance.collection("users").where(FirestoreManager.keyDisplayName, isEqualTo: name).limit(1);
   }
 
   // Gets information from database and returns that information in a LoggedInUser object
