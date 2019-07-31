@@ -30,7 +30,9 @@ class FirestoreManager {
   static String keyDocumentReference = 'documentReference';
   static String keyIsSharingLocation = 'isSharingLocation';
 
-  static String keyIsInSelfieMode = 'isInSelfieMode'; // note this is not being used in database and only being use locally
+  // These keys are not in databases but calculated locally using the database information
+  static String keyIsInSelfieMode = 'isInSelfieMode';
+  static String keyUsersToShareLocationWith = 'usersToShareLocationWith';
 
   // (delete) not useful
   static HashMap<String, String> keys = HashMap<String, String>();
@@ -82,7 +84,7 @@ class FirestoreManager {
   static streamUserData(LoggedInUser loggedInUser, Function callback) {
     Firestore.instance
         .collection("users")
-        .where(FirestoreManager.keyDisplayName, isEqualTo: "Hakunom")
+        .where(FirestoreManager.keyDisplayName, isEqualTo: "Chibata")
         .limit(1)
         .snapshots()
         .listen((doc) {
@@ -153,30 +155,6 @@ class FirestoreManager {
 //    }
   }
 
-  static bool _isInSelfieMode(LoggedInUser loggedInUser) {
-    final List<dynamic> outgoingSelfieList = loggedInUser.getHashMap[FirestoreManager.keyOutgoingSelfieRequests];
-    HashMap<DocumentReference, int> incomingSelfieMap = HashMap<DocumentReference, int>();
-
-    // Copy outgoing list to hashmap
-    for (int i = 0; i < outgoingSelfieList.length; i++) {
-      incomingSelfieMap[outgoingSelfieList[i]] = i;
-    }
-
-    // Check if there exists a user thats in outgoing and in incoming
-    for (DocumentReference ref in outgoingSelfieList) {
-      if (incomingSelfieMap.containsKey(ref)) {
-        // If there exist such a user, then we're still in selfie mode
-        return true;
-      }
-    }
-
-    // Not in selfie mode
-    return false;
-  }
-
-  static _startQueryOnSelfieMode() {}
-//
-
   // Takes all documentSnapshots and copies to loggedInUser
   static _copyUserDatabaseInformationToLocalData(DocumentSnapshot documentSnapshot, LoggedInUser loggedInUser) {
     // NOT NEEDED!?
@@ -192,11 +170,60 @@ class FirestoreManager {
     print('checking....');
     if (_isInSelfieMode(loggedInUser)) {
       loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] = true;
-      print("IN SELFIE MODE");
+      Timer.periodic(Duration(seconds: 10), (Timer t) async {
+        if (loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] == false) {
+          print("CANCELLING TIMERahwdioawhdiowadiowahdwadi");
+          t.cancel();
+        }
+        print("TIMER RAN _--------------------------------------------------_");
+        final Location location = Location();
+        final Geoflutterfire geo = Geoflutterfire();
+        final pos = await location.getLocation();
+        double lat = pos.latitude;
+        double lng = pos.longitude;
+
+        GeoFirePoint point = geo.point(latitude: lat, longitude: lng);
+
+        // Update position
+        // doc.documents[0].reference.setData({'position': point.data}, merge: true);
+      });
+      print("IN SELFIE MODE + STARTING TIMER..................................");
     } else {
       loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] = false;
       print("NOT IN SEFIE MODE");
     }
+  }
+
+  static bool _isInSelfieMode(LoggedInUser loggedInUser) {
+    bool inSelfieMode = false;
+    final List<dynamic> outgoingSelfieList = loggedInUser.getHashMap[FirestoreManager.keyOutgoingSelfieRequests];
+    final List<dynamic> incomingSelfieList = loggedInUser.getHashMap[FirestoreManager.keyIncomingSelfieRequests];
+    HashMap<DocumentReference, int> incomingSelfieMap = HashMap<DocumentReference, int>();
+    HashMap<int, DocumentReference> usersToShareLocationWith = HashMap<int, DocumentReference>();
+
+    // Copy incoming list to hashmap
+    for (int i = 0; i < incomingSelfieList.length; i++) {
+      incomingSelfieMap[incomingSelfieList[i]] = i;
+    }
+
+    // Check if there exists a user thats in outgoing and in incoming
+    for (int i = 0; i < outgoingSelfieList.length; i++) {
+      if (incomingSelfieMap.containsKey(outgoingSelfieList[i])) {
+        print("INCOMING HAS SOMEONE IN OUTGOING");
+        print("INCOMING ${incomingSelfieMap.length}");
+        print("OUTGOING ${outgoingSelfieList.length}");
+        // If there exist such a user, then we're still in selfie mode
+        usersToShareLocationWith[i] = outgoingSelfieList[i];
+        inSelfieMode = true;
+      }
+    }
+
+    loggedInUser.getHashMap[FirestoreManager.keyUsersToShareLocationWith] = usersToShareLocationWith;
+    print("PRINTING USERS TOS HARE LOC WITH");
+    print(usersToShareLocationWith);
+
+    // Not in selfie mode
+    return inSelfieMode;
   }
 
   // Gets information from database and returns that information in a LoggedInUser object

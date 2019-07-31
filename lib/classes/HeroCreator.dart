@@ -132,12 +132,6 @@ class HeroCreator {
     DocumentReference loggedInUserRef = loggedInUser.getHashMap[FirestoreManager.keyDocumentReference];
     DocumentReference otherUserRef;
     await _putLoggedInUserIntoOtherUserIncomingSelfieRequestList(loggedInUserRef, otherUserRef, otherUserData);
-
-    // GO to database and update the "isInSelfieMode" to true for loggedInuser and for otherUser
-    // Since we're streaming user data for logged in user, we'll check, in the stream, for whether
-    // isInSelfieMode is true or false../
-    /// If it's true, then start polling loggedInUser data to the firestore
-    /// If it's false then cancel subscription (cancel polling)
   }
 
   static _putLoggedInUserIntoOtherUserIncomingSelfieRequestList(
