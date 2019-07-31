@@ -320,7 +320,9 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
         fillColor: Colors.pinkAccent,
         icon: Icons.camera_alt,
         text: Text("Finish Selfie", style: kButtonActionTextStyle),
-        onTap: () {},
+        onTap: () {
+          // what now?
+        },
         iconColor: Colors.white,
       );
     }

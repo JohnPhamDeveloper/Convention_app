@@ -62,25 +62,45 @@ class _FireMapState extends State<FireMap> {
 
     // whenever radius changes, go to our database and find all
     // documents that are within the radius using the user's center position
-    subscription = radius.switchMap((rad) {
-      print("Mapping through ${rad / 1.609} miles");
-      return geo.collection(collectionRef: ref).within(
-            center: center,
-            radius: rad / 1.609, // Convert KM to MILES
-            field: 'position',
-            strictMode: true,
-          );
-    }).listen(_updateMarkers); // pass in documentSnapshot
+//    subscription = radius.switchMap((rad) {
+//      print("Mapping through ${rad} km");
+//      return geo.collection(collectionRef: ref).within(
+//            center: center,
+//            radius: rad, // Convert KM to MILES
+//            field: 'position',
+//            strictMode: true,
+//          );
+//    }).listen(_updateMarkers); // pass in documentSnapshot
+
+    /// Clicking accept selfie triggers the GPS to start polling location data
+    /// Each device will now begin updating their current position every 10 seconds to the firestore
+    /// // Get current user position
+    //    var pos = await location.getLocation();
+    //
+    //    // Create a geopoint that will be stored in firebase
+    //    GeoFirePoint point = geo.point(latitude: pos.latitude, longitude: pos.longitude);
+    //
+    //    // Add user current position to firebase
+    //    return firestore.collection("locations").update({
+    //      'position': point.data,
+    //      'name': "hello!",
+    //    });
+    ///
+
+    // TODO Poll user position every 10 seconds
+//    StreamSubscription selfieSubscription =
+//        geo.collection(collectionRef: ref).within(center: null, radius: null, field: null).listen(onData);
+//    selfieSubscription.cancel();
   }
 
-  void _updateMarkers(List<DocumentSnapshot> documentList) {
+  void _updateMarkers(List<DocumentSnapshot> documentListWithinRadius) {
     print("Updating markers on screen...");
-    print(documentList);
+    print(documentListWithinRadius);
 
     markers.clear();
 
     // Go through every document in our locations collection
-    documentList.forEach((snapshot) {
+    documentListWithinRadius.forEach((snapshot) {
       // Get position of that document
       GeoPoint pos = snapshot.data['position']['geopoint'];
       double distance = snapshot.data['distance'];
@@ -115,8 +135,7 @@ class _FireMapState extends State<FireMap> {
     var pos = await location.getLocation();
 
     // Create a geopoint that will be stored in firebase
-    GeoFirePoint point =
-        geo.point(latitude: pos.latitude, longitude: pos.longitude);
+    GeoFirePoint point = geo.point(latitude: pos.latitude, longitude: pos.longitude);
 
     // Add user current position to firebase
     return firestore.collection("locations").add({
@@ -175,9 +194,7 @@ class _FireMapState extends State<FireMap> {
   }
 
   _initOtherUserIcon() async {
-    BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(size: Size(0.0000000001, 0.000000001)),
-            'assets/greendot.png')
+    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(0.0000000001, 0.000000001)), 'assets/greendot.png')
         .then((onValue) {
       otherUserIconOnMap = onValue;
     });
@@ -214,9 +231,9 @@ class _FireMapState extends State<FireMap> {
           child: Slider(
             min: 1,
             max: 5,
-            divisions: 5,
+            divisions: 4,
             value: radius.value,
-            label: 'Radius ${radius.value}km?',
+            label: 'Radius ${radius.value} km',
             activeColor: Colors.cyan[300],
             inactiveColor: Colors.cyan[300].withOpacity(0.2),
             onChanged: _updateQuery,
