@@ -182,7 +182,7 @@ class _FireMapState extends State<FireMap> {
 
     // Interrupts
     // TODO another way is to periodically check if they are in selfie mode  and just clear markers?
-    if (_isInSelfieMode.value) {
+    if (!_isInSelfieMode.value) {
       print("====================INTERRUPTED SET STATE MARKER=====================");
     } else {
       setState(() {
