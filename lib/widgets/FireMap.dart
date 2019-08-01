@@ -129,7 +129,7 @@ class _FireMapState extends State<FireMap> {
         String userDocumentId = usersToShareLocationWith[i].documentID;
 
         // Interrupts
-        if (_isInSelfieMode.value) return;
+        if (!_isInSelfieMode.value) return;
 
         // Get the user location from database
         Firestore.instance.collection("locations").document(userDocumentId).get().then((snapshot) async {
