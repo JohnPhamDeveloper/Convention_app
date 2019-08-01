@@ -89,7 +89,9 @@ class _FireMapState extends State<FireMap> {
         print("------------CLEARING MARKERS DUE TO NOT BEING IN SELFIE MODE-------------");
         // TODO this should also change but we should have different icons for business and hangouts.
         // TODO otherwise selfie, business, and hangout can all run concurrently. Though they neeed a sbuscription (too much reads)
-        markers.clear();
+        setState(() {
+          markers.clear();
+        });
       }
     });
 
