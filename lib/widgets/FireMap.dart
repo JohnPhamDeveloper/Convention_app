@@ -3,8 +3,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import "package:cloud_firestore/cloud_firestore.dart";
 import 'package:rxdart/rxdart.dart';
-import 'package:location/location.dart';
+//import 'package:location/location.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/classes/FirestoreReadcheck.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +41,8 @@ class _FireMapState extends State<FireMap> {
   GoogleMapController mapController;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   LoggedInUser loggedInUser;
-  Location location = Location();
+  Position position = Position();
+//  Location location = Location();
   Firestore firestore = Firestore.instance;
   Geoflutterfire geo = Geoflutterfire();
   BitmapDescriptor otherUserIconOnMap;
@@ -98,8 +100,14 @@ class _FireMapState extends State<FireMap> {
     print("Printing other users position _+_+_+_+_+_+_+_");
     GeoPoint otherUserGeoPoint = snapshot.data['position']['geopoint'];
     String otherUserName = snapshot.data[FirestoreManager.keyDisplayName];
-    Location location = Location();
-    LocationData position = await location.getLocation();
+    position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high).catchError((error) {
+      print(error);
+      return Future.error(error);
+    });
+    print("Position successfully ran (normla location bugs out)");
+    // Location buggy, doesn't return
+    //Location location = Location();
+    //LocationData position = await location.getLocation();
     double distance = geo
         .point(latitude: otherUserGeoPoint.latitude, longitude: otherUserGeoPoint.longitude)
         .distance(lat: position.latitude, lng: position.longitude);
@@ -124,15 +132,15 @@ class _FireMapState extends State<FireMap> {
   }
 
   _startQuery() async {
-    print("Starting query...");
-    var pos = await location.getLocation();
-    double lat = pos.latitude;
-    double lng = pos.longitude;
-
-    var ref = firestore.collection('locations');
-    print("Getting reference to location in firestore... $ref");
-
-    GeoFirePoint center = geo.point(latitude: lat, longitude: lng);
+//    print("Starting query...");
+//    var pos = await location.getLocation();
+//    double lat = pos.latitude;
+//    double lng = pos.longitude;
+//
+//    var ref = firestore.collection('locations');
+//    print("Getting reference to location in firestore... $ref");
+//
+//    GeoFirePoint center = geo.point(latitude: lat, longitude: lng);
 
     // whenever radius changes, go to our database and find all
     // documents that are within the radius using the user's center position
