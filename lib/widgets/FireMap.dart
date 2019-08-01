@@ -39,11 +39,11 @@ class FireMap extends StatefulWidget {
 }
 
 class _FireMapState extends State<FireMap> {
-  GoogleMapController mapController;
-  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  GoogleMapController _mapController;
+  Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
   LoggedInUser loggedInUser;
   Position position = Position();
-  Timer updateMapTimer;
+  Timer _updateMapTimer;
 //  Location location = Location();
   Firestore firestore = Firestore.instance;
   Geoflutterfire geo = Geoflutterfire();
@@ -53,7 +53,7 @@ class _FireMapState extends State<FireMap> {
 
   // Stateful
   BehaviorSubject<double> radius = BehaviorSubject<double>.seeded(1.0);
-  BehaviorSubject<bool> isInSelfieMode;
+  BehaviorSubject<bool> _isInSelfieMode;
   Stream<Query> query;
 
   @override
@@ -70,27 +70,27 @@ class _FireMapState extends State<FireMap> {
     loggedInUser = Provider.of<LoggedInUser>(context);
 
     // Listen to this value so we can stop or resume map update for selfie mode
-    isInSelfieMode = BehaviorSubject<bool>.seeded(loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode]);
-    isInSelfieMode.listen((isInSelfieMode) {
+    _isInSelfieMode = BehaviorSubject<bool>.seeded(loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode]);
+    _isInSelfieMode.listen((isInSelfieMode) {
       print('IS IN SELFIE MODE CHANGED IN FIREMAP BEHAVIORSUBJECT ---------------------- $isInSelfieMode');
       if (isInSelfieMode) {
         // Create timer only if it hasn't been created yet
-        if (updateMapTimer == null) {
+        if (_updateMapTimer == null) {
           _startMapUpdateTimer();
         }
       } else {
         print("------------CANCELING MAP UPDATE TIMER-------------");
         // Not in selfie mode so cancel timer?
         // TODO since the user will have other reasons for updating map (such as business or hangout) this needs to change
-        if (updateMapTimer != null) {
-          updateMapTimer.cancel();
-          updateMapTimer = null;
+        if (_updateMapTimer != null) {
+          _updateMapTimer.cancel();
+          _updateMapTimer = null;
         }
         print("------------CLEARING MARKERS DUE TO NOT BEING IN SELFIE MODE-------------");
         // TODO this should also change but we should have different icons for business and hangouts.
         // TODO otherwise selfie, business, and hangout can all run concurrently. Though they neeed a sbuscription (too much reads)
         setState(() {
-          markers.clear();
+          _markers.clear();
         });
       }
     });
@@ -102,7 +102,7 @@ class _FireMapState extends State<FireMap> {
 
   _startMapUpdateTimer() {
     // Update map every 10 seconds
-    updateMapTimer = Timer.periodic(Duration(seconds: 10), (Timer t) {
+    _updateMapTimer = Timer.periodic(Duration(seconds: 10), (Timer t) {
       // No longer in selfie mode so there's no reason to update the map
       if (!LoggedInUser.isInSelfieMode(loggedInUser)) {
         print("------------CANCEL MAP UPDATE SINCE OUT OF SELFIE MODE--------------");
@@ -178,7 +178,7 @@ class _FireMapState extends State<FireMap> {
 
     setState(() {
       print("Updating the marker which should update the map");
-      markers[markerId] = marker;
+      _markers[markerId] = marker;
     });
   }
 
@@ -230,7 +230,7 @@ class _FireMapState extends State<FireMap> {
     print("Updating markers on screen...");
     print(documentListWithinRadius);
 
-    markers.clear();
+    _markers.clear();
 
     // Go through every document in our locations collection
     documentListWithinRadius.forEach((snapshot) {
@@ -251,7 +251,7 @@ class _FireMapState extends State<FireMap> {
         ),
       );
       setState(() {
-        markers[markerId] = marker;
+        _markers[markerId] = marker;
       });
     });
   }
@@ -299,7 +299,7 @@ class _FireMapState extends State<FireMap> {
   }
 
   _onMapCreated(GoogleMapController mapController) {
-    this.mapController = mapController;
+    this._mapController = mapController;
   }
 
 //  _animateToUser() async {
@@ -323,7 +323,7 @@ class _FireMapState extends State<FireMap> {
     );
 
     setState(() {
-      markers[markerId] = marker;
+      _markers[markerId] = marker;
     });
   }
 
@@ -340,9 +340,9 @@ class _FireMapState extends State<FireMap> {
   @override
   void dispose() {
     radius.close();
-    isInSelfieMode.close();
+    _isInSelfieMode.close();
     subscription.cancel();
-    updateMapTimer.cancel();
+    _updateMapTimer.cancel();
     super.dispose();
   }
 
@@ -351,7 +351,7 @@ class _FireMapState extends State<FireMap> {
     return Stack(
       children: <Widget>[
         GoogleMap(
-          markers: Set<Marker>.of(markers.values),
+          markers: Set<Marker>.of(_markers.values),
           onTap: _onTap,
           myLocationButtonEnabled: true,
           myLocationEnabled: true,

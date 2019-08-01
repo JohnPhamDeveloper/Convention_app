@@ -106,7 +106,6 @@ class FirestoreManager {
         FirestoreReadcheck.userProfileReads++;
         FirestoreReadcheck.printUserProfileReads();
 
-        print('$_locationUpdateTimer yeye');
         // Go through each document in the user and update the local data
         _copyUserDatabaseInformationToLocalData(doc.documents[0], loggedInUser);
 
@@ -210,6 +209,7 @@ class FirestoreManager {
       if (_locationUpdateTimer != null) {
         print("Cancel update timer due to selfie mode being off (locationUpdateTimer != null)");
         _locationUpdateTimer.cancel();
+        _locationUpdateTimer = null;
       }
       print("NOT IN SELFIE MODE");
     }
