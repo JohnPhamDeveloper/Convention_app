@@ -196,9 +196,10 @@ class FirestoreManager {
           if (loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] == false) {
             print("!_!+_!+_!+_!+!_ CANCELLING TIMER __+_++_+__+__+!_+!_+_+!__!+_+!_+!_!_");
             t.cancel();
+          } else {
+            print("-----------Sending position update to database-------------");
+            await _sendPositionToDatabase(documentSnapshot);
           }
-          print("TIMER RAN _--------------------------------------------------_");
-          await _sendPositionToDatabase(documentSnapshot);
         });
       } else {
         print("Location update timer already exist DO NOT RECREATE");

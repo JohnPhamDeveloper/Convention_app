@@ -107,9 +107,10 @@ class _FireMapState extends State<FireMap> {
       if (!LoggedInUser.isInSelfieMode(loggedInUser)) {
         print("------------CANCEL MAP UPDATE SINCE OUT OF SELFIE MODE--------------");
         t.cancel();
+      } else {
+        print("-------------UPDATING MAP-------------");
+        _createMarkersOnMap();
       }
-      print("-------------UPDATING MAP-------------");
-      _createMarkersOnMap();
     });
   }
 
