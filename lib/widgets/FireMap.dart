@@ -43,6 +43,7 @@ class _FireMapState extends State<FireMap> {
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   LoggedInUser loggedInUser;
   Position position = Position();
+  Timer updateMapTimer;
 //  Location location = Location();
   Firestore firestore = Firestore.instance;
   Geoflutterfire geo = Geoflutterfire();
@@ -52,6 +53,7 @@ class _FireMapState extends State<FireMap> {
 
   // Stateful
   BehaviorSubject<double> radius = BehaviorSubject<double>.seeded(1.0);
+  BehaviorSubject<bool> isInSelfieMode;
   Stream<Query> query;
 
   @override
@@ -67,12 +69,41 @@ class _FireMapState extends State<FireMap> {
     loggedInUser = LoggedInUser();
     loggedInUser = Provider.of<LoggedInUser>(context);
 
-    // call createMarkersOnMap every 10 seconds which will
-    _createMarkersOnMap();
+    // Listen to this value so we can stop or resume map update for selfie mode
+    isInSelfieMode = BehaviorSubject<bool>.seeded(loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode]);
+    isInSelfieMode.listen((isInSelfieMode) {
+      print('IS IN SELFIE MODE CHANGED IN FIREMAP BEHAVIORSUBJECT ---------------------- $isInSelfieMode');
+      if (isInSelfieMode) {
+        // Create timer only if it hasn't been created yet
+        if (updateMapTimer == null) _startMapUpdateTimer();
+      } else {
+        print("------------CANCELING MAP UPDATE TIMER-------------");
+        // Not in selfie mode so cancel timer?
+        // TODO since the user will have other reasons for updating map (such as business or hangout) this needs to change
+        updateMapTimer.cancel();
+      }
+    });
+
+    // Does anything need to rebuild when the user is in selfie mode? hmmmmm refer to TODO below
+    //TODO If map ever cost money, then we can just only show the map when the user is in selfie mode
+    // TODO aka use builder for loggedInuser consumer and unmount map if they aren't in selfie mode
+  }
+
+  _startMapUpdateTimer() {
+    // Update map every 10 seconds
+    updateMapTimer = Timer.periodic(Duration(seconds: 10), (Timer t) {
+      // No longer in selfie mode so there's no reason to update the map
+      if (!LoggedInUser.isInSelfieMode(loggedInUser)) {
+        print("------------CANCEL MAP UPDATE SINCE OUT OF SELFIE MODE--------------");
+        t.cancel();
+      }
+      print("-------------UPDATING MAP-------------");
+      _createMarkersOnMap();
+    });
   }
 
   _createMarkersOnMap() {
-    print("_______________________________________________________FIREMAP DIDCHANGEDEPENDENCIES");
+    print("____________FIREMAP________ CREATING MARKERS....");
     // Contains reference to other users
     List<DocumentReference> usersToShareLocationWith = loggedInUser.getHashMap[FirestoreManager.keyUsersToShareLocationWith];
 
@@ -80,14 +111,12 @@ class _FireMapState extends State<FireMap> {
     if (usersToShareLocationWith.length > 0) {
       // Go through each reference and get their geoposition
       for (int i = 0; i < usersToShareLocationWith.length; i++) {
-        FirestoreReadcheck.searchInfoPageReads++;
-        FirestoreReadcheck.printSearchInfoPageReads();
-
         // Use the documentReferences and get their document ID. With the document ID, look up their location in the
         // Locations collection since locations documentNames are the users documentId
         // Create marker for each users position
         String userDocumentId = usersToShareLocationWith[i].documentID;
 
+        // Get the user location from database
         Firestore.instance.collection("locations").document(userDocumentId).get().then((snapshot) async {
           FirestoreReadcheck.searchInfoPageReads++;
           FirestoreReadcheck.printSearchInfoPageReads();
@@ -300,7 +329,9 @@ class _FireMapState extends State<FireMap> {
   @override
   void dispose() {
     radius.close();
+    isInSelfieMode.close();
     subscription.cancel();
+    updateMapTimer.cancel();
     super.dispose();
   }
 

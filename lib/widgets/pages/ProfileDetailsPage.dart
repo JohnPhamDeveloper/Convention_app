@@ -9,6 +9,7 @@ import 'package:cosplay_app/widgets/HeroProfileDetails.dart';
 class ProfileDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Gets updated everytime loggedInUser changes
     return Consumer<LoggedInUser>(builder: (context, loggedInUser, child) {
       return HeroProfileDetails(
         isLoggedInUser: true,

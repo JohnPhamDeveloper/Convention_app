@@ -99,7 +99,7 @@ class FirestoreManager {
   // Callback is called when data is done loading
   static streamUserData(LoggedInUser loggedInUser, Function callback) {
     // Going into our user collection and finding a user by their display name
-    _getUserByDisplayName("Hakunom").snapshots().listen(
+    _getUserByDisplayName("Chibata").snapshots().listen(
       (doc) {
         print("---------------Database Updated----------------------");
         print("Updating local logged in user information");
@@ -186,7 +186,7 @@ class FirestoreManager {
 
   static _startPositionUpdateTimer(LoggedInUser loggedInUser, DocumentSnapshot documentSnapshot) async {
     // TODO NEED SEPERATIONS
-    if (_isInSelfieMode(loggedInUser)) {
+    if (LoggedInUser.isInSelfieMode(loggedInUser)) {
       loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] = true;
       if (_locationUpdateTimer == null) {
         print("Location update timer is null so create a timer");
@@ -244,36 +244,6 @@ class FirestoreManager {
     Firestore.instance.collection("locations").document(documentSnapshot.documentID).setData({
       FirestoreManager.keyPosition: newGeoPoint.data,
     }, merge: true);
-  }
-
-  static bool _isInSelfieMode(LoggedInUser loggedInUser) {
-    bool inSelfieMode = false;
-    final List<dynamic> outgoingSelfieList = loggedInUser.getHashMap[FirestoreManager.keyOutgoingSelfieRequests];
-    final List<dynamic> incomingSelfieList = loggedInUser.getHashMap[FirestoreManager.keyIncomingSelfieRequests];
-    HashMap<DocumentReference, int> incomingSelfieMap = HashMap<DocumentReference, int>();
-    List<DocumentReference> usersToShareLocationWith = List<DocumentReference>();
-
-    // Copy incoming list to hashmap
-    for (int i = 0; i < incomingSelfieList.length; i++) {
-      incomingSelfieMap[incomingSelfieList[i]] = i;
-    }
-
-    // Check if there exists a user thats in outgoing and in incoming
-    for (int i = 0; i < outgoingSelfieList.length; i++) {
-      if (incomingSelfieMap.containsKey(outgoingSelfieList[i])) {
-        // If there exist such a user, then we're still in selfie mode
-        usersToShareLocationWith.add(outgoingSelfieList[i]);
-        inSelfieMode = true;
-      }
-    }
-
-    // TODO private information?
-    loggedInUser.getHashMap[FirestoreManager.keyUsersToShareLocationWith] = usersToShareLocationWith;
-    print("PRINTING USERS TO SHARE LOCATION WITH");
-    print(usersToShareLocationWith);
-
-    // Not in selfie mode
-    return inSelfieMode;
   }
 
   static Query _getUserByDisplayName(String name) {
