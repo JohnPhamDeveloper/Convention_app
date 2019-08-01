@@ -6,6 +6,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:location/location.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
+import 'package:cosplay_app/classes/FirestoreReadcheck.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 
@@ -54,43 +55,54 @@ class _FireMapState extends State<FireMap> {
   void initState() {
     super.initState();
     _initOtherUserIcon(); // Other user icons on the map (green dot)
-    _startQuery();
+    // _startQuery();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Todo need to be on a timer
+    loggedInUser = LoggedInUser();
+    loggedInUser = Provider.of<LoggedInUser>(context);
+
+    // call createMarkersOnMap every 10 seconds which will
     _createMarkersOnMap();
   }
 
   _createMarkersOnMap() {
-    LoggedInUser loggedInUser = LoggedInUser();
-    loggedInUser = Provider.of<LoggedInUser>(context);
     print("_______________________________________________________FIREMAP DIDCHANGEDEPENDENCIES");
     // Contains reference to other users
     List<DocumentReference> usersToShareLocationWith = loggedInUser.getHashMap[FirestoreManager.keyUsersToShareLocationWith];
-    // Go through each reference and get their geoposition
-    for (int i = 0; i < usersToShareLocationWith.length; i++) {
-      // Create marker for each users position
-      usersToShareLocationWith[i].get().then((snapshot) async {
-        await _createMarkerWithOtherUserInformation(snapshot);
-        print('adding marker on map');
-      });
+
+    // No one to share location with
+    if (usersToShareLocationWith.length > 0) {
+      // Go through each reference and get their geoposition
+      for (int i = 0; i < usersToShareLocationWith.length; i++) {
+        FirestoreReadcheck.searchInfoPageReads++;
+        FirestoreReadcheck.printSearchInfoPageReads();
+        print("Iterating...");
+        // Create marker for each users position
+        usersToShareLocationWith[i].get().then((snapshot) async {
+          await _createMarkerUsingOtherUserInformation(snapshot);
+          print('adding marker on map');
+        }).catchError((error) {
+          //TODO need to tell user it failed with a widget...
+          print("FireMap: Failed to get a user in usersToShareLocationWith");
+          print("The error is: $error");
+          return Future.error("FireMap: Failed to get a user in usersToShareLocationWith");
+        });
+      }
     }
   }
 
-  _createMarkerWithOtherUserInformation(DocumentSnapshot snapshot) async {
+  _createMarkerUsingOtherUserInformation(DocumentSnapshot snapshot) async {
     print("Printing other users position _+_+_+_+_+_+_+_");
     GeoPoint otherUserGeoPoint = snapshot.data['position']['geopoint'];
     String otherUserName = snapshot.data[FirestoreManager.keyDisplayName];
     Location location = Location();
     LocationData position = await location.getLocation();
-    // double distance = snapshot.data['distance'];
     double distance = geo
         .point(latitude: otherUserGeoPoint.latitude, longitude: otherUserGeoPoint.longitude)
         .distance(lat: position.latitude, lng: position.longitude);
-    print(distance);
     final MarkerId markerId = MarkerId(UniqueKey().toString());
 
     // Create marker at that position
@@ -105,7 +117,10 @@ class _FireMapState extends State<FireMap> {
       ),
     );
 
-    markers[markerId] = marker;
+    setState(() {
+      print("Updating the marker which should update the map");
+      markers[markerId] = marker;
+    });
   }
 
   _startQuery() async {
@@ -184,36 +199,36 @@ class _FireMapState extends State<FireMap> {
 
   // Update query based on slider value
   _updateQuery(double value) {
-    print("Updating query...");
-    setState(() {
-      radius.add(value);
-    });
+//    print("Updating query...");
+//    setState(() {
+//      radius.add(value);
+//    });
   }
 
-  Future<DocumentReference> _addGeoPoint() async {
-    // Get current user position
-    var pos = await location.getLocation();
+//  Future<DocumentReference> _addGeoPoint() async {
+//    // Get current user position
+//    var pos = await location.getLocation();
+//
+//    // Create a geopoint that will be stored in firebase
+//    GeoFirePoint point = geo.point(latitude: pos.latitude, longitude: pos.longitude);
+//
+//    // Add user current position to firebase
+//    return firestore.collection("locations").add({
+//      'position': point.data,
+//      'name': "hello!",
+//    });
+//  }
 
-    // Create a geopoint that will be stored in firebase
-    GeoFirePoint point = geo.point(latitude: pos.latitude, longitude: pos.longitude);
-
-    // Add user current position to firebase
-    return firestore.collection("locations").add({
-      'position': point.data,
-      'name': "hello!",
-    });
-  }
-
-  Future<DocumentReference> _addGeoPointAt(double lat, double long) async {
-    // Create a geopoint that will be stored in firebase
-    GeoFirePoint point = geo.point(latitude: lat, longitude: long);
-
-    // Add user current position to firebase
-    return firestore.collection("locations").add({
-      'position': point.data,
-      'name': "hello!NEW",
-    });
-  }
+//  Future<DocumentReference> _addGeoPointAt(double lat, double long) async {
+//    // Create a geopoint that will be stored in firebase
+//    GeoFirePoint point = geo.point(latitude: lat, longitude: long);
+//
+//    // Add user current position to firebase
+//    return firestore.collection("locations").add({
+//      'position': point.data,
+//      'name': "hello!NEW",
+//    });
+//  }
 
   // Get last position tapped onto the map
   _onTap(LatLng pos) {
@@ -304,7 +319,7 @@ class _FireMapState extends State<FireMap> {
           left: 20,
           child: InkWell(
             onTap: () {
-              _addGeoPointAt(37.315616, -121.831424);
+//              _addGeoPointAt(37.315616, -121.831424);
             },
             child: Icon(Icons.my_location, size: 30),
           ),

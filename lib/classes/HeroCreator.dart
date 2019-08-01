@@ -95,8 +95,19 @@ class HeroCreator {
       String dotHeroName, String imageHeroName, DocumentReference otherUserDataReference, BuildContext context) async {
     // Get latest snapshot of the user from the database
     print("getting latest database information?");
-    DocumentSnapshot otherUserDataSnapshot = await otherUserDataReference.get();
-    print(otherUserDataSnapshot.data[FirestoreManager.keyIncomingSelfieRequests]);
+
+    DocumentSnapshot otherUserDataSnapshot = await otherUserDataReference.get().catchError((error) {
+      //TODO need to tell user it failed with a widget...
+      print("pushProfileIntoView failed to get otherUserDataSnapshot from otherUserDataReference");
+      print("The error is: $error");
+      return Future.error("pushProfileIntoView failed to get otherUserDataSnapshot from otherUserDataReference");
+    });
+    print("Is this ran on exception?");
+
+    if (!otherUserDataSnapshot.exists) {
+      print("HeroCreator: otherUserDataSnapshot does not exist");
+    }
+
     FirestoreReadcheck.heroCreatorReads++;
     FirestoreReadcheck.printHeroCreatorReads();
 

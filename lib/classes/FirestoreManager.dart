@@ -2,8 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:cosplay_app/classes/FirestoreReadcheck.dart';
 import 'dart:async';
-import 'package:location/location.dart';
+//import 'package:location/location.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:geolocator/geolocator.dart';
 import 'dart:collection';
 
 /// Each user must get the current location of the other user, how?
@@ -113,7 +114,11 @@ class FirestoreManager {
         // callback notifies listeners of loggedInUser
         callback();
       },
-    );
+    ).onError((error) {
+      //TODO need to tell user it failed with a widget...
+      print("FirestoreManager stream failed");
+      return Future.error("$error");
+    });
 
     // Create timer which runs every 10 seconds
     // When should timer stop? When sharing location is off
@@ -182,6 +187,7 @@ class FirestoreManager {
         print("Location update timer is null so create a timer");
         // Initial position update
         await _sendPositionToDatabase(documentSnapshot);
+        print("Why is this not called-----------------------------------------------------------------------");
         _locationUpdateTimer = Timer.periodic(Duration(seconds: 10), (Timer t) async {
           if (loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] == false) {
             print("!_!+_!+_!+_!+!_ CANCELLING TIMER __+_++_+__+__+!_+!_+_+!__!+_+!_+!_!_");
@@ -206,15 +212,24 @@ class FirestoreManager {
 
   static _sendPositionToDatabase(DocumentSnapshot documentSnapshot) async {
     // TODO NOT OPTIMIZED!
-    final Location location = Location();
+    print("Creating position to send to database");
+    //final Location location = Location();
+    Position location = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high).catchError((error) {
+      print(error);
+      return Future.error(error);
+    });
     final Geoflutterfire geo = Geoflutterfire();
-    final pos = await location.getLocation();
-    double lat = pos.latitude;
-    double lng = pos.longitude;
+//    final pos = await location.getLocation().catchError((error) {
+//      print("ERROR IN SENDPOSITIONTODATABASE");
+//      return Future.error(error);
+//    });
+    print("After creating position to send to database");
+    double lat = location.latitude;
+    double lng = location.longitude;
 
     GeoFirePoint newGeoPoint = geo.point(latitude: lat, longitude: lng);
     print("newGeoPoint: ${newGeoPoint.longitude} ${newGeoPoint.latitude}");
-    // TODO uncomment this for database update location
+    // TODO uncomment this for database update location, also need to handle errors here
     //await documentSnapshot.reference.setData({FirestoreManager.keyPosition: newGeoPoint.data}, merge: true);
   }
 
