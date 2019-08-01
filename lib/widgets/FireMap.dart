@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import "package:cloud_firestore/cloud_firestore.dart";
 import 'package:rxdart/rxdart.dart';
+import 'package:cosplay_app/classes/FirestoreReadcheck.dart';
 //import 'package:location/location.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:geolocator/geolocator.dart';
@@ -81,17 +82,27 @@ class _FireMapState extends State<FireMap> {
       for (int i = 0; i < usersToShareLocationWith.length; i++) {
         FirestoreReadcheck.searchInfoPageReads++;
         FirestoreReadcheck.printSearchInfoPageReads();
-        print("Iterating...");
+
+        // Use the documentReferences and get their document ID. With the document ID, look up their location in the
+        // Locations collection since locations documentNames are the users documentId
         // Create marker for each users position
-        usersToShareLocationWith[i].get().then((snapshot) async {
+        String userDocumentId = usersToShareLocationWith[i].documentID;
+
+        Firestore.instance.collection("locations").document(userDocumentId).get().then((snapshot) async {
+          FirestoreReadcheck.searchInfoPageReads++;
+          FirestoreReadcheck.printSearchInfoPageReads();
           await _createMarkerUsingOtherUserInformation(snapshot);
-          print('adding marker on map');
-        }).catchError((error) {
-          //TODO need to tell user it failed with a widget...
-          print("FireMap: Failed to get a user in usersToShareLocationWith");
-          print("The error is: $error");
-          return Future.error("FireMap: Failed to get a user in usersToShareLocationWith");
         });
+
+//        usersToShareLocationWith[i].get().then((snapshot) async {
+//          await _createMarkerUsingOtherUserInformation(snapshot);
+//          print('adding marker on map');
+//        }).catchError((error) {
+//          //TODO need to tell user it failed with a widget...
+//          print("FireMap: Failed to get a user in usersToShareLocationWith");
+//          print("The error is: $error");
+//          return Future.error("FireMap: Failed to get a user in usersToShareLocationWith");
+//        });
       }
     }
   }

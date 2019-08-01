@@ -16,6 +16,7 @@ import 'dart:collection';
 /// Update screen & markers every 10 seconds
 
 class FirestoreManager {
+  // Public data
   static String username = "testUser1"; // Or phone number
   static String keyDisplayName = "displayName";
   static String keyRarityBorder = 'rarityBorder';
@@ -24,8 +25,8 @@ class FirestoreManager {
   static String keyFame = 'fame';
   static String keyIsCosplayer = 'isCosplayer';
   static String keyIsPhotographer = 'isPhotographer';
-  static String keyRealName = 'realName';
-  static String keyDateRegistered = 'dateRegistered';
+  static String keyRealName = 'realName'; // TODO remove real name this isn't required
+  static String keyDateRegistered = 'dateRegistered'; // This should be public that's fine
   static String keyCosplayName = 'cosplayName';
   static String keySeriesName = 'seriesName';
   static String keyCosplayerCost = 'cosplayerCost';
@@ -34,10 +35,13 @@ class FirestoreManager {
   static String keyPhotographyMonthsExperience = 'photographyMonthsExperience';
   static String keyCosplayYearsExperience = 'cosplayYearsExperience';
   static String keyCosplayMonthsExperience = 'cosplayMonthsExperience';
-  static String keyIncomingSelfieRequests = 'incomingSelfieRequests';
-  static String keyOutgoingSelfieRequests = 'outgoingSelfieRequests';
+  static String keyIncomingSelfieRequests = 'incomingSelfieRequests'; // TODO this should be private
+  static String keyOutgoingSelfieRequests = 'outgoingSelfieRequests'; // TODO this should be private
   static String keyDocumentReference = 'documentReference';
-  static String keyIsSharingLocation = 'isSharingLocation'; // not used?
+  static String keyIsSharingLocation = 'isSharingLocation'; // not used? // TODO not used delete>
+  static String keyDocumentId = 'documentId';
+
+  // In the database but in a private collection
   static String keyPosition = 'position';
 
   // These keys are not in databases but calculated locally using the database information
@@ -172,6 +176,7 @@ class FirestoreManager {
   // Takes all documentSnapshots and copies to loggedInUser
   static _copyUserDatabaseInformationToLocalData(DocumentSnapshot documentSnapshot, LoggedInUser loggedInUser) {
     loggedInUser.getHashMap[FirestoreManager.keyDocumentReference] = documentSnapshot.reference;
+    loggedInUser.getHashMap[FirestoreManager.keyDocumentId] = documentSnapshot.documentID;
     documentSnapshot.data.forEach((key, value) {
       //print("Updating $key...$value");
       FirestoreManager.keys[key] = key; // (delete) Not useful
@@ -231,6 +236,14 @@ class FirestoreManager {
     print("newGeoPoint: ${newGeoPoint.longitude} ${newGeoPoint.latitude}");
     // TODO uncomment this for database update location, also need to handle errors here
     //await documentSnapshot.reference.setData({FirestoreManager.keyPosition: newGeoPoint.data}, merge: true);
+    // Update users location to the database
+    print("Added location to locations database for ${documentSnapshot.documentID}");
+
+    // TODO this should be initially made to point to google headquarters to make sure each users have this enabled on creation
+    // TODO change to updata data since each users will already have it by default (updateData)
+    Firestore.instance.collection("locations").document(documentSnapshot.documentID).setData({
+      FirestoreManager.keyPosition: newGeoPoint.data,
+    }, merge: true);
   }
 
   static bool _isInSelfieMode(LoggedInUser loggedInUser) {
