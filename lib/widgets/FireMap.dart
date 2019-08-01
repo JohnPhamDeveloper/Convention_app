@@ -128,6 +128,9 @@ class _FireMapState extends State<FireMap> {
         // Create marker for each users position
         String userDocumentId = usersToShareLocationWith[i].documentID;
 
+        // Interrupts
+        if (_isInSelfieMode.value) return;
+
         // Get the user location from database
         Firestore.instance.collection("locations").document(userDocumentId).get().then((snapshot) async {
           FirestoreReadcheck.searchInfoPageReads++;
@@ -177,10 +180,15 @@ class _FireMapState extends State<FireMap> {
       ),
     );
 
-    setState(() {
-      print("Updating the marker which should update the map");
-      _markers[markerId] = marker;
-    });
+    // Interrupts
+    if (_isInSelfieMode.value) {
+      print("====================INTERRUPTED SET STATE MARKER=====================");
+    } else {
+      setState(() {
+        print("Updating the marker which should update the map");
+        _markers[markerId] = marker;
+      });
+    }
   }
 
   _startQuery() async {
@@ -340,10 +348,10 @@ class _FireMapState extends State<FireMap> {
 
   @override
   void dispose() {
-    radius.close();
-    _isInSelfieMode.close();
-    subscription.cancel();
-    _updateMapTimer.cancel();
+    if (radius != null) radius.close();
+    if (_isInSelfieMode != null) _isInSelfieMode.close();
+    if (subscription != null) subscription.cancel();
+    if (_updateMapTimer != null) _updateMapTimer.cancel();
     super.dispose();
   }
 
