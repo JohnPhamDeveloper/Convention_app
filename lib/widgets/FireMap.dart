@@ -80,7 +80,7 @@ class _FireMapState extends State<FireMap> {
         print("------------CANCELING MAP UPDATE TIMER-------------");
         // Not in selfie mode so cancel timer?
         // TODO since the user will have other reasons for updating map (such as business or hangout) this needs to change
-        updateMapTimer.cancel();
+        if (updateMapTimer != null) updateMapTimer.cancel();
       }
     });
 
