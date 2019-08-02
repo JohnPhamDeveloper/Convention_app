@@ -17,16 +17,22 @@ class HeroProfileDetails extends StatefulWidget {
   final int friendliness;
   final int fame;
   final Function onSelfieIncomingRequestTap;
-  final bool isInLoggedInUserSelfieIncomingRequestList;
+  //final bool isInLoggedInUserSelfieIncomingRequestList;
   final Function onSelfieIncomingAcceptTap;
-  final bool isInLoggedInUserSelfieOutgoingRequestList;
+  // final bool isInLoggedInUserSelfieOutgoingRequestList;
   final Function onSelfieFinishTap;
+  final bool displayFinishButton;
+  final bool displayAcceptButton;
+  final bool displayRequestButton;
 
   HeroProfileDetails({
     @required this.userCircleImage,
-    @required this.isInLoggedInUserSelfieOutgoingRequestList,
+    // @required this.isInLoggedInUserSelfieOutgoingRequestList,
     @required this.onSelfieIncomingAcceptTap,
-    @required this.isInLoggedInUserSelfieIncomingRequestList,
+    //  @required this.isInLoggedInUserSelfieIncomingRequestList,
+    @required this.displayFinishButton,
+    @required this.displayRequestButton,
+    @required this.displayAcceptButton,
     @required this.onSelfieFinishTap,
     @required this.onSelfieIncomingRequestTap,
     @required this.rarityBorder,
@@ -318,19 +324,19 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
 
   _renderSelfieButton() {
     // Both users sent a selfie request to each other (matched)
-    if (widget.isInLoggedInUserSelfieIncomingRequestList && widget.isInLoggedInUserSelfieOutgoingRequestList) {
+    if (widget.displayFinishButton) {
       return _selfieButtonWrapper("Finish Selfie", () {
         widget.onSelfieFinishTap();
       });
     }
     // other user sent a request to logged in user
-    if (widget.isInLoggedInUserSelfieIncomingRequestList) {
+    if (widget.displayAcceptButton) {
       return _selfieButtonWrapper("Accept Selfie", () {
         widget.onSelfieIncomingAcceptTap();
       });
     }
     // logged in user sent a request to other user
-    else if (widget.isInLoggedInUserSelfieOutgoingRequestList) {
+    else if (widget.displayRequestButton) {
       return _selfieButtonWrapper("Requested Selfie", () {}, fillColor: Colors.grey[300]);
     }
     // Already clicked on requested selfie button so don't allow another click
