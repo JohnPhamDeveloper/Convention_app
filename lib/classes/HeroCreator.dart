@@ -167,10 +167,12 @@ class HeroCreator {
     );
 
     // Update outgoing (me) and other user (incoming)
-    dynamic resp = await callable.call(<String, String>{"otherUserUid": otherUserData.documentID}).catchError((error) {
-      print(error);
-    });
-    print(resp);
+    try {
+      dynamic resp = await callable.call(<String, String>{"otherUserUid": otherUserData.documentID});
+      print(resp.data);
+    } catch (e) {
+      print(e);
+    }
 
     // returning objects from the cloudfirestore wold be data['bob'] if the object contains it
 //    print("DONE CALLING");
