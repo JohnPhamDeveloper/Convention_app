@@ -13,6 +13,7 @@ import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:provider/provider.dart';
 import 'package:cosplay_app/widgets/LoadingIndicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -62,9 +63,34 @@ class _MainScreenState extends State<MainScreen> {
     // Get data from database for logged in user when it changes
     // Set loading is called if data is successfuly updated into loggedInUser
     print("BEgin user stream");
-    FirestoreManager.streamUserData(loggedInUser, setLoading);
+    _loginUser();
 
     //createMockUser();
+  }
+
+  // TODO REMOVE TEST
+  //
+  _loginUser() async {
+    print("FAKE LOGGING IN");
+    return FirebaseAuth.instance.signInWithEmailAndPassword(email: 'bob@hotmail.com', password: '123456').then((user) {
+      print("Successfully logged in");
+      FirestoreManager.streamUserData(loggedInUser, setLoading, user.uid);
+    }).catchError((error) {
+      print('unable to login');
+      print(error);
+    });
+  }
+
+  // TODO REMOVE TEST
+  _loginUser2() async {
+    print("FAKE LOGGING IN");
+    return FirebaseAuth.instance.signInWithEmailAndPassword(email: 'bob2@hotmail.com', password: '123456').then((user) {
+      print("Successfully logged in");
+      FirestoreManager.streamUserData(loggedInUser, setLoading, user.uid);
+    }).catchError((error) {
+      print('unable to login');
+      print(error);
+    });
   }
 
   // TODO DELEETE THIS MOCK USER

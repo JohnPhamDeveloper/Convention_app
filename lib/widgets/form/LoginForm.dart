@@ -19,8 +19,7 @@ class LoginForm extends StatefulWidget {
   _LoginFormState createState() => _LoginFormState();
 }
 
-class _LoginFormState extends State<LoginForm>
-    with SingleTickerProviderStateMixin {
+class _LoginFormState extends State<LoginForm> with SingleTickerProviderStateMixin {
   AnimationController animationController;
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
@@ -33,18 +32,20 @@ class _LoginFormState extends State<LoginForm>
   void initState() {
     super.initState();
     // Should be await
-    _auth = FirebaseAuth.instance;
+    //_auth = FirebaseAuth.instance;
 
-    Future<FirebaseUser> currentUser = _auth.currentUser();
+    // Future<FirebaseUser> currentUser = _auth.currentUser();
+//    _auth.currentUser().then((user) {
+//
+//    })
     // User signed in already?
-    if (currentUser != null) {
-      print(currentUser);
-    } else {
-      print("Current user is null!");
-    }
+//    if (currentUser != null) {
+//      print(currentUser);
+//    } else {
+//      print("Current user is null!");
+//    }
 
-    animationController =
-        AnimationController(duration: Duration(seconds: 2), vsync: this);
+    animationController = AnimationController(duration: Duration(seconds: 2), vsync: this);
     animationController.forward();
   }
 
@@ -133,8 +134,7 @@ class _LoginFormState extends State<LoginForm>
                       controller: animationController,
                       start: 0.3,
                       direction: AnimationDirection.RIGHT,
-                      child:
-                          HyperButton(text: "Forgot Password?", onTap: () {}),
+                      child: HyperButton(text: "Forgot Password?", onTap: () {}),
                     ),
                   ],
                 ),
@@ -148,8 +148,7 @@ class _LoginFormState extends State<LoginForm>
                     text: "LOG IN",
                     color: Theme.of(context).primaryColor,
                     validated: () {
-                      return _formKey.currentState
-                          .validate(); // All form fields are valid?
+                      return _formKey.currentState.validate(); // All form fields are valid?
                     },
                     onPress: () async {
                       widget.onLoginPress();
@@ -159,8 +158,7 @@ class _LoginFormState extends State<LoginForm>
 
                       Scaffold.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(
-                              'Attempting signin for ${_emailController.text}'),
+                          content: Text('Attempting signin for ${_emailController.text}'),
                         ),
                       );
 
@@ -171,8 +169,7 @@ class _LoginFormState extends State<LoginForm>
                       await Future.delayed(Duration(seconds: 2), () {});
 
                       try {
-                        FirebaseUser user =
-                            await _auth.signInWithEmailAndPassword(
+                        FirebaseUser user = await _auth.signInWithEmailAndPassword(
                           email: _emailController.text,
                           password: _passwordController.text,
                         );

@@ -20,12 +20,14 @@ class HeroProfileDetails extends StatefulWidget {
   final bool isInLoggedInUserSelfieIncomingRequestList;
   final Function onSelfieIncomingAcceptTap;
   final bool isInLoggedInUserSelfieOutgoingRequestList;
+  final Function onSelfieFinishTap;
 
   HeroProfileDetails({
     @required this.userCircleImage,
     @required this.isInLoggedInUserSelfieOutgoingRequestList,
     @required this.onSelfieIncomingAcceptTap,
     @required this.isInLoggedInUserSelfieIncomingRequestList,
+    @required this.onSelfieFinishTap,
     @required this.onSelfieIncomingRequestTap,
     @required this.rarityBorder,
     @required this.displayName,
@@ -317,7 +319,9 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
   _renderSelfieButton() {
     // Both users sent a selfie request to each other (matched)
     if (widget.isInLoggedInUserSelfieIncomingRequestList && widget.isInLoggedInUserSelfieOutgoingRequestList) {
-      return _selfieButtonWrapper("Finish Selfie", () {});
+      return _selfieButtonWrapper("Finish Selfie", () {
+        widget.onSelfieFinishTap();
+      });
     }
     // other user sent a request to logged in user
     if (widget.isInLoggedInUserSelfieIncomingRequestList) {

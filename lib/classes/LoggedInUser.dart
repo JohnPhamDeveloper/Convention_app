@@ -39,10 +39,10 @@ class LoggedInUser extends ChangeNotifier {
     final List<dynamic> incomingSelfieList = loggedInUser.getHashMap[FirestoreManager.keyIncomingSelfieRequests];
 
     // Create a hashmap to reduce complexity of search from n^2 to n
-    HashMap<DocumentReference, int> incomingSelfieMap = HashMap<DocumentReference, int>();
+    HashMap<String, int> incomingSelfieMap = HashMap<String, int>();
 
     // This will be the list that contains users the loggedInUser will share location with
-    List<DocumentReference> usersToShareLocationWith = List<DocumentReference>();
+    List<String> usersToShareLocationWith = List<String>();
 
     // Copy incoming list to the incoming hashmap
     for (int i = 0; i < incomingSelfieList.length; i++) {

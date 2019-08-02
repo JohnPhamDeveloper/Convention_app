@@ -23,6 +23,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   @override
   void initState() {
     super.initState();
+    //_loginUser();
+
     _checkPermission();
 
     pageController = PageController(initialPage: navIndex);

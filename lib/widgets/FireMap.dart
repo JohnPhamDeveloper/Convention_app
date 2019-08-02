@@ -11,6 +11,7 @@ import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/classes/FirestoreReadcheck.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
+import 'package:cloud_functions/cloud_functions.dart';
 
 /// Structure:
 /// 1) _startQuery()
@@ -71,6 +72,7 @@ class _FireMapState extends State<FireMap> {
 
     // Listen to this value so we can stop or resume map update for selfie mode
     _isInSelfieMode = BehaviorSubject<bool>.seeded(loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode]);
+
     _isInSelfieMode.listen((isInSelfieMode) {
       print('IS IN SELFIE MODE CHANGED IN FIREMAP BEHAVIORSUBJECT ---------------------- $isInSelfieMode');
       if (isInSelfieMode) {

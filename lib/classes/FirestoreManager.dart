@@ -97,31 +97,56 @@ class FirestoreManager {
   // Updates local user information using the database information whenever
   // the database changes (stream)
   // Callback is called when data is done loading
-  static streamUserData(LoggedInUser loggedInUser, Function callback) {
-    // Going into our user collection and finding a user by their display name
-    _getUserByDisplayName("Chibata").snapshots().listen(
-      (doc) {
-        print("---------------Database Updated----------------------");
-        print("Updating local logged in user information");
-        FirestoreReadcheck.userProfileReads++;
-        FirestoreReadcheck.printUserProfileReads();
+  static streamUserData(LoggedInUser loggedInUser, Function callback, String uid) {
+    Firestore.instance.collection("users").document(uid).snapshots().listen((snapshot) {
+      print("---------------Database Updated----------------------");
+      print("Updating local logged in user information");
+      FirestoreReadcheck.userProfileReads++;
+      FirestoreReadcheck.printUserProfileReads();
 
-        // Go through each document in the user and update the local data
-        _copyUserDatabaseInformationToLocalData(doc.documents[0], loggedInUser);
+      // Go through each document in the user and update the local data
+      _copyUserDatabaseInformationToLocalData(snapshot, loggedInUser);
 
-        // Create timer here and pass into updatePosition
-        // Whenever this stream emits new data, cancel the timer then create a new one
+      // Create timer here and pass into updatePosition
+      // Whenever this stream emits new data, cancel the timer then create a new one
 
-        _startPositionUpdateTimer(loggedInUser, doc.documents[0]);
+      _startPositionUpdateTimer(loggedInUser, snapshot);
 
-        // callback notifies listeners of loggedInUser
-        callback();
-      },
-    ).onError((error) {
+      // callback notifies listeners of loggedInUser
+      callback();
+    }).onError((error) {
       //TODO need to tell user it failed with a widget...
       print("FirestoreManager stream failed");
       return Future.error("$error");
     });
+    ;
+
+    // Going into our user collection and finding a user by their display name
+//    _getUserByDisplayName("Chibata").snapshots().listen(
+//      (doc) {
+//        print("---------------Database Updated----------------------");
+//        print("Updating local logged in user information");
+//        FirestoreReadcheck.userProfileReads++;
+//        FirestoreReadcheck.printUserProfileReads();
+//
+//        // Go through each document in the user and update the local data
+//        _copyUserDatabaseInformationToLocalData(doc.documents[0], loggedInUser);
+//
+//        // Create timer here and pass into updatePosition
+//        // Whenever this stream emits new data, cancel the timer then create a new one
+//
+//        _startPositionUpdateTimer(loggedInUser, doc.documents[0]);
+//
+//        // callback notifies listeners of loggedInUser
+//        callback();
+//      },
+//    ).onError((error) {
+//      //TODO need to tell user it failed with a widget...
+//      print("FirestoreManager stream failed");
+//      return Future.error("$error");
+//    });
+
+    ////////////////////////----
 
     // Create timer which runs every 10 seconds
     // When should timer stop? When sharing location is off
@@ -249,6 +274,19 @@ class FirestoreManager {
 
   static Query _getUserByDisplayName(String name) {
     return Firestore.instance.collection("users").where(FirestoreManager.keyDisplayName, isEqualTo: name).limit(1);
+  }
+
+  static _copyUser() {
+    final store = Map<String, dynamic>();
+
+    Firestore.instance.collection("users").document('testUser4').get().then((snapshot) {
+      //snapshot.data
+      snapshot.data.forEach((key, value) {
+        store[key] = value;
+      });
+      print(store);
+      Firestore.instance.collection("users").document('jdrl5Xe0kcNOuW6UCyu4svbjfjg2').setData(store);
+    });
   }
 
   // Gets information from database and returns that information in a LoggedInUser object

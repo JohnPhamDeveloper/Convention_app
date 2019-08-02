@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:cosplay_app/classes/FirestoreReadcheck.dart';
 
 // Used for creating the hero widgets to show the selected user's profile
@@ -66,6 +67,31 @@ class HeroCreator {
       },
       onSelfieIncomingAcceptTap: () {
         _onSelfieAcceptTap(currentLoggedInUser, otherUserDocumentSnapshot);
+      },
+      onSelfieFinishTap: () {
+        // loggedInUser will remove otherUser from incomginSelfieRequestList and outgoingSelfieRequestList
+        DocumentReference currentLoggedInUserRef = currentLoggedInUser.getHashMap[FirestoreManager.keyDocumentReference];
+        List<DocumentReference> currentLoggedInUserIncomingRequests = List<DocumentReference>();
+        List<DocumentReference> currentLoggedInUserOutgoingRequests = List<DocumentReference>();
+
+        for (dynamic ref in currentLoggedInUser.getHashMap[FirestoreManager.keyIncomingSelfieRequests])
+          currentLoggedInUserIncomingRequests.add(ref);
+
+        for (dynamic ref in currentLoggedInUser.getHashMap[FirestoreManager.keyOutgoingSelfieRequests])
+          currentLoggedInUserOutgoingRequests.add(ref);
+
+        print("Removing from current user...");
+        currentLoggedInUserIncomingRequests.removeWhere((doc) => doc == otherUserDocumentSnapshot.reference);
+        currentLoggedInUserOutgoingRequests.removeWhere((doc) => doc == otherUserDocumentSnapshot.reference);
+
+        currentLoggedInUserRef.updateData(
+          {
+            FirestoreManager.keyIncomingSelfieRequests: currentLoggedInUserIncomingRequests,
+            FirestoreManager.keyOutgoingSelfieRequests: currentLoggedInUserOutgoingRequests,
+          },
+        );
+
+        // Other user must also remove loggedInUser from incomingSelfieRequestList and outgoingSelfieRequestList
       },
       isInLoggedInUserSelfieIncomingRequestList: isOtherUserInCurrentUserIncomingSelfieRequestList,
       isInLoggedInUserSelfieOutgoingRequestList: isOtherUserInCurrentUserOutgoingSelfieRequestList,
@@ -132,17 +158,31 @@ class HeroCreator {
 //    Navigator.push(context, MaterialPageRoute(builder: (context) => clickedProfile));
 //  }
 
-  // Request selfie from that user
   static void _onSelfieRequestTap(LoggedInUser loggedInUser, DocumentSnapshot otherUserData) async {
-    DocumentReference loggedInUserRef = loggedInUser.getHashMap[FirestoreManager.keyDocumentReference];
-    DocumentReference otherUserRef;
-    await _putLoggedInUserIntoOtherUserIncomingSelfieRequestList(loggedInUserRef, otherUserRef, otherUserData);
+    //TODO JUST TESTING CLOUD FUNCTIONS
+    print("ATTEMPING TO CREATE CALLABLE CLOUD FUNCTION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    // Send selfie request to clicked user
+    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
+      functionName: 'sendSelfieRequest',
+    );
+
+    // Update outgoing (me) and other user (incoming)
+    dynamic resp = await callable.call(<String, String>{"otherUserUid": otherUserData.documentID}).catchError((error) {
+      print(error);
+    });
+    print(resp);
+
+    // returning objects from the cloudfirestore wold be data['bob'] if the object contains it
+//    print("DONE CALLING");
+//    DocumentReference loggedInUserRef = loggedInUser.getHashMap[FirestoreManager.keyDocumentReference];
+//    DocumentReference otherUserRef;
+//    await _putLoggedInUserIntoOtherUserIncomingSelfieRequestList(loggedInUserRef, otherUserRef, otherUserData);
   }
 
   static void _onSelfieAcceptTap(LoggedInUser loggedInUser, DocumentSnapshot otherUserData) async {
-    DocumentReference loggedInUserRef = loggedInUser.getHashMap[FirestoreManager.keyDocumentReference];
-    DocumentReference otherUserRef;
-    await _putLoggedInUserIntoOtherUserIncomingSelfieRequestList(loggedInUserRef, otherUserRef, otherUserData);
+//    DocumentReference loggedInUserRef = loggedInUser.getHashMap[FirestoreManager.keyDocumentReference];
+//    DocumentReference otherUserRef;
+//    await _putLoggedInUserIntoOtherUserIncomingSelfieRequestList(loggedInUserRef, otherUserRef, otherUserData);
   }
 
   static _putLoggedInUserIntoOtherUserIncomingSelfieRequestList(

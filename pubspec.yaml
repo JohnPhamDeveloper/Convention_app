@@ -54,6 +54,7 @@ dev_dependencies:
   geolocator: ^5.1.1+1
   location_permissions: ^2.0.2
   permission_handler: ^3.2.1+1
+  cloud_functions: ^0.4.1
 
 
 # For information on the generic Dart part of this file, see the
