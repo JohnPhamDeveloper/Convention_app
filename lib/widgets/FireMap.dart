@@ -93,6 +93,7 @@ class _FireMapState extends State<FireMap> {
           _markers.clear();
         });
       } else {
+        print("ATTEMPING TO START TIMER");
         _startMapUpdateTimer();
       }
     });
@@ -140,25 +141,72 @@ class _FireMapState extends State<FireMap> {
   _startMapUpdateTimer() {
     // Update map every 10 seconds
     _updateMapTimer = Timer.periodic(Duration(seconds: 10), (Timer t) async {
-      if (!isMatched) t.cancel();
+      if (!isMatched) {
+        print("Timer stopped");
+      }
+      print("Inside timer running");
 
       // Get logged in user's position
-      Position location = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high).catchError((error) {
+      Position location = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.medium).catchError((error) {
         print(error);
       });
 
+      print("getting position");
       final Geoflutterfire geo = Geoflutterfire();
       double lat = location.latitude;
       double lng = location.longitude;
       GeoFirePoint newGeoPoint = geo.point(latitude: lat, longitude: lng);
 
+      print("Updating locations...");
       // Update the database with the logged in user's new position & displayName
       Firestore.instance.collection("locations").document(user.uid).setData({
         FirestoreManager.keyDisplayName: loggedInUser.getHashMap[FirestoreManager.keyDisplayName],
         FirestoreManager.keyPosition: newGeoPoint.data,
       }, merge: true);
 
-      final response = Meetup.getSelfieMatchedLocation();
+      print("RESPONSE OF MATCHED _+_+_++++!&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+
+      await Meetup.getSelfieMatchedLocation().then((response) {
+        // Create a marker for every matched user on the map
+        for (dynamic matchedUserLocationData in response.data) {
+          String displayName = matchedUserLocationData['displayName'];
+          double latitude = matchedUserLocationData['position']['_latitude'];
+          double longitude = matchedUserLocationData['position']['_longitude'];
+
+          // Distance between the two users
+          double distance = geo
+              .point(latitude: latitude, longitude: longitude) //  Other user
+              .distance(lat: location.latitude, lng: location.longitude); // Current user
+
+          final MarkerId markerId = MarkerId(UniqueKey().toString());
+
+          // Create marker at that position
+          Marker marker = Marker(
+            markerId: markerId,
+            position: LatLng(latitude, longitude),
+            icon: otherUserIconOnMap,
+            infoWindow: InfoWindow(
+              title: '$displayName',
+              snippet: "$distance km ${distance / 1.609} miles",
+            ),
+          );
+
+          setState(() {
+            print("Updating the marker which should update the map");
+            _markers[markerId] = marker;
+          });
+        }
+
+//        print(response.data);
+//        print(response.data[0]['displayName']);
+//        print(response.data[0]['position']);
+//        print(response.data[0]['position']['_longitude']);
+      }).catchError((error) {
+        print(error.toString());
+        print("Failed to get selfie match location");
+      });
+
+      //print(response.data.)
 
 //      // Get all users the logged in user matched with and create a marker for them on the map
 //      Firestore.instance.collection("selfie").document(user.uid).get().then((snapshot) {
