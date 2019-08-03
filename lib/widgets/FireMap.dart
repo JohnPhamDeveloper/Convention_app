@@ -11,7 +11,9 @@ import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/classes/FirestoreReadcheck.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:cosplay_app/classes/Meetup.dart';
 
 /// Structure:
 /// 1) _startQuery()
@@ -45,12 +47,14 @@ class _FireMapState extends State<FireMap> {
   LoggedInUser loggedInUser;
   Position position = Position();
   Timer _updateMapTimer;
+  bool isMatched = false;
 //  Location location = Location();
   Firestore firestore = Firestore.instance;
   Geoflutterfire geo = Geoflutterfire();
   BitmapDescriptor otherUserIconOnMap;
   LatLng _lastTap;
   StreamSubscription subscription;
+  FirebaseUser user;
 
   // Stateful
   BehaviorSubject<double> radius = BehaviorSubject<double>.seeded(1.0);
@@ -62,6 +66,36 @@ class _FireMapState extends State<FireMap> {
     super.initState();
     _initOtherUserIcon(); // Other user icons on the map (green dot)
     // _startQuery();
+    test();
+  }
+
+  void test() async {
+    user = await FirebaseAuth.instance.currentUser();
+
+    // Whenever the match list changes in the database...
+    Firestore.instance.collection('selfie').document(user.uid).snapshots().listen((snapshot) {
+      print("RE--------------------------------------------------------------------");
+      List<String> matchedUsers = List<String>();
+
+      // Copy matched users into a list
+      for (String matchUser in snapshot.data[FirestoreManager.keyMatchedUsers]) {
+        matchedUsers.add(matchUser);
+      }
+
+      if (matchedUsers.isEmpty) {
+        // Stop the timer
+        if (_updateMapTimer != null) {
+          _updateMapTimer.cancel();
+          _updateMapTimer = null;
+        }
+        // Clear map markers
+        setState(() {
+          _markers.clear();
+        });
+      } else {
+        _startMapUpdateTimer();
+      }
+    });
   }
 
   @override
@@ -92,6 +126,7 @@ class _FireMapState extends State<FireMap> {
         // TODO this should also change but we should have different icons for business and hangouts.
         // TODO otherwise selfie, business, and hangout can all run concurrently. Though they neeed a sbuscription (too much reads)
         setState(() {
+          isMatched = false;
           _markers.clear();
         });
       }
@@ -104,20 +139,44 @@ class _FireMapState extends State<FireMap> {
 
   _startMapUpdateTimer() {
     // Update map every 10 seconds
-    _updateMapTimer = Timer.periodic(Duration(seconds: 10), (Timer t) {
-      // No longer in selfie mode so there's no reason to update the map
-      if (!LoggedInUser.isInSelfieMode(loggedInUser)) {
-        print("------------CANCEL MAP UPDATE SINCE OUT OF SELFIE MODE--------------");
-        t.cancel();
-      } else {
-        print("-------------UPDATING MAP-------------");
-        _createMarkersOnMap();
-      }
+    _updateMapTimer = Timer.periodic(Duration(seconds: 10), (Timer t) async {
+      if (!isMatched) t.cancel();
+
+      // Get logged in user's position
+      Position location = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high).catchError((error) {
+        print(error);
+      });
+
+      final Geoflutterfire geo = Geoflutterfire();
+      double lat = location.latitude;
+      double lng = location.longitude;
+      GeoFirePoint newGeoPoint = geo.point(latitude: lat, longitude: lng);
+
+      // Update the database with the logged in user's new position & displayName
+      Firestore.instance.collection("locations").document(user.uid).setData({
+        FirestoreManager.keyDisplayName: loggedInUser.getHashMap[FirestoreManager.keyDisplayName],
+        FirestoreManager.keyPosition: newGeoPoint.data,
+      }, merge: true);
+
+      final response = Meetup.getSelfieMatchedLocation();
+
+//      // Get all users the logged in user matched with and create a marker for them on the map
+//      Firestore.instance.collection("selfie").document(user.uid).get().then((snapshot) {
+//        // Get every matched users position and update them on the map
+//        for (String user in snapshot[FirestoreManager.keyMatchedUsers]) {
+//          // Cloud function - getPosition
+//          // position = cloudFunction() [{displayName, geoposition}]
+//
+//        }
+//      });
     });
   }
 
   _createMarkersOnMap() {
     print("____________FIREMAP________ CREATING MARKERS....");
+
+    //
+
     // Contains reference to other users
     List<DocumentReference> usersToShareLocationWith = loggedInUser.getHashMap[FirestoreManager.keyUsersToShareLocationWith];
 

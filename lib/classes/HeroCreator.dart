@@ -139,10 +139,10 @@ class HeroCreator {
 
     return HeroProfileDetails(
       onSelfieRequestTap: () {
-        //_onSelfieRequestTap(currentLoggedInUser, otherUserDocumentSnapshot);
+        _onSelfieRequestTap(otherUserDocumentSnapshot);
       },
       onSelfieAcceptTap: () {
-        _onSelfieAcceptTap(currentLoggedInUser, otherUserDocumentSnapshot);
+        _onSelfieAcceptTap(otherUserDocumentSnapshot);
       },
       onSelfieFinishTap: () {
         // loggedInUser will remove otherUser from incomginSelfieRequestList and outgoingSelfieRequestList
@@ -166,11 +166,7 @@ class HeroCreator {
             FirestoreManager.keyOutgoingSelfieRequests: currentLoggedInUserOutgoingRequests,
           },
         );
-
-        // Other user must also remove loggedInUser from incomingSelfieRequestList and outgoingSelfieRequestList
       },
-      // isInLoggedInUserSelfieIncomingRequestList: isOtherUserInCurrentUserIncomingSelfieRequestList,
-      //isInLoggedInUserSelfieOutgoingRequestList: isOtherUserInCurrentUserOutgoingSelfieRequestList,
       displayAcceptButton: displayAcceptButton,
       displayRequestButton: displayRequestButton,
       displayFinishButton: displayFinishButton,
@@ -246,7 +242,7 @@ class HeroCreator {
   }
 
   // TODO remove loggedInUser in here since the cloud functions will handle writing
-  static void _onSelfieAcceptTap(LoggedInUser loggedInUser, DocumentSnapshot otherUserData) async {
+  static void _onSelfieAcceptTap(DocumentSnapshot otherUserData) async {
     final response = await Meetup.sendSelfieRequestTo(otherUserData);
     print(response.data);
     final response2 = await Meetup.acceptSelfieFrom(otherUserData);
@@ -257,6 +253,8 @@ class HeroCreator {
 //    DocumentReference otherUserRef;
 //    await _putLoggedInUserIntoOtherUserIncomingSelfieRequestList(loggedInUserRef, otherUserRef, otherUserData);
   }
+
+  static void _onSelfieFinishTap(DocumentSnapshot otherUserData) async {}
 
 //  static _putLoggedInUserIntoOtherUserIncomingSelfieRequestList(
 //      DocumentReference loggedInUserRef, DocumentReference otherUserRef, DocumentSnapshot otherUserData) async {

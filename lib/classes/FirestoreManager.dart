@@ -41,7 +41,10 @@ class FirestoreManager {
   static String keyIsSharingLocation = 'isSharingLocation'; // not used? // TODO not used delete>
   static String keyDocumentId = 'documentId';
 
-  // In the database but in a private collection
+  // Selfie collection
+  static String keyMatchedUsers = 'matchedUsers';
+
+  // Location collection
   static String keyPosition = 'position';
 
   // These keys are not in databases but calculated locally using the database information
@@ -110,7 +113,7 @@ class FirestoreManager {
       // Create timer here and pass into updatePosition
       // Whenever this stream emits new data, cancel the timer then create a new one
 
-      _startPositionUpdateTimer(loggedInUser, snapshot);
+      //  _startPositionUpdateTimer(loggedInUser, snapshot);
 
       // callback notifies listeners of loggedInUser
       callback();
