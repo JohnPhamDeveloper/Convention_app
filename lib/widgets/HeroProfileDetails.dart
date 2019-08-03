@@ -16,9 +16,9 @@ class HeroProfileDetails extends StatefulWidget {
   final int rarityBorder;
   final int friendliness;
   final int fame;
-  final Function onSelfieIncomingRequestTap;
+  final Function onSelfieRequestTap;
   //final bool isInLoggedInUserSelfieIncomingRequestList;
-  final Function onSelfieIncomingAcceptTap;
+  final Function onSelfieAcceptTap;
   // final bool isInLoggedInUserSelfieOutgoingRequestList;
   final Function onSelfieFinishTap;
   final bool displayFinishButton;
@@ -28,13 +28,13 @@ class HeroProfileDetails extends StatefulWidget {
   HeroProfileDetails({
     @required this.userCircleImage,
     // @required this.isInLoggedInUserSelfieOutgoingRequestList,
-    @required this.onSelfieIncomingAcceptTap,
+    @required this.onSelfieAcceptTap,
     //  @required this.isInLoggedInUserSelfieIncomingRequestList,
     @required this.displayFinishButton,
     @required this.displayRequestButton,
     @required this.displayAcceptButton,
     @required this.onSelfieFinishTap,
-    @required this.onSelfieIncomingRequestTap,
+    @required this.onSelfieRequestTap,
     @required this.rarityBorder,
     @required this.displayName,
     @required this.friendliness,
@@ -332,7 +332,7 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
     // other user sent a request to logged in user
     if (widget.displayAcceptButton) {
       return _selfieButtonWrapper("Accept Selfie", () {
-        widget.onSelfieIncomingAcceptTap();
+        widget.onSelfieAcceptTap();
       });
     }
     // logged in user sent a request to other user
@@ -342,7 +342,7 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
     // Already clicked on requested selfie button so don't allow another click
     else if (!clickedOnOutgoingSelfieButton) {
       return _selfieButtonWrapper("Selfie Request", () {
-        widget.onSelfieIncomingRequestTap();
+        widget.onSelfieRequestTap();
         setState(() {
           clickedOnOutgoingSelfieButton = true;
         });

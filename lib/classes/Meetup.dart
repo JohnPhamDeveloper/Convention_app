@@ -8,6 +8,10 @@ class Meetup {
     return CloudFunction.call(CloudFunction.sendSelfieRequest, 'otherUserUid', otherUserData.documentID);
   }
 
+  static Future<HttpsCallableResult> acceptSelfieFrom(DocumentSnapshot otherUserData) {
+    return CloudFunction.call(CloudFunction.acceptButtonVerify, 'otherUserUid', otherUserData.documentID);
+  }
+
   static Future<HttpsCallableResult> checkIfOtherUserSentSelfieRequest(DocumentSnapshot otherUserData) {
     return CloudFunction.call(CloudFunction.checkIfOtherUserSentSelfieRequest, 'otherUserUid', otherUserData.documentID);
   }

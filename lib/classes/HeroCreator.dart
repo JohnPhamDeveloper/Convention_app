@@ -59,15 +59,17 @@ class HeroCreator {
     bool displayAcceptButton = false;
     bool displayFinishButton = false;
 
+    // Get logged in users incoming and outgoing selfie requests
     List<dynamic> loggedInUserIncomingSelfieReferences =
         currentLoggedInUser.getHashMap[FirestoreManager.keyIncomingSelfieRequests];
     List<dynamic> loggedInUserOutgoingSelfieReferences =
         currentLoggedInUser.getHashMap[FirestoreManager.keyOutgoingSelfieRequests];
 
-    if (!isLookingAtOwnProfile) {
-      _checkIfOtherUserSentSelfieRequest(otherUserDocumentSnapshot);
-      // TODO record malicious attempt to request selfie to itself
-    }
+    // ??
+//    if (!isLookingAtOwnProfile) {
+//      _checkIfOtherUserSentSelfieRequest(otherUserDocumentSnapshot);
+//      // TODO record malicious attempt to request selfie to itself
+//    }
 
     // If current user sent and recieved a selfie request from other user
     if (loggedInUserIncomingSelfieReferences.contains(otherUserDocumentSnapshot.documentID) &&
@@ -75,7 +77,8 @@ class HeroCreator {
       print("Current user received and sent selfie request from other user");
       displayFinishButton = true;
     }
-    // Display accept button if the other person exists in my incoming list
+
+    // Display accept button if the other person exists in logged in user incoming list
     // If current user received a selfie request from other user
     else if (loggedInUserIncomingSelfieReferences.contains(otherUserDocumentSnapshot.documentID)) {
       print("Current user received selfie request from other user");
@@ -89,11 +92,6 @@ class HeroCreator {
 
     // TODO record mark user as malicious if they try to modify client code
 
-    // So the user now has a (locally) modified incoming selfie list.
-    // The user then pulls up the other person's information and hits accept.
-    // It will fail on the cloud function so doesn't matter what the user does client side
-    // This will go into our database and check the official incoming and outgoing list of both users.
-    // What should this function do
     // It should check if the current user exists in
     // 1) The other user's incoming request list (current user sent request)
     // 2) The other user's outgoing request list (other user sen request)
@@ -140,10 +138,10 @@ class HeroCreator {
     // Cloud function will take two paramters, logged in user (which is in by default) and otheruser snapshot to obtain documentID
 
     return HeroProfileDetails(
-      onSelfieIncomingRequestTap: () {
-        _onSelfieRequestTap(currentLoggedInUser, otherUserDocumentSnapshot);
+      onSelfieRequestTap: () {
+        //_onSelfieRequestTap(currentLoggedInUser, otherUserDocumentSnapshot);
       },
-      onSelfieIncomingAcceptTap: () {
+      onSelfieAcceptTap: () {
         _onSelfieAcceptTap(currentLoggedInUser, otherUserDocumentSnapshot);
       },
       onSelfieFinishTap: () {
@@ -251,6 +249,10 @@ class HeroCreator {
   static void _onSelfieAcceptTap(LoggedInUser loggedInUser, DocumentSnapshot otherUserData) async {
     final response = await Meetup.sendSelfieRequestTo(otherUserData);
     print(response.data);
+    final response2 = await Meetup.acceptSelfieFrom(otherUserData);
+    print("RESPONSE OF BIG BIG THING <<<<<<<<<<<<<<<<<<<<<<<<<<<<,,");
+    print(response2.data);
+
 //    DocumentReference loggedInUserRef = loggedInUser.getHashMap[FirestoreManager.keyDocumentReference];
 //    DocumentReference otherUserRef;
 //    await _putLoggedInUserIntoOtherUserIncomingSelfieRequestList(loggedInUserRef, otherUserRef, otherUserData);

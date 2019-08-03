@@ -5,6 +5,7 @@ class CloudFunction {
   // Cloud function names
   static String sendSelfieRequest = 'sendSelfieRequest';
   static String checkIfOtherUserSentSelfieRequest = 'checkIfOtherUserSentSelfieRequest';
+  static String acceptButtonVerify = 'acceptButtonVerify';
 
   static Future<HttpsCallableResult> call(String functionName, String key, String value) {
     print("ATTEMPING TO CREATE CALLABLE CLOUD FUNCTION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%");

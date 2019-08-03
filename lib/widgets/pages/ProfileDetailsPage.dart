@@ -13,12 +13,15 @@ class ProfileDetailsPage extends StatelessWidget {
     return Consumer<LoggedInUser>(builder: (context, loggedInUser, child) {
       return HeroProfileDetails(
         //TODO FIX THIS
-        isInLoggedInUserSelfieIncomingRequestList: false,
-        isInLoggedInUserSelfieOutgoingRequestList: false,
+        //isInLoggedInUserSelfieIncomingRequestList: false,
+        // isInLoggedInUserSelfieOutgoingRequestList: false,
+        displayAcceptButton: false,
+        displayFinishButton: false,
+        displayRequestButton: false,
         isLoggedInUser: true,
-        onSelfieIncomingRequestTap: () {},
+        onSelfieRequestTap: () {},
         onSelfieFinishTap: () {},
-        onSelfieIncomingAcceptTap: () {},
+        onSelfieAcceptTap: () {},
         userCircleImage: loggedInUser.getHashMap[FirestoreManager.keyPhotos][0],
         rarityBorder: loggedInUser.getHashMap[FirestoreManager.keyRarityBorder],
         displayName: loggedInUser.getHashMap[FirestoreManager.keyDisplayName],
