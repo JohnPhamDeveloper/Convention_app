@@ -94,7 +94,7 @@ class FirestoreManager {
       keyCosplayYearsExperience: cosplayYearsExperience,
       keyDateRegistered: DateTime.now(),
     }, merge: true);
-    print("Finished creating mock user");
+    // print("Finished creating mock user");
   }
 
   // Updates local user information using the database information whenever
@@ -103,7 +103,7 @@ class FirestoreManager {
   static streamUserData(LoggedInUser loggedInUser, Function callback, String uid) {
     Firestore.instance.collection("users").document(uid).snapshots().listen((snapshot) {
       print("---------------Database Updated----------------------");
-      print("Updating local logged in user information");
+      // print("Updating local logged in user information");
       FirestoreReadcheck.userProfileReads++;
       FirestoreReadcheck.printUserProfileReads();
 

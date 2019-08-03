@@ -45,8 +45,7 @@ class _UserSearchInfoState extends State<UserSearchInfo> {
     if (widget.subtitle.isNotEmpty) {
       return Text(
         widget.subtitle,
-        style: TextStyle(
-            fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.white),
+        style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.white),
       );
     }
     return Container(width: 0, height: 0);
@@ -62,9 +61,8 @@ class _UserSearchInfoState extends State<UserSearchInfo> {
     super.didChangeDependencies();
     // Check if the user is the logged in user
     LoggedInUser currentLoggedInUser = Provider.of<LoggedInUser>(context);
-    if (widget.name ==
-        currentLoggedInUser.getHashMap[FirestoreManager.keyDisplayName]) {
-      print("LOGGED IN USER FOUND ---------------------");
+    if (widget.name == currentLoggedInUser.getHashMap[FirestoreManager.keyDisplayName]) {
+      //  print("LOGGED IN USER FOUND ---------------------");
       _isLoggedInUser = true;
     }
   }
@@ -77,8 +75,7 @@ class _UserSearchInfoState extends State<UserSearchInfo> {
         widget.onTap();
       },
       child: Padding(
-        padding: const EdgeInsets.only(
-            left: 16.0, right: 0.0, bottom: 8.0, top: 8.0),
+        padding: const EdgeInsets.only(left: 16.0, right: 0.0, bottom: 8.0, top: 8.0),
         child: Row(
           children: <Widget>[
             // Image
@@ -119,10 +116,7 @@ class _UserSearchInfoState extends State<UserSearchInfo> {
                   // title
                   Text(
                     widget.title,
-                    style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white),
+                    style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.white),
                   ),
                   SizedBox(height: 1.5),
                   // subtitle
@@ -140,8 +134,7 @@ class _UserSearchInfoState extends State<UserSearchInfo> {
                   // Icon
                   Row(
                     children: <Widget>[
-                      Icon(Icons.sentiment_very_satisfied,
-                          color: Colors.grey[50]),
+                      Icon(Icons.sentiment_very_satisfied, color: Colors.grey[50]),
                       SizedBox(width: 5.0),
                       Text(widget.friendliness.toString()),
                     ],
@@ -150,10 +143,7 @@ class _UserSearchInfoState extends State<UserSearchInfo> {
                   // Cost
                   Text(
                     widget.cost,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 11.0,
-                        fontWeight: FontWeight.w700),
+                    style: TextStyle(color: Colors.white, fontSize: 11.0, fontWeight: FontWeight.w700),
                   ),
                 ],
               ),
@@ -204,8 +194,7 @@ class PhotographerSearchInfo extends StatelessWidget {
         print("Tapped search item");
       },
       child: Padding(
-        padding: const EdgeInsets.only(
-            left: 16.0, right: 0.0, bottom: 8.0, top: 8.0),
+        padding: const EdgeInsets.only(left: 16.0, right: 0.0, bottom: 8.0, top: 8.0),
         child: Row(
           children: <Widget>[
             // Image container
@@ -238,18 +227,12 @@ class PhotographerSearchInfo extends StatelessWidget {
                   SizedBox(height: 3.0),
                   Text(
                     "${yearsExperience.toString()} year(s) and ${monthsExperience.toString()} month(s)",
-                    style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.grey[50]),
+                    style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.grey[50]),
                   ),
                   SizedBox(height: 1.5),
                   Text(
                     cost,
-                    style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.grey[50]),
+                    style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.grey[50]),
                   ),
                 ],
               ),
@@ -263,23 +246,18 @@ class PhotographerSearchInfo extends StatelessWidget {
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      Icon(Icons.sentiment_very_satisfied,
-                          color: Colors.grey[50]),
+                      Icon(Icons.sentiment_very_satisfied, color: Colors.grey[50]),
                       SizedBox(width: 5.0),
                       Text(friendliness.toString()),
                     ],
                   ),
                   SizedBox(height: 6),
                   CircularBox(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
+                    padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
                     hasShadow: false,
                     child: Text(
                       "\$42/hr",
-                      style: TextStyle(
-                          color: Colors.black87,
-                          fontSize: 11.0,
-                          fontWeight: FontWeight.w700),
+                      style: TextStyle(color: Colors.black87, fontSize: 11.0, fontWeight: FontWeight.w700),
                     ),
                   ),
                 ],

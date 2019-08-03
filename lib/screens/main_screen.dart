@@ -70,7 +70,7 @@ class _MainScreenState extends State<MainScreen> {
   // TODO REMOVE TEST
   //
   _loginUser() async {
-    print("FAKE LOGGING IN");
+    //  print("FAKE LOGGING IN");
     return FirebaseAuth.instance.signInWithEmailAndPassword(email: 'bob@hotmail.com', password: '123456').then((user) {
       print("Successfully logged in");
       FirestoreManager.streamUserData(loggedInUser, setLoading, user.uid);
@@ -82,7 +82,7 @@ class _MainScreenState extends State<MainScreen> {
 
   // TODO REMOVE TEST
   _loginUser2() async {
-    print("FAKE LOGGING IN");
+    // print("FAKE LOGGING IN");
     return FirebaseAuth.instance.signInWithEmailAndPassword(email: 'bob2@hotmail.com', password: '123456').then((user) {
       print("Successfully logged in");
       FirestoreManager.streamUserData(loggedInUser, setLoading, user.uid);

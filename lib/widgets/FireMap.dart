@@ -66,10 +66,10 @@ class _FireMapState extends State<FireMap> {
     super.initState();
     _initOtherUserIcon(); // Other user icons on the map (green dot)
     // _startQuery();
-    test();
+    _startListenToMatchedUsers();
   }
 
-  void test() async {
+  void _startListenToMatchedUsers() async {
     user = await FirebaseAuth.instance.currentUser();
 
     // Whenever the match list changes in the database...
@@ -82,18 +82,13 @@ class _FireMapState extends State<FireMap> {
         matchedUsers.add(matchUser);
       }
 
+      // Stop updating map & sending location since match list is empty
       if (matchedUsers.isEmpty) {
-        // Stop the timer
-        if (_updateMapTimer != null) {
-          _updateMapTimer.cancel();
-          _updateMapTimer = null;
-        }
-        // Clear map markers
-        setState(() {
-          _markers.clear();
-        });
+        isMatched = false;
+        _stopMapUpdate();
       } else {
         print("ATTEMPING TO START TIMER");
+        isMatched = true;
         _startMapUpdateTimer();
       }
     });
@@ -104,38 +99,6 @@ class _FireMapState extends State<FireMap> {
     super.didChangeDependencies();
     loggedInUser = LoggedInUser();
     loggedInUser = Provider.of<LoggedInUser>(context);
-
-    // Listen to this value so we can stop or resume map update for selfie mode
-    _isInSelfieMode = BehaviorSubject<bool>.seeded(loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode]);
-
-    _isInSelfieMode.listen((isInSelfieMode) {
-      print('IS IN SELFIE MODE CHANGED IN FIREMAP BEHAVIORSUBJECT ---------------------- $isInSelfieMode');
-      if (isInSelfieMode) {
-        // Create timer only if it hasn't been created yet
-        if (_updateMapTimer == null) {
-          _startMapUpdateTimer();
-        }
-      } else {
-        print("------------CANCELING MAP UPDATE TIMER-------------");
-        // Not in selfie mode so cancel timer?
-        // TODO since the user will have other reasons for updating map (such as business or hangout) this needs to change
-        if (_updateMapTimer != null) {
-          _updateMapTimer.cancel();
-          _updateMapTimer = null;
-        }
-        print("------------CLEARING MARKERS DUE TO NOT BEING IN SELFIE MODE-------------");
-        // TODO this should also change but we should have different icons for business and hangouts.
-        // TODO otherwise selfie, business, and hangout can all run concurrently. Though they neeed a sbuscription (too much reads)
-        setState(() {
-          isMatched = false;
-          _markers.clear();
-        });
-      }
-    });
-
-    // Does anything need to rebuild when the user is in selfie mode? hmmmmm refer to TODO below
-    //TODO If map ever cost money, then we can just only show the map when the user is in selfie mode
-    // TODO aka use builder for loggedInuser consumer and unmount map if they aren't in selfie mode
   }
 
   _startMapUpdateTimer() {
@@ -143,163 +106,179 @@ class _FireMapState extends State<FireMap> {
     _updateMapTimer = Timer.periodic(Duration(seconds: 10), (Timer t) async {
       if (!isMatched) {
         print("Timer stopped");
+        t.cancel();
       }
-      print("Inside timer running");
-
-      // Get logged in user's position
-      Position location = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.medium).catchError((error) {
-        print(error);
-      });
-
-      print("getting position");
-      final Geoflutterfire geo = Geoflutterfire();
-      double lat = location.latitude;
-      double lng = location.longitude;
-      GeoFirePoint newGeoPoint = geo.point(latitude: lat, longitude: lng);
-
-      print("Updating locations...");
-      // Update the database with the logged in user's new position & displayName
-      Firestore.instance.collection("locations").document(user.uid).setData({
-        FirestoreManager.keyDisplayName: loggedInUser.getHashMap[FirestoreManager.keyDisplayName],
-        FirestoreManager.keyPosition: newGeoPoint.data,
-      }, merge: true);
-
-      print("RESPONSE OF MATCHED _+_+_++++!&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-
-      await Meetup.getSelfieMatchedLocation().then((response) {
-        // Create a marker for every matched user on the map
-        for (dynamic matchedUserLocationData in response.data) {
-          String displayName = matchedUserLocationData['displayName'];
-          double latitude = matchedUserLocationData['position']['_latitude'];
-          double longitude = matchedUserLocationData['position']['_longitude'];
-
-          // Distance between the two users
-          double distance = geo
-              .point(latitude: latitude, longitude: longitude) //  Other user
-              .distance(lat: location.latitude, lng: location.longitude); // Current user
-
-          final MarkerId markerId = MarkerId(UniqueKey().toString());
-
-          // Create marker at that position
-          Marker marker = Marker(
-            markerId: markerId,
-            position: LatLng(latitude, longitude),
-            icon: otherUserIconOnMap,
-            infoWindow: InfoWindow(
-              title: '$displayName',
-              snippet: "$distance km ${distance / 1.609} miles",
-            ),
-          );
-
-          setState(() {
-            print("Updating the marker which should update the map");
-            _markers[markerId] = marker;
-          });
-        }
-
-//        print(response.data);
-//        print(response.data[0]['displayName']);
-//        print(response.data[0]['position']);
-//        print(response.data[0]['position']['_longitude']);
-      }).catchError((error) {
-        print(error.toString());
-        print("Failed to get selfie match location");
-      });
-
-      //print(response.data.)
-
-//      // Get all users the logged in user matched with and create a marker for them on the map
-//      Firestore.instance.collection("selfie").document(user.uid).get().then((snapshot) {
-//        // Get every matched users position and update them on the map
-//        for (String user in snapshot[FirestoreManager.keyMatchedUsers]) {
-//          // Cloud function - getPosition
-//          // position = cloudFunction() [{displayName, geoposition}]
-//
-//        }
-//      });
+      _markers.clear();
+      print("Timer ran AGAIN");
+      LatLng loggedInUserLatLng = await _getCurrentLocation();
+      _updateLocationToDatabase(loggedInUserLatLng);
+      _updateMatchedUsersOnMap(loggedInUserLatLng);
     });
   }
 
-  _createMarkersOnMap() {
-    print("____________FIREMAP________ CREATING MARKERS....");
+  _updateMatchedUsersOnMap(LatLng loggedInUserLatLng) async {
+    await Meetup.getSelfieMatchedLocation().then((response) async {
+      // Create a marker for every matched user on the map
+      for (dynamic matchedUserLocationData in response.data) {
+        String displayName = matchedUserLocationData['displayName'];
+        double latitude = matchedUserLocationData['position']['_latitude'];
+        double longitude = matchedUserLocationData['position']['_longitude'];
+        LatLng otherUserLatLng = LatLng(latitude, longitude);
 
-    //
-
-    // Contains reference to other users
-    List<DocumentReference> usersToShareLocationWith = loggedInUser.getHashMap[FirestoreManager.keyUsersToShareLocationWith];
-
-    // No one to share location with
-    if (usersToShareLocationWith.length > 0) {
-      // Go through each reference and get their geoposition
-      for (int i = 0; i < usersToShareLocationWith.length; i++) {
-        // Use the documentReferences and get their document ID. With the document ID, look up their location in the
-        // Locations collection since locations documentNames are the users documentId
-        // Create marker for each users position
-        String userDocumentId = usersToShareLocationWith[i].documentID;
-
-        // Interrupts
-        if (!_isInSelfieMode.value) return;
-
-        // Get the user location from database
-        Firestore.instance.collection("locations").document(userDocumentId).get().then((snapshot) async {
-          FirestoreReadcheck.searchInfoPageReads++;
-          FirestoreReadcheck.printSearchInfoPageReads();
-          await _createMarkerUsingOtherUserInformation(snapshot);
-        });
-
-//        usersToShareLocationWith[i].get().then((snapshot) async {
-//          await _createMarkerUsingOtherUserInformation(snapshot);
-//          print('adding marker on map');
-//        }).catchError((error) {
-//          //TODO need to tell user it failed with a widget...
-//          print("FireMap: Failed to get a user in usersToShareLocationWith");
-//          print("The error is: $error");
-//          return Future.error("FireMap: Failed to get a user in usersToShareLocationWith");
-//        });
+        _createMarker(loggedInUserLatLng, otherUserLatLng, displayName);
       }
+    }).catchError((error) {
+      print(error.toString());
+      print("Failed to get selfie match location");
+    });
+  }
+
+  _stopMapUpdate() {
+    // Stop the timer
+    if (_updateMapTimer != null) {
+      _updateMapTimer.cancel();
+      _updateMapTimer = null;
+    }
+
+    if (!isMatched) {
+      setState(() {
+        _markers.clear();
+      });
     }
   }
 
-  _createMarkerUsingOtherUserInformation(DocumentSnapshot snapshot) async {
-    print("Printing other users position _+_+_+_+_+_+_+_");
-    GeoPoint otherUserGeoPoint = snapshot.data['position']['geopoint'];
-    String otherUserName = snapshot.data[FirestoreManager.keyDisplayName];
-    position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high).catchError((error) {
-      print(error);
-      return Future.error(error);
-    });
-    print("Position successfully ran (normla location bugs out)");
-    // Location buggy, doesn't return
-    //Location location = Location();
-    //LocationData position = await location.getLocation();
-    double distance = geo
-        .point(latitude: otherUserGeoPoint.latitude, longitude: otherUserGeoPoint.longitude)
-        .distance(lat: position.latitude, lng: position.longitude);
-    final MarkerId markerId = MarkerId(UniqueKey().toString());
+  _createMarker(LatLng currentUser, LatLng otherUser, String displayName) {
+    // Distance between the two users
+    double distanceInKm = geo
+        .point(latitude: otherUser.latitude, longitude: otherUser.longitude) //  Other user
+        .distance(lat: currentUser.latitude, lng: currentUser.longitude); // Current user\
 
+    double distanceInMiles = distanceInKm / 1.609;
+
+    final MarkerId markerId = MarkerId(UniqueKey().toString());
     // Create marker at that position
     Marker marker = Marker(
       markerId: markerId,
-      position: LatLng(otherUserGeoPoint.latitude, otherUserGeoPoint.longitude),
+      position: LatLng(otherUser.latitude, otherUser.longitude),
       icon: otherUserIconOnMap,
-      //icon: BitmapDescriptor.defaultMarker,
       infoWindow: InfoWindow(
-        title: '$otherUserName',
-        snippet: "$distance km ${distance / 1.609} miles",
+        title: '$displayName',
+        snippet: "${distanceInMiles.toStringAsFixed(1)} miles",
       ),
     );
 
-    // Interrupts
-    // TODO another way is to periodically check if they are in selfie mode  and just clear markers?
-    if (!_isInSelfieMode.value) {
-      print("====================INTERRUPTED SET STATE MARKER=====================");
-    } else {
-      setState(() {
-        print("Updating the marker which should update the map");
-        _markers[markerId] = marker;
-      });
-    }
+    setState(() {
+      print("Updating the marker which should update the map");
+      _markers[markerId] = marker;
+    });
   }
+
+  _updateLocationToDatabase(LatLng latlng) async {
+    final Geoflutterfire geo = Geoflutterfire();
+    GeoFirePoint newGeoPoint = geo.point(latitude: latlng.latitude, longitude: latlng.longitude);
+
+    print("Updating locations...");
+    // Update the database with the logged in user's new position & displayName
+    Firestore.instance.collection("locations").document(user.uid).setData({
+      FirestoreManager.keyDisplayName: loggedInUser.getHashMap[FirestoreManager.keyDisplayName],
+      FirestoreManager.keyPosition: newGeoPoint.data,
+    }, merge: true);
+  }
+
+  Future<LatLng> _getCurrentLocation() async {
+    Position location = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high).catchError((error) {
+      print(error);
+    });
+    double lat = location.latitude;
+    double lng = location.longitude;
+    final latlng = LatLng(lat, lng);
+
+    return latlng;
+  }
+
+  // TODO not needed
+//  _createMarkersOnMap() {
+//    print("____________FIREMAP________ CREATING MARKERS....");
+//
+//    //
+//
+//    // Contains reference to other users
+//    List<DocumentReference> usersToShareLocationWith = loggedInUser.getHashMap[FirestoreManager.keyUsersToShareLocationWith];
+//
+//    // No one to share location with
+//    if (usersToShareLocationWith.length > 0) {
+//      // Go through each reference and get their geoposition
+//      for (int i = 0; i < usersToShareLocationWith.length; i++) {
+//        // Use the documentReferences and get their document ID. With the document ID, look up their location in the
+//        // Locations collection since locations documentNames are the users documentId
+//        // Create marker for each users position
+//        String userDocumentId = usersToShareLocationWith[i].documentID;
+//
+//        // Interrupts
+//        if (!_isInSelfieMode.value) return;
+//
+//        // Get the user location from database
+//        Firestore.instance.collection("locations").document(userDocumentId).get().then((snapshot) async {
+//          FirestoreReadcheck.searchInfoPageReads++;
+//          FirestoreReadcheck.printSearchInfoPageReads();
+//          await _createMarkerUsingOtherUserInformation(snapshot);
+//        });
+//
+////        usersToShareLocationWith[i].get().then((snapshot) async {
+////          await _createMarkerUsingOtherUserInformation(snapshot);
+////          print('adding marker on map');
+////        }).catchError((error) {
+////          //TODO need to tell user it failed with a widget...
+////          print("FireMap: Failed to get a user in usersToShareLocationWith");
+////          print("The error is: $error");
+////          return Future.error("FireMap: Failed to get a user in usersToShareLocationWith");
+////        });
+//      }
+//    }
+//  }
+//
+//
+  //TODO not needed
+//  _createMarkerUsingOtherUserInformation(DocumentSnapshot snapshot) async {
+//    print("Printing other users position _+_+_+_+_+_+_+_");
+//    GeoPoint otherUserGeoPoint = snapshot.data['position']['geopoint'];
+//    String otherUserName = snapshot.data[FirestoreManager.keyDisplayName];
+//    position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high).catchError((error) {
+//      print(error);
+//      return Future.error(error);
+//    });
+//    print("Position successfully ran (normla location bugs out)");
+//    // Location buggy, doesn't return
+//    //Location location = Location();
+//    //LocationData position = await location.getLocation();
+//    double distance = geo
+//        .point(latitude: otherUserGeoPoint.latitude, longitude: otherUserGeoPoint.longitude)
+//        .distance(lat: position.latitude, lng: position.longitude);
+//    final MarkerId markerId = MarkerId(UniqueKey().toString());
+//
+//    // Create marker at that position
+//    Marker marker = Marker(
+//      markerId: markerId,
+//      position: LatLng(otherUserGeoPoint.latitude, otherUserGeoPoint.longitude),
+//      icon: otherUserIconOnMap,
+//      //icon: BitmapDescriptor.defaultMarker,
+//      infoWindow: InfoWindow(
+//        title: '$otherUserName',
+//        snippet: "$distance km ${distance / 1.609} miles",
+//      ),
+//    );
+//
+//    // Interrupts
+//    // TODO another way is to periodically check if they are in selfie mode  and just clear markers?
+//    if (!_isInSelfieMode.value) {
+//      print("====================INTERRUPTED SET STATE MARKER=====================");
+//    } else {
+//      setState(() {
+//        print("Updating the marker which should update the map");
+//        _markers[markerId] = marker;
+//      });
+//    }
+//  }
 
   _startQuery() async {
 //    print("Starting query...");
@@ -345,35 +324,35 @@ class _FireMapState extends State<FireMap> {
 //    selfieSubscription.cancel();
   }
 
-  void _updateMarkers(List<DocumentSnapshot> documentListWithinRadius) {
-    print("Updating markers on screen...");
-    print(documentListWithinRadius);
-
-    _markers.clear();
-
-    // Go through every document in our locations collection
-    documentListWithinRadius.forEach((snapshot) {
-      // Get position of that document
-      GeoPoint pos = snapshot.data['position']['geopoint'];
-      double distance = snapshot.data['distance'];
-      final MarkerId markerId = MarkerId(UniqueKey().toString());
-
-      // Create marker at that position
-      var marker = Marker(
-        markerId: markerId,
-        position: LatLng(pos.latitude, pos.longitude),
-        icon: otherUserIconOnMap,
-        //icon: BitmapDescriptor.defaultMarker,
-        infoWindow: InfoWindow(
-          title: "Magic Marker",
-          snippet: "$distance km",
-        ),
-      );
-      setState(() {
-        _markers[markerId] = marker;
-      });
-    });
-  }
+//  void _updateMarkers(List<DocumentSnapshot> documentListWithinRadius) {
+//    print("Updating markers on screen...");
+//    print(documentListWithinRadius);
+//
+//    _markers.clear();
+//
+//    // Go through every document in our locations collection
+//    documentListWithinRadius.forEach((snapshot) {
+//      // Get position of that document
+//      GeoPoint pos = snapshot.data['position']['geopoint'];
+//      double distance = snapshot.data['distance'];
+//      final MarkerId markerId = MarkerId(UniqueKey().toString());
+//
+//      // Create marker at that position
+//      var marker = Marker(
+//        markerId: markerId,
+//        position: LatLng(pos.latitude, pos.longitude),
+//        icon: otherUserIconOnMap,
+//        //icon: BitmapDescriptor.defaultMarker,
+//        infoWindow: InfoWindow(
+//          title: "Magic Marker",
+//          snippet: "$distance km",
+//        ),
+//      );
+//      setState(() {
+//        _markers[markerId] = marker;
+//      });
+//    });
+//  }
 
   // Update query based on slider value
   _updateQuery(double value) {
@@ -410,11 +389,11 @@ class _FireMapState extends State<FireMap> {
 
   // Get last position tapped onto the map
   _onTap(LatLng pos) {
-    print(pos);
-    setState(() {
-      _lastTap = pos;
-      _addMarker(pos);
-    });
+//    print(pos);
+//    setState(() {
+//      _lastTap = pos;
+//      _addMarker(pos);
+//    });
   }
 
   _onMapCreated(GoogleMapController mapController) {
