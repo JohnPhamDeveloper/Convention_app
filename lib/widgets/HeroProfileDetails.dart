@@ -77,7 +77,7 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
                   borderWidth: 3.5,
                   rarityBorderColor: kRarityBorders[widget.rarityBorder],
                   borderRadius: 500.0,
-                  image: widget.userCircleImage,
+                  imageURL: widget.userCircleImage,
                   width: 160.0,
                   height: 160.0),
             ),
@@ -216,7 +216,7 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
                   borderWidth: 3.5,
                   rarityBorderColor: kRarityBorders[widget.rarityBorder],
                   borderRadius: 500.0,
-                  image: widget.userCircleImage,
+                  imageURL: widget.userCircleImage,
                   width: 160.0,
                   height: 160.0),
             ),
@@ -380,7 +380,7 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
                 ),
                 onPressed: () {
                   // TODO this one sends a confirmation to the other user to tell them to verify the selfie request
-                  widget.onSelfieFinishTap();
+
                   Navigator.pop(context);
                 },
                 color: Colors.cyan[300],
@@ -393,9 +393,12 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
                   "Cancel Selfie",
                   style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500),
                 ),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  widget.onSelfieFinishTap();
+                  Navigator.pop(context);
+                },
                 color: Colors.cyan[300],
-              )
+              ),
             ],
             desc: "Finishing will send a verification to confirm your selfie with the other person!")
         .show();

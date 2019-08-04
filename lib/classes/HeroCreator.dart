@@ -115,7 +115,9 @@ class HeroCreator {
 
   static void _onSelfieRequestTap(DocumentSnapshot otherUserData) async {
     // TODO restrict people within distance, if they are out of distance, record malicious attempt
-    final response = await Meetup.sendSelfieRequestTo(otherUserData);
+    final response = await Meetup.sendSelfieRequestTo(otherUserData).catchError((error) {
+      print(error);
+    });
     print(response.data);
   }
 

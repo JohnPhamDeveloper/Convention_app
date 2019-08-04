@@ -5,6 +5,7 @@ import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 import 'package:provider/provider.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
+import 'package:cosplay_app/widgets/MiniUser.dart';
 
 // COSPLAYER
 class UserSearchInfo extends StatefulWidget {
@@ -79,24 +80,30 @@ class _UserSearchInfoState extends State<UserSearchInfo> {
         child: Row(
           children: <Widget>[
             // Image
-            Padding(
-              padding: const EdgeInsets.only(bottom: 0.0),
-              child: ImageContainer(
-                  heroName: widget.imageHeroName,
-                  enableStatusDot: true,
-                  enableSelfieDot: !_isLoggedInUser,
-                  selfieDotInnerColor: Colors.pinkAccent,
-                  selfieDotLeft: 0,
-                  selfieDotBottom: 2,
-                  statusDotBottom: 2,
-                  statusDotRight: 2,
-                  borderWidth: 2.5,
-                  rarityBorderColor: kRarityBorders[widget.rarity],
-                  borderRadius: 500.0,
-                  image: widget.backgroundImage,
-                  width: 60.0,
-                  height: 60.0),
+            MiniUser(
+              imageHeroName: widget.imageHeroName,
+              enableSelfieDot: !_isLoggedInUser,
+              rarity: widget.rarity,
+              imageURL: widget.backgroundImage,
             ),
+//            Padding(
+//              padding: const EdgeInsets.only(bottom: 0.0),
+//              child: ImageContainer(
+//                  heroName: widget.imageHeroName,
+//                  enableStatusDot: true,
+//                  enableSelfieDot: !_isLoggedInUser,
+//                  selfieDotInnerColor: Colors.pinkAccent,
+//                  selfieDotLeft: 0,
+//                  selfieDotBottom: 2,
+//                  statusDotBottom: 2,
+//                  statusDotRight: 2,
+//                  borderWidth: 2.5,
+//                  rarityBorderColor: kRarityBorders[widget.rarity],
+//                  borderRadius: 500.0,
+//                  image: widget.backgroundImage,
+//                  width: 60.0,
+//                  height: 60.0),
+//            ),
             SizedBox(width: 20.0),
             // Name
             Expanded(
@@ -204,7 +211,7 @@ class PhotographerSearchInfo extends StatelessWidget {
                   borderWidth: 2.5,
                   rarityBorderColor: kRarityBorders[0],
                   borderRadius: 500.0,
-                  image: renderImage(),
+                  imageURL: renderImage(),
                   width: 60.0,
                   height: 60.0),
             ),

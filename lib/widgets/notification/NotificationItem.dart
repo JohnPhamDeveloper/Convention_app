@@ -2,21 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:cosplay_app/widgets/notification/Bubble.dart';
 import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 import 'package:cosplay_app/constants/constants.dart';
+import 'package:cosplay_app/widgets/MiniUser.dart';
 
 class NotificationItem extends StatelessWidget {
+  final MiniUser miniUser;
   final Color iconColor;
   final String message;
   final Key key;
   final String timeSinceCreated;
 
   NotificationItem(
-      {this.iconColor = Colors.pink,
-      this.message = "Default test message.",
-      this.key,
-      this.timeSinceCreated})
+      {this.iconColor = Colors.pink, @required this.message, this.key, @required this.timeSinceCreated, this.miniUser})
       : super(key: key);
 
   String formattedTimer;
+
+  Widget _renderMiniUserOrIcon() {
+    if (miniUser != null) {
+      // render miniuser
+      return miniUser;
+    } else {
+      // render icon
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +50,8 @@ class NotificationItem extends StatelessWidget {
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black12,
-                        blurRadius:
-                            10.0, // has the effect of softening the shadow
-                        spreadRadius:
-                            1.0, // has the effect of extending the shadow
+                        blurRadius: 10.0, // has the effect of softening the shadow
+                        spreadRadius: 1.0, // has the effect of extending the shadow
                         offset: Offset(
                           0.0, // horizontal, move right 10
                           5.0, // vertical, move down 10
@@ -68,13 +74,11 @@ class NotificationItem extends StatelessWidget {
             top: 15,
             left: 90,
             child: CircularBox(
-              padding: EdgeInsets.only(
-                  top: 5.0, bottom: 5.0, left: 10.0, right: 10.0),
+              padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10.0, right: 10.0),
               radius: 20.0,
               child: Text(
                 'Jonas Simpson',
-                style: TextStyle(
-                    color: kBlack, fontWeight: FontWeight.w600, fontSize: 14.0),
+                style: TextStyle(color: kBlack, fontWeight: FontWeight.w600, fontSize: 14.0),
               ),
             ),
           ),
@@ -83,13 +87,11 @@ class NotificationItem extends StatelessWidget {
             top: 17,
             left: 220,
             child: CircularBox(
-              padding: EdgeInsets.only(
-                  top: 5.0, bottom: 5.0, left: 10.0, right: 10.0),
+              padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10.0, right: 10.0),
               radius: 20.0,
               child: Text(
                 timeSinceCreated,
-                style: TextStyle(
-                    color: kBlack, fontWeight: FontWeight.w600, fontSize: 10.0),
+                style: TextStyle(color: kBlack, fontWeight: FontWeight.w600, fontSize: 10.0),
               ),
             ),
           ),

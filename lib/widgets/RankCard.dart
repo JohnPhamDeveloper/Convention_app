@@ -101,7 +101,7 @@ class RankCard extends StatelessWidget {
                   enableShadows: true,
                   rarityBorderColor: kRarityBorders[rarityBorder],
                   width: 220,
-                  image: image),
+                  imageURL: image),
             ),
             // Dot
             Positioned(

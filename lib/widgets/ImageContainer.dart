@@ -5,7 +5,7 @@ import 'package:cosplay_app/widgets/notification/NotificationDot.dart';
 
 class ImageContainer extends StatelessWidget {
   final String heroName;
-  final String image;
+  final String imageURL;
   final double borderRadius;
   final double borderWidth;
   final Color rarityBorderColor;
@@ -53,7 +53,7 @@ class ImageContainer extends StatelessWidget {
       this.enableShadows = true,
       this.borderWidth = 0,
       this.rarityBorderColor = Colors.white,
-      @required this.image});
+      @required this.imageURL});
 
   BoxShadow renderShadow() {
     if (enableShadows)
@@ -131,7 +131,7 @@ class ImageContainer extends StatelessWidget {
                 fadeInCurve: Curves.easeInOut,
                 fit: BoxFit.cover,
                 placeholder: kTransparentImage,
-                image: image,
+                image: imageURL,
               ),
             ),
           ),
@@ -146,8 +146,7 @@ class ImageContainer extends StatelessWidget {
           children: <Widget>[
             Container(
               foregroundDecoration: BoxDecoration(
-                border:
-                    Border.all(width: borderWidth, color: rarityBorderColor),
+                border: Border.all(width: borderWidth, color: rarityBorderColor),
                 borderRadius: BorderRadius.circular(borderRadius),
               ),
               child: ClipRRect(
@@ -159,7 +158,7 @@ class ImageContainer extends StatelessWidget {
                   fadeInCurve: Curves.easeInOut,
                   fit: BoxFit.cover,
                   placeholder: kTransparentImage,
-                  image: image,
+                  image: imageURL,
                 ),
               ),
             ),

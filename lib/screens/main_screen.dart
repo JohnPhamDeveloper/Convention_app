@@ -55,7 +55,7 @@ class _MainScreenState extends State<MainScreen> {
 //        RankingListPage(),
         SearchPage(),
 //        FamePage(),
-//        NotificationPage(),
+        //     NotificationPage(),
         //  ProfilePage(),
       ],
     );

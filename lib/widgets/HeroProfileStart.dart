@@ -22,26 +22,22 @@ class HeroProfileStart extends StatelessWidget {
       this.imageHeroName = "",
       @required this.friendliness,
       this.heroName = "",
-      this.bottomLeftItemPadding =
-          const EdgeInsets.only(left: 20.0, bottom: 80.0),
+      this.bottomLeftItemPadding = const EdgeInsets.only(left: 20.0, bottom: 80.0),
       @required this.fame}) {
     // Add all images to container for the carousel
     // Only give hero name to the first image
     print(imageHeroName);
-    userImagesContainer
-        .add(createImageContainerWidgetFromURL(userImages[0], imageHeroName));
+    userImagesContainer.add(createImageContainerWidgetFromURL(userImages[0], imageHeroName));
 
     for (int i = 1; i < userImagesContainer.length; i++) {
-      userImagesContainer
-          .add(createImageContainerWidgetFromURL(userImages[i], ''));
+      userImagesContainer.add(createImageContainerWidgetFromURL(userImages[i], ''));
     }
   }
 
-  ImageContainer createImageContainerWidgetFromURL(
-      String url, String heroName) {
+  ImageContainer createImageContainerWidgetFromURL(String url, String heroName) {
     return ImageContainer(
       heroName: heroName,
-      image: url,
+      imageURL: url,
       height: double.infinity,
       width: double.infinity,
     );
@@ -75,8 +71,7 @@ class HeroProfileStart extends StatelessWidget {
           },
           loop: false,
           itemCount: userImagesContainer.length,
-          pagination: SwiperPagination(
-              alignment: Alignment.topCenter, builder: SwiperPagination.dots),
+          pagination: SwiperPagination(alignment: Alignment.topCenter, builder: SwiperPagination.dots),
           control: SwiperControl(
             color: Colors.white,
           ),
@@ -159,8 +154,5 @@ final TextStyle kProfileOverlayNameStyle = TextStyle(
   shadows: kTextStrokeOutlines,
 );
 
-final TextStyle kProfileOverlayTextStyle = TextStyle(
-    fontSize: 25.0,
-    color: Colors.white,
-    fontWeight: FontWeight.w400,
-    shadows: kTextStrokeOutlines);
+final TextStyle kProfileOverlayTextStyle =
+    TextStyle(fontSize: 25.0, color: Colors.white, fontWeight: FontWeight.w400, shadows: kTextStrokeOutlines);
