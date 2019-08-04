@@ -17,9 +17,7 @@ class HeroProfileDetails extends StatefulWidget {
   final int friendliness;
   final int fame;
   final Function onSelfieRequestTap;
-  //final bool isInLoggedInUserSelfieIncomingRequestList;
   final Function onSelfieAcceptTap;
-  // final bool isInLoggedInUserSelfieOutgoingRequestList;
   final Function onSelfieFinishTap;
   final bool displayFinishButton;
   final bool displayAcceptButton;
@@ -27,9 +25,7 @@ class HeroProfileDetails extends StatefulWidget {
 
   HeroProfileDetails({
     @required this.userCircleImage,
-    // @required this.isInLoggedInUserSelfieOutgoingRequestList,
     @required this.onSelfieAcceptTap,
-    //  @required this.isInLoggedInUserSelfieIncomingRequestList,
     @required this.displayFinishButton,
     @required this.displayRequestButton,
     @required this.displayAcceptButton,
@@ -47,7 +43,9 @@ class HeroProfileDetails extends StatefulWidget {
 }
 
 class _HeroProfileDetailsState extends State<HeroProfileDetails> {
-  bool clickedOnOutgoingSelfieButton = false;
+  bool _clickedOnSelfieRequestButton = false;
+  bool _clickedOnAcceptSelfieButton = false;
+  bool _clickedOnFinishSelfieButton = false;
 
   Widget _renderPage(BuildContext context) {
     print(widget.isLoggedInUser);
@@ -323,33 +321,40 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
   }
 
   _renderSelfieButton() {
-    // Both users sent a selfie request to each other (matched)
-    if (widget.displayFinishButton) {
+    // Greyed out buttons (these buttons change dynamically when the user press the buttons)
+    if (_clickedOnSelfieRequestButton ||
+        !widget.displayFinishButton && !widget.displayRequestButton && !widget.displayAcceptButton) {
+      return _selfieButtonWrapper("Requested Selfie", () {}, fillColor: Colors.grey[300]);
+    } else if (_clickedOnAcceptSelfieButton) {
       return _selfieButtonWrapper("Finish Selfie", () {
         widget.onSelfieFinishTap();
       });
     }
-    // other user sent a request to logged in user
-    if (widget.displayAcceptButton) {
-      return _selfieButtonWrapper("Accept Selfie", () {
-        widget.onSelfieAcceptTap();
-      });
-    }
-    // logged in user sent a request to other user
-    else if (widget.displayRequestButton) {
-      return _selfieButtonWrapper("Requested Selfie", () {}, fillColor: Colors.grey[300]);
-    }
-    // Already clicked on requested selfie button so don't allow another click
-    else if (!clickedOnOutgoingSelfieButton) {
-      return _selfieButtonWrapper("Selfie Request", () {
+    // Buttons that load up first time into details page
+    else if (!widget.displayFinishButton && widget.displayRequestButton && !widget.displayAcceptButton) {
+      return _selfieButtonWrapper("Request Selfie", () {
         widget.onSelfieRequestTap();
         setState(() {
-          clickedOnOutgoingSelfieButton = true;
+          _clickedOnSelfieRequestButton = true;
         });
       });
-    } else {
-      return _selfieButtonWrapper("Requested Selfie", () {}, fillColor: Colors.grey[300]);
+    } else if (!widget.displayFinishButton && !widget.displayRequestButton && widget.displayAcceptButton) {
+      return _selfieButtonWrapper("Accept Selfie", () {
+        widget.onSelfieAcceptTap();
+        setState(() {
+          _clickedOnAcceptSelfieButton = true;
+        });
+      });
+    } else if (widget.displayFinishButton && !widget.displayRequestButton && !widget.displayAcceptButton) {
+      return _selfieButtonWrapper("Finish Selfie", () {
+        widget.onSelfieFinishTap();
+      });
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _renderPage(context);
   }
 
   // Wrapper to prevent duplicate fields for selfie button
@@ -362,11 +367,6 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
         onTap();
       },
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _renderPage(context);
   }
 }
 

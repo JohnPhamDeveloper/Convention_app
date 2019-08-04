@@ -22,8 +22,6 @@ class HeroCreator {
     DocumentSnapshot otherUserDataSnapshot = await otherUserDataReference.get().catchError((error) {
       //TODO need to tell user it failed with a widget...
       print("pushProfileIntoView failed to get otherUserDataSnapshot from otherUserDataReference");
-      print("The error is: $error");
-      return Future.error("pushProfileIntoView failed to get otherUserDataSnapshot from otherUserDataReference");
     });
 
     FirestoreReadcheck.heroCreatorReads++;
@@ -74,19 +72,16 @@ class HeroCreator {
     // If current user sent and recieved a selfie request from other user
     if (loggedInUserIncomingSelfie.contains(otherUserDocumentSnapshot.documentID) &&
         loggedInUserOutgoingSelfie.contains(otherUserDocumentSnapshot.documentID)) {
-      print("Current user received and sent selfie request from other user");
       displayFinishButton = true;
     }
 
     // Display accept button if the other person exists in logged in user incoming list
     // If current user received a selfie request from other user
     else if (loggedInUserIncomingSelfie.contains(otherUserDocumentSnapshot.documentID)) {
-      print("Current user received selfie request from other user");
       displayAcceptButton = true;
     }
     // If current user didnt recieve or send selfie request to the other user
-    else if (loggedInUserOutgoingSelfie.contains(otherUserDocumentSnapshot.documentID)) {
-      print("Current user didnt send or receive selfie from other user");
+    else if (!loggedInUserOutgoingSelfie.contains(otherUserDocumentSnapshot.documentID)) {
       displayRequestButton = true;
     }
 
@@ -128,7 +123,6 @@ class HeroCreator {
     final response = await Meetup.sendSelfieRequestTo(otherUserData);
     print(response.data);
     final response2 = await Meetup.acceptSelfieFrom(otherUserData);
-    print("RESPONSE OF BIG BIG THING <<<<<<<<<<<<<<<<<<<<<<<<<<<<,,");
     print(response2.data);
   }
 
