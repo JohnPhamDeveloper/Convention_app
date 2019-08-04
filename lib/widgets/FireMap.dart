@@ -72,7 +72,6 @@ class _FireMapState extends State<FireMap> {
   void _startListenToMatchedUsers() async {
     user = await FirebaseAuth.instance.currentUser();
 
-    // Whenever the match list changes in the database...
     Firestore.instance.collection('selfie').document(user.uid).snapshots().listen((snapshot) {
       print("RE--------------------------------------------------------------------");
       List<String> matchedUsers = List<String>();

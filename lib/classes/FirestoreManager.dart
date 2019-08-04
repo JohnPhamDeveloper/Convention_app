@@ -103,24 +103,16 @@ class FirestoreManager {
   static streamUserData(LoggedInUser loggedInUser, Function callback, String uid) {
     Firestore.instance.collection("users").document(uid).snapshots().listen((snapshot) {
       print("---------------Database Updated----------------------");
-      // print("Updating local logged in user information");
       FirestoreReadcheck.userProfileReads++;
       FirestoreReadcheck.printUserProfileReads();
 
       // Go through each document in the user and update the local data
       _copyUserDatabaseInformationToLocalData(snapshot, loggedInUser);
 
-      // Create timer here and pass into updatePosition
-      // Whenever this stream emits new data, cancel the timer then create a new one
-
-      //  _startPositionUpdateTimer(loggedInUser, snapshot);
-
       // callback notifies listeners of loggedInUser
       callback();
     }).onError((error) {
-      //TODO need to tell user it failed with a widget...
       print("FirestoreManager stream failed");
-      return Future.error("$error");
     });
     ;
 
@@ -200,49 +192,48 @@ class FirestoreManager {
 //    }
   }
 
-  // Takes all documentSnapshots and copies to loggedInUser
   static _copyUserDatabaseInformationToLocalData(DocumentSnapshot documentSnapshot, LoggedInUser loggedInUser) {
-    loggedInUser.getHashMap[FirestoreManager.keyDocumentReference] = documentSnapshot.reference;
-    loggedInUser.getHashMap[FirestoreManager.keyDocumentId] = documentSnapshot.documentID;
+    //loggedInUser.getHashMap[FirestoreManager.keyDocumentReference] = documentSnapshot.reference;
+    //loggedInUser.getHashMap[FirestoreManager.keyDocumentId] = documentSnapshot.documentID;
     documentSnapshot.data.forEach((key, value) {
       //print("Updating $key...$value");
-      FirestoreManager.keys[key] = key; // (delete) Not useful
+      // FirestoreManager.keys[key] = key; // (delete) Not useful
       loggedInUser.getHashMap[key] = value;
     });
   }
 
-  static _startPositionUpdateTimer(LoggedInUser loggedInUser, DocumentSnapshot documentSnapshot) async {
-    // TODO NEED SEPERATIONS
-    if (LoggedInUser.isInSelfieMode(loggedInUser)) {
-      loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] = true;
-      if (_locationUpdateTimer == null) {
-        print("Location update timer is null so create a timer");
-        // Initial position update
-        await _sendPositionToDatabase(documentSnapshot);
-        print("Why is this not called-----------------------------------------------------------------------");
-        _locationUpdateTimer = Timer.periodic(Duration(seconds: 10), (Timer t) async {
-          if (loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] == false) {
-            print("!_!+_!+_!+_!+!_ CANCELLING TIMER __+_++_+__+__+!_+!_+_+!__!+_+!_+!_!_");
-            t.cancel();
-          } else {
-            print("-----------Sending position update to database-------------");
-            await _sendPositionToDatabase(documentSnapshot);
-          }
-        });
-      } else {
-        print("Location update timer already exist DO NOT RECREATE");
-      }
-      print("IN SELFIE MODE + STARTING TIMER..................................");
-    } else {
-      loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] = false;
-      if (_locationUpdateTimer != null) {
-        print("Cancel update timer due to selfie mode being off (locationUpdateTimer != null)");
-        _locationUpdateTimer.cancel();
-        _locationUpdateTimer = null;
-      }
-      print("NOT IN SELFIE MODE");
-    }
-  }
+//  static _startPositionUpdateTimer(LoggedInUser loggedInUser, DocumentSnapshot documentSnapshot) async {
+//    // TODO NEED SEPERATIONS
+//    if (LoggedInUser.isInSelfieMode(loggedInUser)) {
+//      loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] = true;
+//      if (_locationUpdateTimer == null) {
+//        print("Location update timer is null so create a timer");
+//        // Initial position update
+//        await _sendPositionToDatabase(documentSnapshot);
+//        print("Why is this not called-----------------------------------------------------------------------");
+//        _locationUpdateTimer = Timer.periodic(Duration(seconds: 10), (Timer t) async {
+//          if (loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] == false) {
+//            print("!_!+_!+_!+_!+!_ CANCELLING TIMER __+_++_+__+__+!_+!_+_+!__!+_+!_+!_!_");
+//            t.cancel();
+//          } else {
+//            print("-----------Sending position update to database-------------");
+//            await _sendPositionToDatabase(documentSnapshot);
+//          }
+//        });
+//      } else {
+//        print("Location update timer already exist DO NOT RECREATE");
+//      }
+//      print("IN SELFIE MODE + STARTING TIMER..................................");
+//    } else {
+//      loggedInUser.getHashMap[FirestoreManager.keyIsInSelfieMode] = false;
+//      if (_locationUpdateTimer != null) {
+//        print("Cancel update timer due to selfie mode being off (locationUpdateTimer != null)");
+//        _locationUpdateTimer.cancel();
+//        _locationUpdateTimer = null;
+//      }
+//      print("NOT IN SELFIE MODE");
+//    }
+//  }
 
   static _sendPositionToDatabase(DocumentSnapshot documentSnapshot) async {
     // TODO NOT OPTIMIZED!

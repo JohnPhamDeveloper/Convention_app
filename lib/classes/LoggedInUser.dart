@@ -31,43 +31,43 @@ class LoggedInUser extends ChangeNotifier {
     notifyListeners();
   }
 
-  static bool isInSelfieMode(LoggedInUser loggedInUser) {
-    bool inSelfieMode = false;
-
-    // Get the list of outgoing and income users in the selfie list
-    final List<dynamic> outgoingSelfieList = loggedInUser.getHashMap[FirestoreManager.keyOutgoingSelfieRequests];
-    final List<dynamic> incomingSelfieList = loggedInUser.getHashMap[FirestoreManager.keyIncomingSelfieRequests];
-
-    // Create a hashmap to reduce complexity of search from n^2 to n
-    HashMap<String, int> incomingSelfieMap = HashMap<String, int>();
-
-    // This will be the list that contains users the loggedInUser will share location with
-    List<String> usersToShareLocationWith = List<String>();
-
-    // Copy incoming list to the incoming hashmap
-    for (int i = 0; i < incomingSelfieList.length; i++) {
-      incomingSelfieMap[incomingSelfieList[i]] = i;
-    }
-
-    // Check if there exists a user thats in outgoing and in incoming
-    for (int i = 0; i < outgoingSelfieList.length; i++) {
-      if (incomingSelfieMap.containsKey(outgoingSelfieList[i])) {
-        // If there exist such a user, then put them in the usersToShareLocationWith list
-        usersToShareLocationWith.add(outgoingSelfieList[i]);
-
-        // As long as there's a user in the "usersToShareLocationWith", then the loggedInUser is in selfie mode
-        inSelfieMode = true;
-      }
-    }
-
-    // TODO private information?
-    loggedInUser.getHashMap[FirestoreManager.keyUsersToShareLocationWith] = usersToShareLocationWith;
-    print("PRINTING USERS TO SHARE LOCATION WITH");
-    print(usersToShareLocationWith);
-
-    // Not in selfie mode
-    return inSelfieMode;
-  }
+//  static bool isInSelfieMode(LoggedInUser loggedInUser) {
+//    bool inSelfieMode = false;
+//
+//    // Get the list of outgoing and income users in the selfie list
+//    final List<dynamic> outgoingSelfieList = loggedInUser.getHashMap[FirestoreManager.keyOutgoingSelfieRequests];
+//    final List<dynamic> incomingSelfieList = loggedInUser.getHashMap[FirestoreManager.keyIncomingSelfieRequests];
+//
+//    // Create a hashmap to reduce complexity of search from n^2 to n
+//    HashMap<String, int> incomingSelfieMap = HashMap<String, int>();
+//
+//    // This will be the list that contains users the loggedInUser will share location with
+//    List<String> usersToShareLocationWith = List<String>();
+//
+//    // Copy incoming list to the incoming hashmap
+//    for (int i = 0; i < incomingSelfieList.length; i++) {
+//      incomingSelfieMap[incomingSelfieList[i]] = i;
+//    }
+//
+//    // Check if there exists a user thats in outgoing and in incoming
+//    for (int i = 0; i < outgoingSelfieList.length; i++) {
+//      if (incomingSelfieMap.containsKey(outgoingSelfieList[i])) {
+//        // If there exist such a user, then put them in the usersToShareLocationWith list
+//        usersToShareLocationWith.add(outgoingSelfieList[i]);
+//
+//        // As long as there's a user in the "usersToShareLocationWith", then the loggedInUser is in selfie mode
+//        inSelfieMode = true;
+//      }
+//    }
+//
+//    // TODO private information?
+//    loggedInUser.getHashMap[FirestoreManager.keyUsersToShareLocationWith] = usersToShareLocationWith;
+//    print("PRINTING USERS TO SHARE LOCATION WITH");
+//    print(usersToShareLocationWith);
+//
+//    // Not in selfie mode
+//    return inSelfieMode;
+//  }
 
   // Not used
 //  LoggedInUser.copy(LoggedInUser loggedInUser) {
