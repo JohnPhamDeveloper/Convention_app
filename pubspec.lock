@@ -270,6 +270,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  rich_alert:
+    dependency: "direct dev"
+    description:
+      name: rich_alert
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.32"
   rxdart:
     dependency: transitive
     description:

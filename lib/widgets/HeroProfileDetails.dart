@@ -8,6 +8,7 @@ import 'package:cosplay_app/constants/constants.dart';
 import 'package:cosplay_app/widgets/ActionButton.dart';
 import 'package:cosplay_app/widgets/TitleData.dart';
 import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class HeroProfileDetails extends StatefulWidget {
   final bool isLoggedInUser;
@@ -52,7 +53,7 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
     if (widget.isLoggedInUser) {
       return _renderLoggedInUserPage(context);
     }
-    return _renderOtherUserPage();
+    return _renderOtherUserPage(context);
   }
 
   _renderLoggedInUserPage(BuildContext context) {
@@ -194,7 +195,7 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
     );
   }
 
-  _renderOtherUserPage() {
+  _renderOtherUserPage(BuildContext context) {
     return ListView(
       children: <Widget>[
         Column(
@@ -303,7 +304,7 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
             ),
             SizedBox(height: 25.0),
             // Selfie request button
-            _renderSelfieButton(),
+            _renderSelfieButton(context),
             SizedBox(height: 25.0),
             // Photography request button
             ActionButton(
@@ -320,14 +321,14 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
     );
   }
 
-  _renderSelfieButton() {
+  _renderSelfieButton(BuildContext context) {
     // Greyed out buttons (these buttons change dynamically when the user press the buttons)
     if (_clickedOnSelfieRequestButton ||
         !widget.displayFinishButton && !widget.displayRequestButton && !widget.displayAcceptButton) {
       return _selfieButtonWrapper("Requested Selfie", () {}, fillColor: Colors.grey[300]);
     } else if (_clickedOnAcceptSelfieButton) {
-      return _selfieButtonWrapper("Finish Selfie", () {
-        widget.onSelfieFinishTap();
+      return _selfieButtonWrapper("Finish/Cancel Selfie", () {
+        _showFinishedSelfieOptions(context);
       });
     }
     // Buttons that load up first time into details page
@@ -346,8 +347,8 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
         });
       });
     } else if (widget.displayFinishButton && !widget.displayRequestButton && !widget.displayAcceptButton) {
-      return _selfieButtonWrapper("Finish Selfie", () {
-        widget.onSelfieFinishTap();
+      return _selfieButtonWrapper("Finish/Cancel Selfie", () {
+        _showFinishedSelfieOptions(context);
       });
     }
   }
@@ -355,6 +356,49 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
   @override
   Widget build(BuildContext context) {
     return _renderPage(context);
+  }
+
+  // PRIVATES
+
+  _showFinishedSelfieOptions(BuildContext context) {
+    Alert(
+            style: AlertStyle(
+                animationType: AnimationType.grow,
+                animationDuration: Duration(milliseconds: 500),
+                alertBorder: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0)))),
+            type: AlertType.info,
+            context: context,
+            title: "Done with selfie?",
+            buttons: [
+              DialogButton(
+                width: 190.0,
+                height: 40.0,
+                radius: BorderRadius.circular(20.0),
+                child: Text(
+                  "Finish Selfie",
+                  style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500),
+                ),
+                onPressed: () {
+                  // TODO this one sends a confirmation to the other user to tell them to verify the selfie request
+                  widget.onSelfieFinishTap();
+                  Navigator.pop(context);
+                },
+                color: Colors.cyan[300],
+              ),
+              DialogButton(
+                width: 190.0,
+                height: 40.0,
+                radius: BorderRadius.circular(20.0),
+                child: Text(
+                  "Cancel Selfie",
+                  style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500),
+                ),
+                onPressed: () => Navigator.pop(context),
+                color: Colors.cyan[300],
+              )
+            ],
+            desc: "Finishing will send a verification to confirm your selfie with the other person!")
+        .show();
   }
 
   // Wrapper to prevent duplicate fields for selfie button
