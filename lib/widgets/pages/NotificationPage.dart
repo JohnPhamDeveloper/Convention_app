@@ -6,6 +6,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:cosplay_app/widgets/MiniUser.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'dart:async';
+import 'dart:collection';
 import 'dart:math';
 
 //DEBUG
@@ -19,24 +20,46 @@ import 'dart:math';
 //];
 
 class NotificationPage extends StatefulWidget {
+  final FirebaseUser firebaseUser;
+
+  NotificationPage({@required this.firebaseUser});
+
   @override
   _NotificationPageState createState() => _NotificationPageState();
 }
 
 class _NotificationPageState extends State<NotificationPage> with AutomaticKeepAliveClientMixin {
-  FirebaseAuth _auth;
   Timer timer;
+  //List<dynamic> notifications = List<dynamic>();
+  Queue<Widget> notifications = Queue<Widget>();
   bool toggleChildrenToRebuild = false;
+  bool recievedUsersInformation = false;
 
   @override
   void initState() {
     super.initState();
+
+    // Add a box at the end of the notifications so the last notification doesn't get blocked off
+    notifications.add(SizedBox(height: 150));
+
+    // First time loading this, push the 20 latest notification to the notifications queue
+
     // _auth = FirebaseAuth.instance;
 
-    beginRebuildEverySeconds(60);
+    //beginRebuildEverySeconds(60);
 
     // DEBUG AND FOR LEARNING (though make sure the user is signed in)
-    getData();
+    //getData();
+  }
+
+  _listenToNotifications() async {
+    print("Getting logged in user information...");
+
+    // Setup listener to the private database for the current user
+//    Firestore.instance.collection('private').document(firebaseUser.uid).snapshots().listen((snapshot){
+//      print("Notification listener executed...");
+//     // snapshot.data['notifications']
+//    });
   }
 
   // We need the bubble to update the notifications age every second with the given value
@@ -100,66 +123,91 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
 
   // Create a notification item with the data from the database
   Widget buildNotificationItem(DocumentSnapshot documentSnapshot) {
-    // Create a timestamp of when the message was sent
-    String imageUrl = documentSnapshot.data['imageUrl'];
-    int seconds = documentSnapshot.data['timeSent'].seconds;
-    String message = documentSnapshot.data['message'];
-    var date = new DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
+    Widget itemToReturn;
+    final timestamp = documentSnapshot.data['notifications'][0]['timeStamp'];
+    String message = documentSnapshot.data['notifications'][0]['message'];
+    String name = documentSnapshot.data['notifications'][0]['name'];
+    int rarity = documentSnapshot.data['notifications'][0]['rarityBorder'];
+    //var date = new DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
+    var date = new DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
     String created = timeago.format(date);
+    print('$timestamp $message $name $rarity $date');
 
-    return NotificationItem(
-      miniUser: MiniUser(
-        imageHeroName: imageUrl,
-        enableSelfieDot: true,
-        rarity: 0,
-      ),
+    // This is allowed since it's public information.
+    // Client can modify it but won't really achieve anything other than getting public information
+//    await Firestore.instance.collection('users').document(documentSnapshot.data['uid']).get().then((snapshot) {
+//      String imageUrl = snapshot.data['photos'][0];
+//
+//      itemToReturn = NotificationItem(
+//        miniUser: MiniUser(
+//          imageHeroName: imageUrl,
+//          enableSelfieDot: true,
+//          rarity: rarity,
+//        ),
+//        message: message,
+//        timeSinceCreated: created,
+//        key: UniqueKey(),
+//      );
+//    }).catchError((error) {
+//      print("Unable to get other user information");
+//      print(error);
+    itemToReturn = NotificationItem(
+      name: name,
       message: message,
       timeSinceCreated: created,
       key: UniqueKey(),
     );
+//    });
+
+    return itemToReturn;
   }
 
   // Debug purposes
-  void testSendNotification() {
-    Firestore.instance.collection("users").document("jones").collection("messages").add({
-      'message': "nonthing",
-      'timeSent': DateTime.now(),
-    });
-  }
+//  void testSendNotification() {
+//    Firestore.instance.collection("users").document("jones").collection("messages").add({
+//      'message': "nonthing",
+//      'timeSent': DateTime.now(),
+//    });
+//  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Column(
       children: <Widget>[
-        RaisedButton(
-            onPressed: () {
-              testSendNotification();
-            },
-            child: Text("CLICk")),
+//        RaisedButton(
+//            onPressed: () {
+//              testSendNotification();
+//            },
+//            child: Text("CLICk")),
         StreamBuilder(
-          stream: Firestore.instance.collection("users").document('jones').collection('messages').snapshots(),
+          // Rebuild list everytime notification gets updated
+          stream: Firestore.instance.collection("private").document(widget.firebaseUser.uid).snapshots(),
           builder: (context, snapshot) {
             // TODO Implement linked list so insert doesn't take O(n) every new notification
             // Nothing loaded yet
-            if (!snapshot.hasData) return Text("Nothing loaded!");
-            // Go through every messages and store in notifications
-            List<Widget> notifications = List<Widget>();
-            for (DocumentSnapshot snapshot in snapshot.data.documents) {
-              notifications.add(buildNotificationItem(snapshot));
-            }
+            if (!snapshot.hasData) return Text("Nothing loaded...");
+
+            //  Take latest notification and add it to beginning of queue
+            notifications.addFirst(buildNotificationItem(snapshot.data));
+
+            // OLD
+//            List<Widget> notifications = List<Widget>();
+//            for (DocumentSnapshot snapshot in snapshot.data.documents) {
+//              notifications.add(buildNotificationItem(snapshot));
+//            }
 
             // Reverse order so recent is on top
-            notifications = notifications.reversed.toList();
+            //notifications = notifications.reversed.toList();
 
             // Add a box at the end of the notifications so the last notification doesn't get blocked off
-            notifications.add(SizedBox(height: 150));
+            //notifications.add(SizedBox(height: 150));
 
             return Expanded(
               child: ListView.builder(
-                itemCount: snapshot.data.documents.length + 1, // + 1 is for the sized box
+                itemCount: notifications.length,
                 itemBuilder: (context, index) {
-                  return notifications[index];
+                  return notifications.elementAt(index);
                 },
               ),
             );

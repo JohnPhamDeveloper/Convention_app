@@ -25,6 +25,7 @@ class _MainScreenState extends State<MainScreen> {
   bool loadedUserData = false;
   PreloadPageController preloadPageController;
   CircularBottomNavigationController _navigationController;
+  FirebaseUser firebaseUser;
   bool playProfilePageCarousel = false;
   int navIndex = 0;
   PreloadPageView pageView;
@@ -39,6 +40,52 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+
+    // Get data from database for logged in user when it changes
+    // Set loading is called if data is successfuly updated into loggedInUser
+    _loginUser();
+
+    //createMockUser();
+  }
+
+//  _loadAuthUser() async {
+//    firebaseUser = await FirebaseAuth.instance.currentUser();
+//  }
+
+  // TODO REMOVE TEST
+  _loginUser() async {
+    //  print("FAKE LOGGING IN");
+    return FirebaseAuth.instance.signInWithEmailAndPassword(email: 'bob@hotmail.com', password: '123456').then((user) async {
+      print("Successfully logged in");
+      firebaseUser = await FirebaseAuth.instance.currentUser();
+      _initAfterLoggedIn();
+      if (firebaseUser != null) {
+        _initAfterLoggedIn();
+        FirestoreManager.streamUserData(loggedInUser, setLoading, user.uid);
+      }
+    }).catchError((error) {
+      print('unable to login');
+      print(error);
+    });
+  }
+
+  // TODO REMOVE TEST
+  _loginUser2() async {
+    // print("FAKE LOGGING IN");
+    return FirebaseAuth.instance.signInWithEmailAndPassword(email: 'bob2@hotmail.com', password: '123456').then((user) async {
+      print("Successfully logged in");
+      firebaseUser = await FirebaseAuth.instance.currentUser();
+      if (firebaseUser != null) {
+        _initAfterLoggedIn();
+        FirestoreManager.streamUserData(loggedInUser, setLoading, user.uid);
+      }
+    }).catchError((error) {
+      print('unable to login');
+      print(error);
+    });
+  }
+
+  _initAfterLoggedIn() async {
     loggedInUser = LoggedInUser();
     preloadPageController = PreloadPageController(initialPage: navIndex);
     _navigationController = CircularBottomNavigationController(navIndex);
@@ -53,43 +100,12 @@ class _MainScreenState extends State<MainScreen> {
       controller: preloadPageController,
       children: <Widget>[
 //        RankingListPage(),
-        SearchPage(),
+        //     SearchPage(),
 //        FamePage(),
-        //     NotificationPage(),
+        NotificationPage(firebaseUser: firebaseUser),
         //  ProfilePage(),
       ],
     );
-
-    // Get data from database for logged in user when it changes
-    // Set loading is called if data is successfuly updated into loggedInUser
-    _loginUser();
-
-    //createMockUser();
-  }
-
-  // TODO REMOVE TEST
-  //
-  _loginUser() async {
-    //  print("FAKE LOGGING IN");
-    return FirebaseAuth.instance.signInWithEmailAndPassword(email: 'bob@hotmail.com', password: '123456').then((user) {
-      print("Successfully logged in");
-      FirestoreManager.streamUserData(loggedInUser, setLoading, user.uid);
-    }).catchError((error) {
-      print('unable to login');
-      print(error);
-    });
-  }
-
-  // TODO REMOVE TEST
-  _loginUser2() async {
-    // print("FAKE LOGGING IN");
-    return FirebaseAuth.instance.signInWithEmailAndPassword(email: 'bob2@hotmail.com', password: '123456').then((user) {
-      print("Successfully logged in");
-      FirestoreManager.streamUserData(loggedInUser, setLoading, user.uid);
-    }).catchError((error) {
-      print('unable to login');
-      print(error);
-    });
   }
 
   // TODO DELEETE THIS MOCK USER

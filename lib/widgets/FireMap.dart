@@ -74,12 +74,19 @@ class _FireMapState extends State<FireMap> {
 
     Firestore.instance.collection('selfie').document(user.uid).snapshots().listen((snapshot) {
       print("RE--------------------------------------------------------------------");
-      List<String> matchedUsers = List<String>();
 
-      // Copy matched users into a list
-      for (String matchUser in snapshot.data[FirestoreManager.keyMatchedUsers]) {
-        matchedUsers.add(matchUser);
-      }
+      // {{uid: ..., timeStamp:...},{uid: ..., timeStamp:...}, ...}
+      Map<dynamic, dynamic> matchedUsers = snapshot.data[FirestoreManager.keyMatchedUsers];
+
+      // Copy matched users
+//      for (Map<dynamic, dynamic> matchUser in snapshot.data[FirestoreManager.keyMatchedUsers]) {
+//        matchedUsers.
+//      }
+
+      print("TRYING TO PRINT MATCH");
+      print(matchedUsers);
+
+      print("AFTER TRYING TO PRINT MATCH");
 
       // Stop updating map & sending location since match list is empty
       if (matchedUsers.isEmpty) {
@@ -139,11 +146,9 @@ class _FireMapState extends State<FireMap> {
       _updateMapTimer = null;
     }
 
-    if (!isMatched) {
-      setState(() {
-        _markers.clear();
-      });
-    }
+    setState(() {
+      _markers.clear();
+    });
   }
 
   _createMarker(LatLng currentUser, LatLng otherUser, String displayName) {
