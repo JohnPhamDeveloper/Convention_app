@@ -90,9 +90,9 @@ class _FireMapState extends State<FireMap> {
       print("AFTER TRYING TO PRINT MATCH");
 
       // Stop updating map & sending location since match list is empty
-      //TODO WARNING: IF A MAP BECOMES EMPTY, IT TURNS INTO AN ARRAY IN FIRESTORE. isEmpty covers both "Array" and "Map" type 
+      //TODO WARNING: IF A MAP BECOMES EMPTY, IT TURNS INTO AN ARRAY IN FIRESTORE. isEmpty covers both "Array" and "Map" type
       if (snapshot.data[FirestoreManager.keyMatchedUsers].isEmpty) {
-        print("STOP TYIMER")
+        print("STOP TYIMER");
         isMatched = false;
         _stopMapUpdate();
       } else {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/widgets/notification/NotificationItem.dart';
-import 'package:timeago/timeago.dart' as timeago;
+
 import 'package:cosplay_app/widgets/MiniUser.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'dart:async';
@@ -21,13 +21,18 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> with AutomaticKeepAliveClientMixin {
   Timer timer;
   Queue<Widget> notifications = Queue<Widget>();
+  Queue<Widget> prevNotifications = Queue<Widget>();
   bool loadedPreviousNotifications = false; // First launch app so need to load previous 20 notifications from database
 
   @override
   void initState() {
     super.initState();
+    _initAsync();
+  }
+
+  _initAsync() async {
     // TODO First time loading this, push the 20 latest notification to the notifications queue
-    Firestore.instance.collection('private').document(widget.firebaseUser.uid).get().then((snapshot) {
+    await Firestore.instance.collection('private').document(widget.firebaseUser.uid).get().then((snapshot) {
       final notificationLength = snapshot.data['notifications'].length;
       var start = notificationLength - 20 - 1;
       if (start < 0) start = 0;
@@ -42,9 +47,6 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
 
     // Add a box at the end of the notifications so the last notification doesn't get blocked off
     notifications.add(SizedBox(height: 150));
-
-    // Updates the time ago for each notification
-    _rebuildEverySeconds(60);
 
     // DEBUG AND FOR LEARNING (though make sure the user is signed in)
     //getData();
@@ -70,19 +72,6 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
       }
       loadedPreviousNotifications = true;
     });
-  }
-
-  void _rebuildEverySeconds(int seconds) {
-    timer = Timer.periodic(
-      Duration(seconds: seconds),
-      (Timer t) => setState(
-        () {},
-      ),
-    );
-  }
-
-  void _stopRebuildEverySeconds() {
-    timer.cancel();
   }
 
 //  // DEBUG AND FOR LEARNING REFERENCE (not used)
@@ -121,7 +110,6 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
 
   @override
   void dispose() {
-    _stopRebuildEverySeconds();
     super.dispose();
   }
 
@@ -141,9 +129,9 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
     String message = data['message'];
     String name = data['name'];
     String uid = data['uid'];
-    var date = new DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
+    //var date = new DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
 
-    print('$timestamp $message $name $date');
+    //print('$timestamp $message $name $date');
 
     // Normal notification
     if (uid == 'null') {
@@ -157,7 +145,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
         print(imageUrl);
         int rarity = snapshot.data['rarityBorder'];
         print(rarity);
-        String created = timeago.format(date);
+        //String created = timeago.format(date);
         print("Added new other user");
         // Add item
         item = NotificationItem(
@@ -171,7 +159,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
             rarity: rarity,
           ),
           message: message,
-          timeSinceCreated: created,
+          timeCreated: timestamp,
           key: UniqueKey(),
         );
 
@@ -181,12 +169,12 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
       }).catchError((error) {
         print("Unable to get other user information");
         print(error);
-        String created = timeago.format(date);
+        // String created = timeago.format(date);
 
         item = NotificationItem(
           name: "????",
           message: "Unable to get this user's information",
-          timeSinceCreated: created,
+          timeCreated: timestamp,
           key: UniqueKey(),
         );
         setState(() {

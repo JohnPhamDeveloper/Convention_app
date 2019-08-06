@@ -122,8 +122,8 @@ class HeroCreator {
   }
 
   static void _onSelfieAcceptTap(DocumentSnapshot otherUserData) async {
-    final response = await Meetup.sendSelfieRequestTo(otherUserData);
-    print(response.data);
+//    final response = await Meetup.sendSelfieRequestTo(otherUserData);
+//    print(response.data);
     final response2 = await Meetup.acceptSelfieFrom(otherUserData);
     print(response2.data);
   }

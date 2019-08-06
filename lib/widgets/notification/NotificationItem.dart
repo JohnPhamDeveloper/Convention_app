@@ -3,15 +3,18 @@ import 'package:cosplay_app/widgets/notification/Bubble.dart';
 import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:cosplay_app/widgets/MiniUser.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'dart:async';
 
-class NotificationItem extends StatelessWidget {
+class NotificationItem extends StatefulWidget {
   final MiniUser miniUser;
   final String name;
   final IconData icon;
   final Color iconColor;
   final String message;
   final Key key;
-  final String timeSinceCreated;
+  final Timestamp timeCreated;
 
   NotificationItem(
       {this.iconColor = Colors.pink,
@@ -19,15 +22,51 @@ class NotificationItem extends StatelessWidget {
       @required this.message,
       this.icon,
       @required this.key,
-      @required this.timeSinceCreated,
+      @required this.timeCreated,
       this.miniUser})
       : super(key: key);
 
-  String formattedTimer;
+  @override
+  _NotificationItemState createState() => _NotificationItemState();
+}
+
+class _NotificationItemState extends State<NotificationItem> {
+  // Maintain a timer that refreshes the timeCreated every 60 seconds
+  // First create timer in initState
+  // What next? Now we use the
+  Timer refreshTimeAgoTimer;
+  String newTimeAgo = 'loading...';
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Refresh the age of the notifications
+    var date = new DateTime.fromMillisecondsSinceEpoch(widget.timeCreated.millisecondsSinceEpoch);
+    setState(() {
+      newTimeAgo = timeago.format(date);
+    });
+
+    refreshTimeAgoTimer = Timer.periodic(Duration(seconds: 120), (Timer t) {
+      // Get the timestamp from since the notification was created in database
+      var date = new DateTime.fromMillisecondsSinceEpoch(widget.timeCreated.millisecondsSinceEpoch);
+
+      // This will display the time ago since the notification was created
+      setState(() {
+        newTimeAgo = timeago.format(date);
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    refreshTimeAgoTimer.cancel();
+    super.dispose();
+  }
 
   Widget _renderMiniUserOrIcon() {
-    if (miniUser != null) {
-      return miniUser;
+    if (widget.miniUser != null) {
+      return widget.miniUser;
     } else {
       // render icon
       return Container(
@@ -48,7 +87,7 @@ class NotificationItem extends StatelessWidget {
             )
           ],
         ),
-        child: Icon(Icons.notifications, size: 30, color: iconColor),
+        child: Icon(Icons.notifications, size: 30, color: widget.iconColor),
       );
     }
   }
@@ -72,7 +111,7 @@ class NotificationItem extends StatelessWidget {
                 SizedBox(width: 15.0),
                 // Message
                 Expanded(
-                  child: Bubble(text: message),
+                  child: Bubble(text: widget.message),
                 ),
               ],
             ),
@@ -86,7 +125,7 @@ class NotificationItem extends StatelessWidget {
               radius: 20.0,
               // Name bubble
               child: Text(
-                name,
+                widget.name,
                 style: TextStyle(color: kBlack, fontWeight: FontWeight.w600, fontSize: 14.0),
               ),
             ),
@@ -99,7 +138,7 @@ class NotificationItem extends StatelessWidget {
               padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10.0, right: 10.0),
               radius: 20.0,
               child: Text(
-                timeSinceCreated,
+                newTimeAgo,
                 style: TextStyle(color: kBlack, fontWeight: FontWeight.w600, fontSize: 10.0),
               ),
             ),
