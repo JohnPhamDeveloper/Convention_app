@@ -65,7 +65,7 @@ class RankCard extends StatelessWidget {
 //  }
 
   void createClickedProfileOnlyOnTap(BuildContext context) {
-    HeroCreator.pushProfileIntoView(heroName, imageHeroName, documentSnapshot.reference, context);
+    HeroCreator.pushProfileIntoView(documentSnapshot.reference, context);
   }
 
   @override

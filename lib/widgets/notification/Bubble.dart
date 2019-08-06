@@ -18,8 +18,7 @@ class Bubble extends StatelessWidget {
         padding: const EdgeInsets.only(left: 5.0, top: 5.0),
         child: RichText(
           text: TextSpan(
-            style: TextStyle(
-                color: kBlack, fontWeight: FontWeight.w400, fontSize: 15.0),
+            style: TextStyle(color: kBlack, fontWeight: FontWeight.w500, fontSize: 15.0),
             children: [
               TextSpan(text: text),
             ],

@@ -13,8 +13,7 @@ import 'package:cosplay_app/classes/Meetup.dart';
 
 class HeroCreator {
   // Construct HeroProfile widget from the information on the clicked avatar
-  static pushProfileIntoView(
-      String dotHeroName, String imageHeroName, DocumentReference otherUserDataReference, BuildContext context) async {
+  static pushProfileIntoView(DocumentReference otherUserDataReference, BuildContext context) async {
     // Get latest snapshot of the user from the database
     print("getting latest database information?");
 
@@ -29,8 +28,7 @@ class HeroCreator {
 
     LoggedInUser currentLoggedInUser = Provider.of<LoggedInUser>(context);
 
-    HeroProfileStart heroProfileStart =
-        HeroCreator.createHeroProfileStart(dotHeroName, imageHeroName, otherUserDataSnapshot, currentLoggedInUser);
+    HeroProfileStart heroProfileStart = HeroCreator.createHeroProfileStart(otherUserDataSnapshot, currentLoggedInUser);
 
     HeroProfileDetails heroProfileDetails =
         HeroCreator.createHeroProfileDetails(otherUserDataSnapshot, context, currentLoggedInUser);
@@ -40,14 +38,11 @@ class HeroCreator {
     Navigator.push(context, MaterialPageRoute(builder: (context) => clickedProfile));
   }
 
-  static HeroProfileStart createHeroProfileStart(
-      String dotHeroName, String imageHeroName, DocumentSnapshot data, LoggedInUser currentLoggedInUser) {
+  static HeroProfileStart createHeroProfileStart(DocumentSnapshot data, LoggedInUser currentLoggedInUser) {
     bool isLookingAtOwnProfile = _checkSame(currentLoggedInUser, data);
 
     return HeroProfileStart(
       isLoggedInUser: isLookingAtOwnProfile,
-      heroName: dotHeroName,
-      imageHeroName: imageHeroName,
       userImages: data[FirestoreManager.keyPhotos],
       name: data[FirestoreManager.keyDisplayName],
       friendliness: data[FirestoreManager.keyFriendliness],

@@ -37,11 +37,6 @@ class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKee
     LoggedInUser user = LoggedInUser();
 
     // TODO should only get user around the radius of the user
-    //
-    //
-    //
-    //
-    //
     Firestore.instance.collection("users").getDocuments().then((snapshot) {
       // Go through each user in the database
 
@@ -52,10 +47,6 @@ class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKee
         docSnapshot.data.forEach((key, value) {
           user.getHashMap[key] = value;
         });
-        // Copy each data into user object
-        String key = UniqueKey().toString();
-        String dotHeroName = key + 'dot';
-        String imageHeroName = key + "searchHeroImage";
 
         // All of the data in our database
         bool isCosplayer = user.getHashMap[FirestoreManager.keyIsCosplayer];
@@ -83,7 +74,7 @@ class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKee
             cost: cosplayerCost,
             rarity: rarity,
             onTap: () {
-              HeroCreator.pushProfileIntoView(dotHeroName, imageHeroName, docSnapshot.reference, context);
+              HeroCreator.pushProfileIntoView(docSnapshot.reference, context);
             },
             key: UniqueKey(),
           );
@@ -99,8 +90,6 @@ class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKee
             friendliness,
             photographerCost,
             rarity,
-            dotHeroName,
-            imageHeroName,
             docSnapshot,
             context,
           );
@@ -122,14 +111,9 @@ class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKee
     int friendliness,
     String photographerCost,
     int rarity,
-    String dotHeroName,
-    String imageHeroName,
     DocumentSnapshot docSnapshot,
     BuildContext context,
   ) {
-    String dotHeroName = "";
-    String imageHeroName = UniqueKey().toString();
-
     UserSearchInfo widget = UserSearchInfo(
       backgroundImage: circleImageUrl,
       name: name,
@@ -139,7 +123,7 @@ class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKee
       cost: photographerCost,
       rarity: rarity,
       onTap: () {
-        HeroCreator.pushProfileIntoView(dotHeroName, imageHeroName, docSnapshot.reference, context);
+        HeroCreator.pushProfileIntoView(docSnapshot.reference, context);
       },
       key: UniqueKey(),
     );

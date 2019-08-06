@@ -6,8 +6,6 @@ import 'package:cosplay_app/widgets/IconText.dart';
 
 class HeroProfileStart extends StatelessWidget {
   final bool isLoggedInUser;
-  final String heroName;
-  final String imageHeroName;
   final List<dynamic> userImages;
   final List<ImageContainer> userImagesContainer = List<ImageContainer>();
   final String name;
@@ -19,43 +17,19 @@ class HeroProfileStart extends StatelessWidget {
       {@required this.userImages,
       this.isLoggedInUser = false,
       @required this.name,
-      this.imageHeroName = "",
       @required this.friendliness,
-      this.heroName = "",
       this.bottomLeftItemPadding = const EdgeInsets.only(left: 20.0, bottom: 80.0),
       @required this.fame}) {
-    // Add all images to container for the carousel
-    // Only give hero name to the first image
-    print(imageHeroName);
-    userImagesContainer.add(createImageContainerWidgetFromURL(userImages[0], imageHeroName));
-
-    for (int i = 1; i < userImagesContainer.length; i++) {
-      userImagesContainer.add(createImageContainerWidgetFromURL(userImages[i], ''));
+    for (int i = 0; i < userImages.length; i++) {
+      userImagesContainer.add(createImageContainerWidgetFromURL(userImages[i]));
     }
   }
 
-  ImageContainer createImageContainerWidgetFromURL(String url, String heroName) {
+  ImageContainer createImageContainerWidgetFromURL(String url) {
     return ImageContainer(
       imageURL: url,
       height: double.infinity,
       width: double.infinity,
-    );
-  }
-
-  Widget dotHeroRender() {
-    if (heroName.isNotEmpty) {
-      return Hero(
-        tag: heroName,
-        child: NotificationDot(
-          innerColor: Colors.pinkAccent,
-          disable: isLoggedInUser,
-        ),
-      );
-    }
-
-    return NotificationDot(
-      innerColor: Colors.pinkAccent,
-      disable: isLoggedInUser,
     );
   }
 
@@ -113,7 +87,10 @@ class HeroProfileStart extends StatelessWidget {
           alignment: Alignment.topRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 20.0, top: 20.0),
-            child: dotHeroRender(),
+            child: NotificationDot(
+              innerColor: Colors.pinkAccent,
+              disable: isLoggedInUser,
+            ),
           ),
         ),
       ],

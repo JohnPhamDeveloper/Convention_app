@@ -5,12 +5,20 @@ import 'package:cosplay_app/constants/constants.dart';
 class MiniUser extends StatelessWidget {
   final String imageHeroName;
   final bool enableSelfieDot;
+  final bool enableStatusDot;
   final int rarity;
   final String imageURL;
   final double width;
   final double height;
 
-  MiniUser({this.imageHeroName, this.width = 300.0, this.height = 300.0, this.enableSelfieDot, this.rarity, this.imageURL});
+  MiniUser(
+      {this.imageHeroName,
+      this.width = 300.0,
+      this.height = 300.0,
+      this.enableSelfieDot = true,
+      this.enableStatusDot = true,
+      this.rarity,
+      this.imageURL});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +27,7 @@ class MiniUser extends StatelessWidget {
       child: ImageContainer(
         width: width,
         height: height,
-        enableStatusDot: true,
+        enableStatusDot: enableStatusDot,
         enableSelfieDot: enableSelfieDot,
         selfieDotInnerColor: Colors.pinkAccent,
         selfieDotLeft: 0,
