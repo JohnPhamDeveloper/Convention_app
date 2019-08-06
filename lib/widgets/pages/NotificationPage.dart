@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/widgets/notification/NotificationItem.dart';
-
+import 'package:cosplay_app/classes/HeroCreator.dart';
 import 'package:cosplay_app/widgets/MiniUser.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'dart:async';
@@ -149,6 +149,9 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
         print("Added new other user");
         // Add item
         item = NotificationItem(
+          onTap: () {
+            HeroCreator.pushProfileIntoView(snapshot.reference, context);
+          },
           name: name,
           miniUser: MiniUser(
             width: 60.0,

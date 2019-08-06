@@ -15,9 +15,11 @@ class NotificationItem extends StatefulWidget {
   final String message;
   final Key key;
   final Timestamp timeCreated;
+  final Function onTap;
 
   NotificationItem(
       {this.iconColor = Colors.pink,
+      @required this.onTap,
       @required this.name,
       @required this.message,
       this.icon,
@@ -94,56 +96,61 @@ class _NotificationItemState extends State<NotificationItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 20.0),
-      child: Stack(
-        children: <Widget>[
-          // Icon and Text
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 30.0,
-              left: 20.0,
+    return InkWell(
+      onTap: () {
+        widget.onTap();
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(right: 20.0),
+        child: Stack(
+          children: <Widget>[
+            // Icon and Text
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 30.0,
+                left: 20.0,
+              ),
+              child: Row(
+                children: <Widget>[
+                  // Icon // Also where image should go
+                  _renderMiniUserOrIcon(),
+                  SizedBox(width: 15.0),
+                  // Message
+                  Expanded(
+                    child: Bubble(text: widget.message),
+                  ),
+                ],
+              ),
             ),
-            child: Row(
-              children: <Widget>[
-                // Icon // Also where image should go
-                _renderMiniUserOrIcon(),
-                SizedBox(width: 15.0),
-                // Message
-                Expanded(
-                  child: Bubble(text: widget.message),
+            // Person name on bubble
+            Positioned(
+              top: 22,
+              left: 100,
+              child: CircularBox(
+                padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10.0, right: 10.0),
+                radius: 20.0,
+                // Name bubble
+                child: Text(
+                  widget.name,
+                  style: TextStyle(color: kBlack, fontWeight: FontWeight.w600, fontSize: 14.0),
                 ),
-              ],
-            ),
-          ),
-          // Person name on bubble
-          Positioned(
-            top: 22,
-            left: 100,
-            child: CircularBox(
-              padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10.0, right: 10.0),
-              radius: 20.0,
-              // Name bubble
-              child: Text(
-                widget.name,
-                style: TextStyle(color: kBlack, fontWeight: FontWeight.w600, fontSize: 14.0),
               ),
             ),
-          ),
-          // Timestamp
-          Positioned(
-            top: 24,
-            left: 220,
-            child: CircularBox(
-              padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10.0, right: 10.0),
-              radius: 20.0,
-              child: Text(
-                newTimeAgo,
-                style: TextStyle(color: kBlack, fontWeight: FontWeight.w600, fontSize: 10.0),
+            // Timestamp
+            Positioned(
+              top: 24,
+              left: 220,
+              child: CircularBox(
+                padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10.0, right: 10.0),
+                radius: 20.0,
+                child: Text(
+                  newTimeAgo,
+                  style: TextStyle(color: kBlack, fontWeight: FontWeight.w600, fontSize: 10.0),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
