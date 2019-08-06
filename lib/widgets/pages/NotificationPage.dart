@@ -157,6 +157,8 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
         item = NotificationItem(
           name: name,
           miniUser: MiniUser(
+            width: 60.0,
+            height: 60.0,
             imageURL: imageUrl,
             imageHeroName: imageUrl,
             enableSelfieDot: true,

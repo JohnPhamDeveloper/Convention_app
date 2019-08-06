@@ -31,8 +31,8 @@ class NotificationItem extends StatelessWidget {
     } else {
       // render icon
       return Container(
-        width: 50,
-        height: 50,
+        width: 60,
+        height: 60,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.white,
@@ -69,26 +69,6 @@ class NotificationItem extends StatelessWidget {
               children: <Widget>[
                 // Icon // Also where image should go
                 _renderMiniUserOrIcon(),
-//                Container(
-//                  width: 50,
-//                  height: 50,
-//                  decoration: BoxDecoration(
-//                    shape: BoxShape.circle,
-//                    color: Colors.white,
-//                    boxShadow: [
-//                      BoxShadow(
-//                        color: Colors.black12,
-//                        blurRadius: 10.0, // has the effect of softening the shadow
-//                        spreadRadius: 1.0, // has the effect of extending the shadow
-//                        offset: Offset(
-//                          0.0, // horizontal, move right 10
-//                          5.0, // vertical, move down 10
-//                        ),
-//                      )
-//                    ],
-//                  ),
-//                  child: Icon(Icons.notifications, size: 30, color: iconColor),
-//                ),
                 SizedBox(width: 15.0),
                 // Message
                 Expanded(
@@ -99,11 +79,12 @@ class NotificationItem extends StatelessWidget {
           ),
           // Person name on bubble
           Positioned(
-            top: 15,
-            left: 90,
+            top: 22,
+            left: 100,
             child: CircularBox(
               padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10.0, right: 10.0),
               radius: 20.0,
+              // Name bubble
               child: Text(
                 name,
                 style: TextStyle(color: kBlack, fontWeight: FontWeight.w600, fontSize: 14.0),
@@ -112,7 +93,7 @@ class NotificationItem extends StatelessWidget {
           ),
           // Timestamp
           Positioned(
-            top: 17,
+            top: 24,
             left: 220,
             child: CircularBox(
               padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10.0, right: 10.0),
