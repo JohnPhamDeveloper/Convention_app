@@ -380,7 +380,7 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
                 ),
                 onPressed: () {
                   // TODO this one sends a confirmation to the other user to tell them to verify the selfie request
-
+                  widget.onSelfieFinishTap();
                   Navigator.pop(context);
                 },
                 color: Colors.cyan[300],

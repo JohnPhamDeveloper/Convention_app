@@ -95,7 +95,6 @@ class RankCard extends StatelessWidget {
                 )
               ]),
               child: ImageContainer(
-                  heroName: imageHeroName,
                   borderWidth: 3.5,
                   borderRadius: 25.0,
                   enableShadows: true,

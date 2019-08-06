@@ -36,7 +36,6 @@ class HeroProfileStart extends StatelessWidget {
 
   ImageContainer createImageContainerWidgetFromURL(String url, String heroName) {
     return ImageContainer(
-      heroName: heroName,
       imageURL: url,
       height: double.infinity,
       width: double.infinity,

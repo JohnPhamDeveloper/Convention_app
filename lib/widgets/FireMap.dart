@@ -76,7 +76,8 @@ class _FireMapState extends State<FireMap> {
       print("RE--------------------------------------------------------------------");
 
       // {{uid: ..., timeStamp:...},{uid: ..., timeStamp:...}, ...}
-      Map<dynamic, dynamic> matchedUsers = snapshot.data[FirestoreManager.keyMatchedUsers];
+//      print(snapshot.data[FirestoreManager.keyMatchedUsers]);
+//      Map<dynamic, dynamic> matchedUsers = snapshot.data[FirestoreManager.keyMatchedUsers];
 
       // Copy matched users
 //      for (Map<dynamic, dynamic> matchUser in snapshot.data[FirestoreManager.keyMatchedUsers]) {
@@ -84,12 +85,14 @@ class _FireMapState extends State<FireMap> {
 //      }
 
       print("TRYING TO PRINT MATCH");
-      print(matchedUsers);
+//      print(matchedUsers);
 
       print("AFTER TRYING TO PRINT MATCH");
 
       // Stop updating map & sending location since match list is empty
-      if (matchedUsers.isEmpty) {
+      //TODO WARNING: IF A MAP BECOMES EMPTY, IT TURNS INTO AN ARRAY IN FIRESTORE. isEmpty covers both "Array" and "Map" type 
+      if (snapshot.data[FirestoreManager.keyMatchedUsers].isEmpty) {
+        print("STOP TYIMER")
         isMatched = false;
         _stopMapUpdate();
       } else {
@@ -135,7 +138,7 @@ class _FireMapState extends State<FireMap> {
       }
     }).catchError((error) {
       print(error.toString());
-      print("Failed to get selfie match location");
+      print("Meetup.getSelfieMatchedLocation failed to execute");
     });
   }
 
@@ -186,7 +189,9 @@ class _FireMapState extends State<FireMap> {
     Firestore.instance.collection("locations").document(user.uid).setData({
       FirestoreManager.keyDisplayName: loggedInUser.getHashMap[FirestoreManager.keyDisplayName],
       FirestoreManager.keyPosition: newGeoPoint.data,
-    }, merge: true);
+    }, merge: true).catchError((error) {
+      print("Firemap: Failed to update logged in users position");
+    });
   }
 
   Future<LatLng> _getCurrentLocation() async {

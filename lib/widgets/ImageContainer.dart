@@ -4,7 +4,6 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:cosplay_app/widgets/notification/NotificationDot.dart';
 
 class ImageContainer extends StatelessWidget {
-  final String heroName;
   final String imageURL;
   final double borderRadius;
   final double borderWidth;
@@ -35,7 +34,6 @@ class ImageContainer extends StatelessWidget {
       this.statusDotInnerColor = Colors.green,
       this.statusDotInnerSize = 5.0,
       this.statusDotOuterSize = 15.0,
-      this.heroName = "",
       this.statusDotBottom,
       this.statusDotLeft,
       this.statusDotRight,
@@ -114,60 +112,30 @@ class ImageContainer extends StatelessWidget {
   }
 
   Widget heroWidget() {
-    if (heroName.isEmpty) {
-      return Stack(
-        children: <Widget>[
-          Container(
-            foregroundDecoration: BoxDecoration(
-              border: Border.all(width: borderWidth, color: rarityBorderColor),
-              borderRadius: BorderRadius.circular(borderRadius),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(borderRadius),
-              child: FadeInImage.memoryNetwork(
-                width: width,
-                height: height,
-                fadeInDuration: Duration(seconds: 1),
-                fadeInCurve: Curves.easeInOut,
-                fit: BoxFit.cover,
-                placeholder: kTransparentImage,
-                image: imageURL,
-              ),
+    return Stack(
+      children: <Widget>[
+        Container(
+          foregroundDecoration: BoxDecoration(
+            border: Border.all(width: borderWidth, color: rarityBorderColor),
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(borderRadius),
+            child: FadeInImage.memoryNetwork(
+              width: width,
+              height: height,
+              fadeInDuration: Duration(seconds: 1),
+              fadeInCurve: Curves.easeInOut,
+              fit: BoxFit.cover,
+              placeholder: kTransparentImage,
+              image: imageURL,
             ),
           ),
-          renderStatusDot(),
-          renderSelfieDot(),
-        ],
-      );
-    } else {
-      return Hero(
-        tag: heroName,
-        child: Stack(
-          children: <Widget>[
-            Container(
-              foregroundDecoration: BoxDecoration(
-                border: Border.all(width: borderWidth, color: rarityBorderColor),
-                borderRadius: BorderRadius.circular(borderRadius),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(borderRadius),
-                child: FadeInImage.memoryNetwork(
-                  width: width,
-                  height: height,
-                  fadeInDuration: Duration(seconds: 1),
-                  fadeInCurve: Curves.easeInOut,
-                  fit: BoxFit.cover,
-                  placeholder: kTransparentImage,
-                  image: imageURL,
-                ),
-              ),
-            ),
-            renderStatusDot(),
-            renderSelfieDot(),
-          ],
         ),
-      );
-    }
+        renderStatusDot(),
+        renderSelfieDot(),
+      ],
+    );
   }
 
   @override

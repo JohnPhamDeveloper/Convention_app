@@ -22,20 +22,16 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
   Timer timer;
   Queue<Widget> notifications = Queue<Widget>();
   bool loadedPreviousNotifications = false; // First launch app so need to load previous 20 notifications from database
-//  bool toggleChildrenToRebuild = false;
-  // bool recievedUsersInformation = false;
 
   @override
   void initState() {
     super.initState();
     // TODO First time loading this, push the 20 latest notification to the notifications queue
     Firestore.instance.collection('private').document(widget.firebaseUser.uid).get().then((snapshot) {
-      final notificationLength = snapshot.data['notifications'].length - 1;
-      final start = notificationLength - 20;
+      final notificationLength = snapshot.data['notifications'].length;
+      var start = notificationLength - 20 - 1;
+      if (start < 0) start = 0;
       var numberOfNotificationsToShow = 15;
-
-      // If the notifications isn't long as the number of notifications to show, then just
-      // show the notificationLength instead
       if (notificationLength < numberOfNotificationsToShow) numberOfNotificationsToShow = notificationLength;
 
       // Load the recent 15 notifications only
@@ -59,14 +55,20 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
 
   _listenToNotifications() {
     Firestore.instance.collection("private").document(widget.firebaseUser.uid).snapshots().listen((snapshot) {
-      //if (!snapshot.exists) return Text("Nothing loaded...");
-      final lastItemIndex = snapshot.data['notifications'].length - 1;
+      // Prevent this from being called on the initial page load
+      // When we load the previous notifications, this will run on start, which causes the most recent notification
+      // To be duplicated
+      if (loadedPreviousNotifications) {
+        //if (!snapshot.exists) return Text("Nothing loaded...");
+        final lastItemIndex = snapshot.data['notifications'].length - 1;
 
-      // Empty notification
-      if (lastItemIndex >= 0) {
-        //  Take latest notification and add it to beginning of queue
-        _buildNotificationItem(snapshot.data['notifications'][lastItemIndex]);
+        // Empty notification
+        if (lastItemIndex >= 0) {
+          //  Take latest notification and add it to beginning of queue
+          _buildNotificationItem(snapshot.data['notifications'][lastItemIndex]);
+        }
       }
+      loadedPreviousNotifications = true;
     });
   }
 
