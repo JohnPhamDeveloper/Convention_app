@@ -191,17 +191,20 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
-      children: <Widget>[
-        Expanded(
-          child: ListView.builder(
-            itemCount: notifications.length,
-            itemBuilder: (context, index) {
-              return notifications.elementAt(index);
-            },
-          ),
-        )
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(top: 50),
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListView.builder(
+              itemCount: notifications.length,
+              itemBuilder: (context, index) {
+                return notifications.elementAt(index);
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }

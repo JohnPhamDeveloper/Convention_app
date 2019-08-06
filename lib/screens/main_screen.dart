@@ -14,6 +14,9 @@ import 'package:provider/provider.dart';
 import 'package:cosplay_app/widgets/LoadingIndicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cosplay_app/widgets/native_shapes/CircularBoxClipped.dart';
+import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -32,7 +35,8 @@ class _MainScreenState extends State<MainScreen> {
   List<TabItem> tabItems = List.of([
     TabItem(Icons.home, "Home", Colors.pinkAccent),
     TabItem(Icons.search, "Search", Colors.pinkAccent),
-    TabItem(Icons.business_center, "Rewards", Colors.pinkAccent),
+    //TabItem(Icons.business_center, "Rewards", Colors.pinkAccent),
+    TabItem(Icons.mail, "Message", Colors.pinkAccent),
     TabItem(Icons.notifications, "Alerts", Colors.pinkAccent),
     TabItem(Icons.person, "Profile", Colors.pinkAccent),
   ]);
@@ -331,7 +335,66 @@ class _MainScreenState extends State<MainScreen> {
                     moveToSelectedPage(selectedPos);
                   },
                 ),
-              )
+              ),
+              Positioned(
+                top: MediaQuery.of(context).size.height - 72,
+                left: (MediaQuery.of(context).size.width / 2) + 5,
+                child: CircularBox(
+                  width: 13.0,
+                  height: 13.0,
+                  padding: EdgeInsets.all(0.0),
+                  backgroundColor: Colors.pinkAccent,
+                  child: Text(
+                    "",
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10.0),
+                  ),
+                ),
+              ),
+//              Align(
+//                alignment: Alignment.topCenter,
+//                child: CircularBoxClipped(
+//                  padding: EdgeInsets.all(0.0),
+//                  child: Container(
+//                    color: Colors.transparent,
+//                    height: 50.0,
+//                    child: Row(
+//                      mainAxisAlignment: MainAxisAlignment.end,
+//                      crossAxisAlignment: CrossAxisAlignment.center,
+//                      children: <Widget>[
+//                        InkWell(
+//                          onTap: () {
+//                            print("TEST");
+//                          },
+//                          // Message icon
+//                          child: Stack(
+//                            overflow: Overflow.visible,
+//                            children: <Widget>[
+//                              Icon(Icons.mail, size: 30.0, color: Colors.grey[500]),
+//                              Positioned(
+//                                right: -2,
+//                                top: 0,
+//                                child: CircularBox(
+//                                  width: 10.0,
+//                                  height: 10.0,
+//                                  padding: EdgeInsets.all(0.0),
+//                                  backgroundColor: Colors.pinkAccent,
+//                                  child: Text(
+//                                    "",
+//                                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10.0),
+//                                  ),
+//                                ),
+//                              ),
+//                            ],
+//                          ),
+//                        ),
+//                        SizedBox(width: 20.0),
+//                      ],
+//                    ),
+//                  ),
+//                  bottomLeft: Radius.circular(0.0),
+//                  bottomRight: Radius.circular(0.0),
+//                ),
+//              ),
             ]),
           ),
         ),

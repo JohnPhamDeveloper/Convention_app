@@ -7,10 +7,12 @@ class CircularBoxClipped extends StatelessWidget {
   final Radius topRight;
   final Radius bottomLeft;
   final Radius bottomRight;
+  final EdgeInsets padding;
 
   CircularBoxClipped(
       {@required this.child,
       this.radius = 20.0,
+      this.padding = const EdgeInsets.all(12.0),
       this.topLeft = Radius.zero,
       this.topRight = Radius.zero,
       this.bottomLeft = Radius.zero,
@@ -20,16 +22,12 @@ class CircularBoxClipped extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-            topLeft: topLeft,
-            topRight: topRight,
-            bottomLeft: bottomLeft,
-            bottomRight: bottomRight),
+        borderRadius: BorderRadius.only(topLeft: topLeft, topRight: topRight, bottomLeft: bottomLeft, bottomRight: bottomRight),
         boxShadow: [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 10.0, // has the effect of softening the shadow
-            spreadRadius: 1.0, // has the effect of extending the shadow
+            spreadRadius: 5.0, // has the effect of extending the shadow
             offset: Offset(
               0.0, // horizontal, move right 10
               4.0, // vertical, move down 10
@@ -39,7 +37,7 @@ class CircularBoxClipped extends StatelessWidget {
         color: Colors.white,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: padding,
         child: child,
       ),
     );
