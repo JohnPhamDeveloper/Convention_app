@@ -43,7 +43,7 @@ class _MainScreenState extends State<MainScreen> {
 
     // Get data from database for logged in user when it changes
     // Set loading is called if data is successfuly updated into loggedInUser
-    _loginUser();
+    _loginUser2();
 
     //createMockUser();
   }
@@ -100,7 +100,7 @@ class _MainScreenState extends State<MainScreen> {
       controller: preloadPageController,
       children: <Widget>[
 //        RankingListPage(),
-        //     SearchPage(),
+        SearchPage(),
 //        FamePage(),
         NotificationPage(firebaseUser: firebaseUser),
         //  ProfilePage(),

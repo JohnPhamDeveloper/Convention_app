@@ -61,8 +61,12 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
     Firestore.instance.collection("private").document(widget.firebaseUser.uid).snapshots().listen((snapshot) {
       //if (!snapshot.exists) return Text("Nothing loaded...");
       final lastItemIndex = snapshot.data['notifications'].length - 1;
-      //  Take latest notification and add it to beginning of queue
-      _buildNotificationItem(snapshot.data['notifications'][lastItemIndex]);
+
+      // Empty notification
+      if (lastItemIndex >= 0) {
+        //  Take latest notification and add it to beginning of queue
+        _buildNotificationItem(snapshot.data['notifications'][lastItemIndex]);
+      }
     });
   }
 

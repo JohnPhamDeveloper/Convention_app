@@ -7,10 +7,10 @@ class MiniUser extends StatelessWidget {
   final bool enableSelfieDot;
   final int rarity;
   final String imageURL;
-  final width;
-  final height;
+  final double width;
+  final double height;
 
-  MiniUser({this.imageHeroName, this.width = 300, this.height = 300, this.enableSelfieDot, this.rarity, this.imageURL});
+  MiniUser({this.imageHeroName, this.width = 300.0, this.height = 300.0, this.enableSelfieDot, this.rarity, this.imageURL});
 
   @override
   Widget build(BuildContext context) {

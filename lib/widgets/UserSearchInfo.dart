@@ -81,6 +81,8 @@ class _UserSearchInfoState extends State<UserSearchInfo> {
           children: <Widget>[
             // Image
             MiniUser(
+              width: 63.0,
+              height: 63.0,
               imageHeroName: widget.imageHeroName,
               enableSelfieDot: !_isLoggedInUser,
               rarity: widget.rarity,
