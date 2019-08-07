@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cosplay_app/constants/constants.dart';
+import 'package:intl/intl.dart';
 
 class MessagePage extends StatefulWidget {
   FirebaseUser firebaseUser;
@@ -15,6 +16,7 @@ class MessagePage extends StatefulWidget {
 class _MessagePageState extends State<MessagePage> {
   // Message page will first show the chat rooms...
   // So we need to listen to the private collection for the current user and check the chatrooms
+  List<Widget> rooms = List<Widget>();
 
   // Belongs to chatview
   TextEditingController textController = TextEditingController();
@@ -43,21 +45,70 @@ class _MessagePageState extends State<MessagePage> {
             print(created);
             Timestamp recent = snapshot.data['recent'];
             print(recent);
-            List<Map<dynamic, dynamic>> messages = List<Map<dynamic, dynamic>>();
-            print(messages);
+//            List<Map<dynamic, dynamic>> messages = List<Map<dynamic, dynamic>>();
             // Construct a widget for the message page preview
             // Each message in the chat room
-            for (Map<dynamic, dynamic> message in messages) {
+            for (Map<dynamic, dynamic> message in snapshot.data['messages']) {
+              String name = message['name'];
               String text = message['message'];
               print(text);
               Timestamp sentAt = message['sentAt'];
+              var dateFormat = DateFormat.yMd().add_jm();
+              String sentDate = dateFormat.format(sentAt.toDate());
               print(sentAt);
               // Build a message widget with text
+              print('ADDING ROOM');
+              setState(() {
+                rooms.add(room(text, name, sentDate, context));
+              });
             }
           }
         });
       }
     });
+  }
+
+  Widget room(String message, String name, String sentDate, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          // pretend theres an image here
+          Expanded(
+            flex: 2,
+            child: Container(width: 50, height: 50, color: Colors.pinkAccent),
+          ),
+          SizedBox(width: 20),
+          // Name and recent text
+          Expanded(
+            flex: 8,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  name,
+                  style: TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.w500),
+                ),
+                SizedBox(height: 4.0),
+                Text(
+                  message,
+                  style: TextStyle(color: Colors.white, fontSize: 15.0),
+                ),
+              ],
+            ),
+          ),
+          // Time sent
+          Expanded(
+            flex: 4,
+            child: Text(
+              sentDate,
+              style: TextStyle(color: Colors.white, fontSize: 10.0),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // TODO chatview should be pushed onto screen to avoid interaction with bottom nav bar
@@ -107,10 +158,14 @@ class _MessagePageState extends State<MessagePage> {
   @override
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
+      Container(height: 50, width: 50, color: Colors.pink),
       // Messages
-      Container(),
+      Column(
+        children: rooms,
+      ),
+      Container(height: 50, width: 50, color: Colors.pink),
       //Textfield
-      chatView()
+      //  chatView()
     ]);
   }
 }
