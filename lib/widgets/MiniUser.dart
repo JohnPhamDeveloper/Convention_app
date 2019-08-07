@@ -27,7 +27,7 @@ class MiniUser extends StatelessWidget {
       child: ImageContainer(
         width: width,
         height: height,
-        enableStatusDot: enableStatusDot,
+        enableStatusDot: false,
         enableSelfieDot: enableSelfieDot,
         selfieDotInnerColor: Colors.pinkAccent,
         selfieDotLeft: 0,
