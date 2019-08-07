@@ -17,6 +17,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cosplay_app/widgets/native_shapes/CircularBoxClipped.dart';
 import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:cosplay_app/widgets/pages/MessagePage.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -47,7 +48,7 @@ class _MainScreenState extends State<MainScreen> {
 
     // Get data from database for logged in user when it changes
     // Set loading is called if data is successfuly updated into loggedInUser
-    _loginUser();
+    _loginUser2();
 
     //createMockUser();
   }
@@ -107,6 +108,7 @@ class _MainScreenState extends State<MainScreen> {
         SearchPage(),
 //        FamePage(),
         NotificationPage(firebaseUser: firebaseUser),
+        MessagePage(firebaseUser: firebaseUser)
         //  ProfilePage(),
       ],
     );

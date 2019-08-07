@@ -11,6 +11,7 @@ import 'dart:math';
 
 class NotificationPage extends StatefulWidget {
   final FirebaseUser firebaseUser;
+  Timestamp t;
 
   NotificationPage({@required this.firebaseUser});
 

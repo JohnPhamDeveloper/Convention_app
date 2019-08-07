@@ -205,7 +205,7 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
               child: ImageContainer(
-                  enableStatusDot: true,
+                  enableStatusDot: false,
                   enableSelfieDot: true,
                   statusDotOuterSize: 25.0,
                   statusDotRight: 15,
