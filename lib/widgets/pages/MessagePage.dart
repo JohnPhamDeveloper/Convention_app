@@ -17,7 +17,7 @@ class MessagePage extends StatefulWidget {
 class _MessagePageState extends State<MessagePage> {
   // Message page will first show the chat rooms...
   // So we need to listen to the private collection for the current user and check the chatrooms
-  List<Widget> rooms = List<Widget>();
+  List<Widget> roomPreviews = List<Widget>();
 
   // Belongs to chatview
   TextEditingController textController = TextEditingController();
@@ -33,46 +33,106 @@ class _MessagePageState extends State<MessagePage> {
         String roomId = snapshot.documentID;
         print(snapshot.documentID);
 
-        // What do I do with each room id?
-        // Need to use the room id to look up where the chatroom is
-        Firestore.instance.collection('chatrooms').document(roomId).get().then((snapshot) {
-          if (snapshot.data['messages'].isNotEmpty) {
-            List<String> usersInChat = List<String>();
-            for (String userId in snapshot.data['users']) {
-              usersInChat.add(userId);
-            }
-            print(usersInChat);
-            Timestamp created = snapshot.data['created'];
-            print(created);
-            Timestamp recent = snapshot.data['recent'];
-            print(recent);
-//            List<Map<dynamic, dynamic>> messages = List<Map<dynamic, dynamic>>();
-            // Construct a widget for the message page preview
-            // Each message in the chat room
-            for (Map<dynamic, dynamic> message in snapshot.data['messages']) {
-              String name = message['name'];
-              String text = message['message'];
-              String image = message['image'];
-              print(text);
-              Timestamp sentAt = message['sentAt'];
-              var dateFormat = DateFormat.yMd().add_jm();
-              String sentDate = dateFormat.format(sentAt.toDate());
-              print(sentAt);
-              // Build a message widget with text
-              print('ADDING ROOM');
-              setState(() {
-                rooms.add(room(text, name, sentDate, context));
+        Firestore.instance.collection('chatrooms').document(roomId).get().then((snapshot) async {
+          // We'll use the messages to get the most recent message in the chatroom
+          // Which would be the last message in the array of maps
+          if (snapshot.data['messages'].length <= 0) return;
+
+          int lastMessageIndex = snapshot.data['messages'].length - 1;
+          String photoUrl;
+
+          // message, name, sentAt
+          Map<dynamic, dynamic> message = snapshot.data['messages'][lastMessageIndex];
+
+          // ??
+          //snapshot.data['created']
+
+          // When a message is sent, this field will update? Why not just get the most recent sentAt instead
+          //snapshot.data['recent']
+
+          // Users in the chatroom
+          // So go through the array and look for everyone thats not the logged in user and fetch their image
+          for (String userId in snapshot.data['users']) {
+            // If the user isn't the logged in user...
+            if (userId != widget.firebaseUser.uid) {
+              // Get the user's photo
+              await Firestore.instance.collection('users').document(userId).get().then((snapshot) {
+                photoUrl = snapshot.data['photos'][0];
               });
             }
           }
+
+          var dateFormat = DateFormat.yMd().add_jm();
+          String sentDate = dateFormat.format(message['sentAt'].toDate());
+
+          // OK now we need to generate the chatroom preview with the information above, let's start with the photo
+          setState(() {
+            roomPreviews.add(room(message['message'], message['name'], sentDate, photoUrl, roomId, context));
+          });
+
+//          // This part is for the chatroomVIEW MOVE
+//          if (snapshot.data['messages'].isNotEmpty) {
+//            List<String> usersInChat = List<String>();
+//            for (String userId in snapshot.data['users']) {
+//              usersInChat.add(userId);
+//            }
+//            print(usersInChat);
+//            Timestamp created = snapshot.data['created'];
+//            print(created);
+//            Timestamp recent = snapshot.data['recent'];
+//            print(recent);
+//            var dateFormat = DateFormat.yMd().add_jm();
+//            String lastRoomUpdate = dateFormat.format(recent.toDate());
+//
+//            // In order to create the room preview we need to get the other persons image...
+//            // The last message sent (can be either person)
+//            // The timestamp of the most recent message (either person)
+//            // Name of the OTHER person
+//
+//            //  _createRoomPreview(snapshot, roomId);
+//          }
         });
       }
     });
   }
 
-  Widget room(String message, String name, String sentDate, BuildContext context) {
+//  _createRoomPreview(DocumentSnapshot snapshot, String roomId) {
+//    for (Map<dynamic, dynamic> message in snapshot.data['messages']) {
+//      String name = message['name'];
+//      String text = message['message'];
+//      // String image = message['image'];
+//      print(text);
+////      Timestamp sentAt = message['sentAt'];
+////      var dateFormat = DateFormat.yMd().add_jm();
+////      String sentDate = dateFormat.format(sentAt.toDate());
+////      print(sentAt);
+//      // Build a message widget with text
+//      print('ADDING ROOM');
+//      setState(() {
+//        roomPreviews.add(room(text, name, sentDate, image, roomId, context));
+//      });
+//    }
+//  }
+
+//  _wrapInScaffold(Widget room, BuildContext context) {
+//    return Scaffold(
+//      backgroundColor: Theme.of(context).primaryColor,
+//      body: SafeArea(
+//          child: Expanded(
+//        child: ListView.builder(
+//            itemCount: roomPreviews.length,
+//            itemBuilder: (context, index) {
+//              return roomPreviews[index];
+//            }),
+//      )),
+//    );
+//  }
+
+  Widget room(String message, String name, String sentDate, String imageUrl, String roomId, BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+//        Navigator.push(context, MaterialPageRoute(builder: (context) => clickedProfile));
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
         child: Row(
@@ -81,7 +141,7 @@ class _MessagePageState extends State<MessagePage> {
             // pretend theres an image here
             MiniUser(
               enableSelfieDot: false,
-              imageURL: 'https://c.pxhere.com/photos/0b/f9/anime_girl_japan_japanese_tokyo_cosplay-266599.jpg!d',
+              imageURL: imageUrl,
               width: 60,
               height: 60,
             ),
@@ -117,6 +177,8 @@ class _MessagePageState extends State<MessagePage> {
       ),
     );
   }
+
+  void _pushChatView() {}
 
   // TODO chatview should be pushed onto screen to avoid interaction with bottom nav bar
   Widget chatView() {
@@ -177,16 +239,15 @@ class _MessagePageState extends State<MessagePage> {
         ),
       ),
       SizedBox(height: 20.0),
-
       // Messages
 //      Column(
 //        children: rooms,
 //      ),
       Expanded(
         child: ListView.builder(
-            itemCount: rooms.length,
+            itemCount: roomPreviews.length,
             itemBuilder: (context, index) {
-              return rooms[index];
+              return roomPreviews[index];
             }),
       ),
       //Textfield
