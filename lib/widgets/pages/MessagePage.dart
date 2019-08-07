@@ -74,17 +74,18 @@ class _MessagePageState extends State<MessagePage> {
     return InkWell(
       onTap: () {},
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 14.0),
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             // pretend theres an image here
             MiniUser(
+              enableSelfieDot: false,
               imageURL: 'https://c.pxhere.com/photos/0b/f9/anime_girl_japan_japanese_tokyo_cosplay-266599.jpg!d',
-              width: 64,
-              height: 64,
+              width: 60,
+              height: 60,
             ),
-            SizedBox(width: 20),
+            SizedBox(width: 15),
             // Name and recent text
             Expanded(
               flex: 8,
@@ -167,16 +168,27 @@ class _MessagePageState extends State<MessagePage> {
   @override
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
-      Text(
-        "Recent Conversations",
-        style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.w500),
+      SizedBox(height: 20.0),
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 70.0),
+        child: Text(
+          "Recent Conversations",
+          style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.w500),
+        ),
       ),
-      Container(height: 50, width: 50, color: Colors.pink),
+      SizedBox(height: 20.0),
+
       // Messages
-      Column(
-        children: rooms,
+//      Column(
+//        children: rooms,
+//      ),
+      Expanded(
+        child: ListView.builder(
+            itemCount: rooms.length,
+            itemBuilder: (context, index) {
+              return rooms[index];
+            }),
       ),
-      Container(height: 50, width: 50, color: Colors.pink),
       //Textfield
 //      chatView()
     ]);
