@@ -17,7 +17,7 @@ class MiniUser extends StatelessWidget {
       this.height = 300.0,
       this.enableSelfieDot = true,
       this.enableStatusDot = true,
-      this.rarity,
+      this.rarity = 0,
       this.imageURL});
 
   @override

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:intl/intl.dart';
+import 'package:cosplay_app/widgets/MiniUser.dart';
 
 class MessagePage extends StatefulWidget {
   FirebaseUser firebaseUser;
@@ -51,6 +52,7 @@ class _MessagePageState extends State<MessagePage> {
             for (Map<dynamic, dynamic> message in snapshot.data['messages']) {
               String name = message['name'];
               String text = message['message'];
+              String image = message['image'];
               print(text);
               Timestamp sentAt = message['sentAt'];
               var dateFormat = DateFormat.yMd().add_jm();
@@ -72,14 +74,15 @@ class _MessagePageState extends State<MessagePage> {
     return InkWell(
       onTap: () {},
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 14.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             // pretend theres an image here
-            Expanded(
-              flex: 2,
-              child: Container(width: 50, height: 50, color: Colors.pinkAccent),
+            MiniUser(
+              imageURL: 'https://c.pxhere.com/photos/0b/f9/anime_girl_japan_japanese_tokyo_cosplay-266599.jpg!d',
+              width: 64,
+              height: 64,
             ),
             SizedBox(width: 20),
             // Name and recent text
@@ -123,6 +126,9 @@ class _MessagePageState extends State<MessagePage> {
             // TEXT FIELD
             Expanded(
               child: TextField(
+                keyboardType: TextInputType.multiline,
+                maxLength: 200,
+                maxLines: 2,
                 controller: textController,
                 style: new TextStyle(color: Colors.white),
                 decoration: InputDecoration(
@@ -172,7 +178,7 @@ class _MessagePageState extends State<MessagePage> {
       ),
       Container(height: 50, width: 50, color: Colors.pink),
       //Textfield
-      chatView()
+//      chatView()
     ]);
   }
 }
