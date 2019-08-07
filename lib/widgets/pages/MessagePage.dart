@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:intl/intl.dart';
 import 'package:cosplay_app/widgets/MiniUser.dart';
+import 'dart:async';
 
 class MessagePage extends StatefulWidget {
   FirebaseUser firebaseUser;
@@ -18,6 +19,7 @@ class _MessagePageState extends State<MessagePage> {
   // Message page will first show the chat rooms...
   // So we need to listen to the private collection for the current user and check the chatrooms
   List<Widget> roomPreviews = List<Widget>();
+  List<StreamSubscription> subscriptionList = List<StreamSubscription>();
 
   // Belongs to chatview
   TextEditingController textController = TextEditingController();
@@ -28,21 +30,33 @@ class _MessagePageState extends State<MessagePage> {
 
     print("MESSAGE ==================================================");
     Firestore.instance.collection('private').document(widget.firebaseUser.uid).collection('rooms').snapshots().listen((snapshot) {
+      // Whenever the private->rooms changes, clear all current chatrooms->roomId listeners and remake them
+      for (StreamSubscription sub in subscriptionList) {
+        if (sub != null) {
+          sub.cancel();
+        }
+      }
+
+      roomPreviews.clear();
+
       // Get all the rooms this user is in (documentIds are the rooms)
       for (DocumentSnapshot snapshot in snapshot.documents) {
         String roomId = snapshot.documentID;
         print(snapshot.documentID);
 
-        Firestore.instance.collection('chatrooms').document(roomId).get().then((snapshot) async {
+        // So this is a one-shot method when rooms changes.
+        // if rooms does change, (removed or added), then the user will only get those new rooms now.
+        StreamSubscription subscription =
+            Firestore.instance.collection('chatrooms').document(roomId).snapshots().listen((snapshot) async {
           // We'll use the messages to get the most recent message in the chatroom
           // Which would be the last message in the array of maps
           if (snapshot.data['messages'].length <= 0) return;
 
           int lastMessageIndex = snapshot.data['messages'].length - 1;
-          String photoUrl;
+          String circlePhotoUrl;
 
           // message, name, sentAt
-          Map<dynamic, dynamic> message = snapshot.data['messages'][lastMessageIndex];
+          Map<dynamic, dynamic> mostRecentMessage = snapshot.data['messages'][lastMessageIndex];
 
           // ??
           //snapshot.data['created']
@@ -57,17 +71,18 @@ class _MessagePageState extends State<MessagePage> {
             if (userId != widget.firebaseUser.uid) {
               // Get the user's photo
               await Firestore.instance.collection('users').document(userId).get().then((snapshot) {
-                photoUrl = snapshot.data['photos'][0];
+                circlePhotoUrl = snapshot.data['photos'][0];
               });
             }
           }
 
           var dateFormat = DateFormat.yMd().add_jm();
-          String sentDate = dateFormat.format(message['sentAt'].toDate());
+          String mostRecentMessageTime = dateFormat.format(mostRecentMessage['sentAt'].toDate());
 
           // OK now we need to generate the chatroom preview with the information above, let's start with the photo
           setState(() {
-            roomPreviews.add(room(message['message'], message['name'], sentDate, photoUrl, roomId, context));
+            roomPreviews.add(room(
+                mostRecentMessage['message'], mostRecentMessage['name'], mostRecentMessageTime, circlePhotoUrl, roomId, context));
           });
 
 //          // This part is for the chatroomVIEW MOVE
@@ -92,8 +107,43 @@ class _MessagePageState extends State<MessagePage> {
 //            //  _createRoomPreview(snapshot, roomId);
 //          }
         });
+
+        subscriptionList.add(subscription);
       }
     });
+
+    // Initially setup a listener for all those rooms...
+    // But what if a chatroom is deleted?
+    // We shouldnt be able to listen to that room anymore
+    // So the user->rooms listener should remove it from the array...
+    // What we can do is just create a listener for each and then when the room listenr is called,
+    // Clear all listeners and create new ones
+//    Firestore.instance.collection('chatrooms').document(roomId).snapshots().listen((snapshot) async {
+//      if (snapshot.data['messages'].length <= 0) return;
+//
+//      int lastMessageIndex = snapshot.data['messages'].length - 1;
+//      String circlePhotoUrl;
+//
+//      Map<dynamic, dynamic> mostRecentMessage = snapshot.data['messages'][lastMessageIndex];
+//
+//      for (String userId in snapshot.data['users']) {
+//        // If the user isn't the logged in user...
+//        if (userId != widget.firebaseUser.uid) {
+//          // Get the user's photo
+//          await Firestore.instance.collection('users').document(userId).get().then((snapshot) {
+//            circlePhotoUrl = snapshot.data['photos'][0];
+//          });
+//        }
+//      }
+//
+//      var dateFormat = DateFormat.yMd().add_jm();
+//      String mostRecentMessageTime = dateFormat.format(mostRecentMessage['sentAt'].toDate());
+//
+//      setState(() {
+//        roomPreviews.add(room(
+//            mostRecentMessage['message'], mostRecentMessage['name'], mostRecentMessageTime, circlePhotoUrl, roomId, context));
+//      });
+//    });
   }
 
 //  _createRoomPreview(DocumentSnapshot snapshot, String roomId) {
@@ -225,6 +275,14 @@ class _MessagePageState extends State<MessagePage> {
             top: BorderSide(color: Colors.white, width: 2.0),
           ),
         ));
+  }
+
+  @override
+  void dispose() {
+    for (StreamSubscription sub in subscriptionList) {
+      sub.cancel();
+    }
+    super.dispose();
   }
 
   @override
