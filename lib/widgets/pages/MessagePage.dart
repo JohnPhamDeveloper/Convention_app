@@ -69,44 +69,47 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   Widget room(String message, String name, String sentDate, BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          // pretend theres an image here
-          Expanded(
-            flex: 2,
-            child: Container(width: 50, height: 50, color: Colors.pinkAccent),
-          ),
-          SizedBox(width: 20),
-          // Name and recent text
-          Expanded(
-            flex: 8,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  name,
-                  style: TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.w500),
-                ),
-                SizedBox(height: 4.0),
-                Text(
-                  message,
-                  style: TextStyle(color: Colors.white, fontSize: 15.0),
-                ),
-              ],
+    return InkWell(
+      onTap: () {},
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            // pretend theres an image here
+            Expanded(
+              flex: 2,
+              child: Container(width: 50, height: 50, color: Colors.pinkAccent),
             ),
-          ),
-          // Time sent
-          Expanded(
-            flex: 4,
-            child: Text(
-              sentDate,
-              style: TextStyle(color: Colors.white, fontSize: 10.0),
+            SizedBox(width: 20),
+            // Name and recent text
+            Expanded(
+              flex: 8,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    name,
+                    style: TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(height: 4.0),
+                  Text(
+                    message,
+                    style: TextStyle(color: Colors.white, fontSize: 15.0),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            // Time sent
+            Expanded(
+              flex: 4,
+              child: Text(
+                sentDate,
+                style: TextStyle(color: Colors.white, fontSize: 10.0),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -158,6 +161,10 @@ class _MessagePageState extends State<MessagePage> {
   @override
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
+      Text(
+        "Recent Conversations",
+        style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.w500),
+      ),
       Container(height: 50, width: 50, color: Colors.pink),
       // Messages
       Column(
@@ -165,16 +172,7 @@ class _MessagePageState extends State<MessagePage> {
       ),
       Container(height: 50, width: 50, color: Colors.pink),
       //Textfield
-      //  chatView()
+      chatView()
     ]);
   }
 }
-
-//Row(
-//children: <Widget>[
-////        Text(
-////          "Recent Conversations",
-////          style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.w500),
-////        ),
-//],
-//);
