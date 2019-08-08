@@ -5,6 +5,7 @@ import 'package:cosplay_app/constants/constants.dart';
 import 'package:intl/intl.dart';
 import 'package:cosplay_app/widgets/MiniUser.dart';
 import 'dart:async';
+import 'package:cosplay_app/widgets/native_shapes/CircularBoxClipped.dart';
 
 class MessagePage extends StatefulWidget {
   FirebaseUser firebaseUser;
@@ -176,7 +177,15 @@ class _MessagePageState extends State<MessagePage> {
   Widget room(String message, String name, String sentDate, String imageUrl, String roomId, BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ChatView(docId: roomId)));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatView(
+              docId: roomId,
+              firebaseUser: widget.firebaseUser,
+            ),
+          ),
+        );
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
@@ -265,8 +274,9 @@ class _MessagePageState extends State<MessagePage> {
 
 class ChatView extends StatefulWidget {
   final String docId;
+  final FirebaseUser firebaseUser;
 
-  ChatView({@required this.docId});
+  ChatView({@required this.docId, @required this.firebaseUser});
 
   @override
   _ChatViewState createState() => _ChatViewState();
@@ -291,10 +301,15 @@ class _ChatViewState extends State<ChatView> {
         String sentAt = dateFormat.format(message['sentAt'].toDate());
 
         print(message['message']);
-        String messageUId = message['uid']; //TODO need UID to identiy whos talking
+        String messageUid = message['uid']; //TODO need UID to identiy whos talking
+        bool isLoggedInUser = false;
+
+        if (messageUid == widget.firebaseUser.uid) {
+          isLoggedInUser = true;
+        }
 
         setState(() {
-          messages.add(_createMessageWidget(message['message'], sentAt));
+          messages.add(_createMessageWidget(message['message'], sentAt, isLoggedInUser));
         });
       }
 
@@ -303,12 +318,27 @@ class _ChatViewState extends State<ChatView> {
     });
   }
 
-  Widget _createMessageWidget(String message, String sentAt) {
-    return Container(
-      color: Colors.pink,
-      child: Text(
-        '$message || $sentAt',
-        style: TextStyle(fontSize: 20.0, color: Colors.white),
+  Widget _createMessageWidget(String message, String sentAt, bool isLoggedInUser) {
+    return Align(
+      alignment: isLoggedInUser
+          ? Alignment.centerRight
+          : Alignment.centerLeft, //TODO DEPENDING ON WHETHER ITS CURRENT USER OR OTHER USER
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Container(
+          child: CircularBoxClipped(
+              topRight: Radius.circular(20.0),
+              bottomRight: Radius.circular(20.0),
+              bottomLeft: Radius.circular(20.0),
+              child: Text(
+                '$message',
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
+                ),
+              )),
+        ),
       ),
     );
   }
@@ -316,7 +346,7 @@ class _ChatViewState extends State<ChatView> {
   Widget _createChatView(BuildContext context) {
     return Column(
       children: <Widget>[
-        Container(color: Colors.red, height: 20, width: 20),
+        SizedBox(height: 20),
         Expanded(
           child: ListView.builder(
             itemCount: messages.length,
@@ -325,6 +355,10 @@ class _ChatViewState extends State<ChatView> {
             },
           ),
         ),
+
+//        messages[0],
+//        messages[1],
+//        messages[2],
         inputField(context),
       ],
     );
@@ -333,7 +367,11 @@ class _ChatViewState extends State<ChatView> {
   // TODO chatview should be pushed onto screen to avoid interaction with bottom nav bar
   Widget inputField(BuildContext context) {
     return Container(
-      color: Colors.orange,
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(width: 1.0, color: Colors.white),
+        ),
+      ),
       width: MediaQuery.of(context).size.width,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
