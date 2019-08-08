@@ -55,8 +55,6 @@ class _MessagePageState extends State<MessagePage> {
         // Which would be the last message in the array of maps
         if (snapshot.data['messages'].length <= 0) return;
 
-
-
         int lastMessageIndex = snapshot.data['messages'].length - 1;
         String circlePhotoUrl;
         String displayName;
@@ -225,8 +223,15 @@ class _ChatViewState extends State<ChatView> {
 
       messages.clear();
       //messages.add(SizedBox(height: 50));
+      bool isFirstMessage = true;
 
       for (Map<dynamic, dynamic> message in snapshot.data['messages']) {
+        // SKip first message which is a welcome message
+        if (isFirstMessage) {
+          isFirstMessage = false;
+          continue;
+        }
+
         var dateFormat = DateFormat.yMd().add_jm();
 
         String sentAt = dateFormat.format(message['sentAt'].toDate());
