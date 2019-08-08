@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:cosplay_app/widgets/MiniUser.dart';
 import 'dart:async';
 import 'package:cosplay_app/widgets/native_shapes/CircularBoxClipped.dart';
+import 'package:cosplay_app/widgets/RoundButton.dart';
 
 class MessagePage extends StatefulWidget {
   FirebaseUser firebaseUser;
@@ -298,6 +299,8 @@ class _ChatViewState extends State<ChatView> {
 
       messages.clear();
 
+      messages.add(SizedBox(height: 50));
+
       for (Map<dynamic, dynamic> message in snapshot.data['messages']) {
         var dateFormat = DateFormat.yMd().add_jm();
         String sentAt = dateFormat.format(message['sentAt'].toDate());
@@ -326,7 +329,7 @@ class _ChatViewState extends State<ChatView> {
           ? Alignment.centerRight
           : Alignment.centerLeft, //TODO DEPENDING ON WHETHER ITS CURRENT USER OR OTHER USER
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
         child: Column(
           crossAxisAlignment: !isLoggedInUser ? CrossAxisAlignment.start : CrossAxisAlignment.end,
           children: <Widget>[
@@ -338,7 +341,7 @@ class _ChatViewState extends State<ChatView> {
                 fontWeight: FontWeight.w400,
               ),
             ),
-            SizedBox(height: 3.0),
+            SizedBox(height: 5.0),
             CircularBoxClipped(
               topRight: !isLoggedInUser ? Radius.circular(20.0) : Radius.circular(0.0),
               topLeft: !isLoggedInUser ? Radius.circular(0.0) : Radius.circular(20.0),
@@ -438,10 +441,30 @@ class _ChatViewState extends State<ChatView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      body: SafeArea(
-        child: _createChatView(context),
-      ),
-    );
+        backgroundColor: Theme.of(context).primaryColor,
+        body: SafeArea(
+          child: Stack(
+            children: <Widget>[
+              _createChatView(context),
+              Padding(
+                padding: EdgeInsets.only(top: 15.0, left: 15.0),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: RoundButton(
+                    size: 40,
+                    padding: EdgeInsets.all(0),
+                    icon: Icons.arrow_back,
+                    iconSize: 25.0,
+                    iconColor: Colors.white,
+                    fillColor: Colors.pinkAccent,
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              )
+            ],
+          ),
+        ));
   }
 }
