@@ -262,7 +262,7 @@ class _MessagePageState extends State<MessagePage> {
           style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.w500),
         ),
       ),
-      SizedBox(height: 20.0),
+      SizedBox(height: 10.0),
       Expanded(
         child: ListView.builder(
             itemCount: roomPreviews.length,
@@ -308,7 +308,7 @@ class _ChatViewState extends State<ChatView> {
       // Map<dynamic, dynamic> messages = snapshot.data['messages'];
 
       messages.clear();
-      messages.add(SizedBox(height: 50));
+      //messages.add(SizedBox(height: 50));
 
       for (Map<dynamic, dynamic> message in snapshot.data['messages']) {
         var dateFormat = DateFormat.yMd().add_jm();
@@ -328,7 +328,7 @@ class _ChatViewState extends State<ChatView> {
         //   });
 
       }
-      messages.add(SizedBox(height: 50));
+      messages.add(SizedBox(height: 30));
       final revMessages = messages.reversed.toList();
       revMessages.add(SizedBox(height: 50));
 
