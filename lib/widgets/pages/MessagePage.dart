@@ -7,6 +7,7 @@ import 'package:cosplay_app/widgets/MiniUser.dart';
 import 'dart:async';
 import 'package:cosplay_app/widgets/native_shapes/CircularBoxClipped.dart';
 import 'package:cosplay_app/widgets/RoundButton.dart';
+import 'package:cosplay_app/classes/Meetup.dart';
 
 class MessagePage extends StatefulWidget {
   FirebaseUser firebaseUser;
@@ -61,6 +62,7 @@ class _MessagePageState extends State<MessagePage> {
 
           int lastMessageIndex = snapshot.data['messages'].length - 1;
           String circlePhotoUrl;
+          String displayName;
 
           // message, name, sentAt
           Map<dynamic, dynamic> mostRecentMessage = snapshot.data['messages'][lastMessageIndex];
@@ -79,19 +81,23 @@ class _MessagePageState extends State<MessagePage> {
               // Get the user's photo
               await Firestore.instance.collection('users').document(userId).get().then((snapshot) {
                 circlePhotoUrl = snapshot.data['photos'][0];
+                displayName = snapshot.data['displayName'];
               });
             }
           }
 
           var dateFormat = DateFormat.yMd().add_jm();
+
+          print(mostRecentMessage);
+          print("BEFORE ${mostRecentMessage['sentAt']}");
           String mostRecentMessageTime = dateFormat.format(mostRecentMessage['sentAt'].toDate());
 
           print("is this ever alled again");
 
           // OK now we need to generate the chatroom preview with the information above, let's start with the photo
           setState(() {
-            roomPreviews.add(room(
-                mostRecentMessage['message'], mostRecentMessage['name'], mostRecentMessageTime, circlePhotoUrl, roomId, context));
+            roomPreviews.add(room(displayName, mostRecentMessage['message'], mostRecentMessage['name'], mostRecentMessageTime,
+                circlePhotoUrl, roomId, context));
           });
 
 //          // This part is for the chatroomVIEW MOVE
@@ -175,13 +181,15 @@ class _MessagePageState extends State<MessagePage> {
 
 //
 
-  Widget room(String message, String name, String sentDate, String imageUrl, String roomId, BuildContext context) {
+  Widget room(String loggedInUserName, String message, String name, String sentDate, String imageUrl, String roomId,
+      BuildContext context) {
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => ChatView(
+              loggedInUserName: loggedInUserName,
               docId: roomId,
               firebaseUser: widget.firebaseUser,
             ),
@@ -274,10 +282,11 @@ class _MessagePageState extends State<MessagePage> {
 //
 
 class ChatView extends StatefulWidget {
+  final String loggedInUserName;
   final String docId;
   final FirebaseUser firebaseUser;
 
-  ChatView({@required this.docId, @required this.firebaseUser});
+  ChatView({@required this.docId, @required this.firebaseUser, @required this.loggedInUserName});
 
   @override
   _ChatViewState createState() => _ChatViewState();
@@ -288,6 +297,7 @@ class _ChatViewState extends State<ChatView> {
   TextEditingController textController = TextEditingController();
   List<Widget> messages = List<Widget>();
   StreamSubscription sub;
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -298,11 +308,11 @@ class _ChatViewState extends State<ChatView> {
       // Map<dynamic, dynamic> messages = snapshot.data['messages'];
 
       messages.clear();
-
       messages.add(SizedBox(height: 50));
 
       for (Map<dynamic, dynamic> message in snapshot.data['messages']) {
         var dateFormat = DateFormat.yMd().add_jm();
+
         String sentAt = dateFormat.format(message['sentAt'].toDate());
 
         print(message['message']);
@@ -313,13 +323,20 @@ class _ChatViewState extends State<ChatView> {
           isLoggedInUser = true;
         }
 
-        setState(() {
-          messages.add(_createMessageWidget(message['message'], sentAt, isLoggedInUser));
-        });
+        // setState(() {
+        messages.add(_createMessageWidget(message['message'], sentAt, isLoggedInUser));
+        //   });
+
       }
+      messages.add(SizedBox(height: 50));
+      final revMessages = messages.reversed.toList();
+      revMessages.add(SizedBox(height: 50));
 
       // Get messages and timestamp of each messages
       //_createMessageWidget(message);
+      setState(() {
+        messages = revMessages;
+      });
     });
   }
 
@@ -329,7 +346,7 @@ class _ChatViewState extends State<ChatView> {
           ? Alignment.centerRight
           : Alignment.centerLeft, //TODO DEPENDING ON WHETHER ITS CURRENT USER OR OTHER USER
       child: Padding(
-        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
+        padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
         child: Column(
           crossAxisAlignment: !isLoggedInUser ? CrossAxisAlignment.start : CrossAxisAlignment.end,
           children: <Widget>[
@@ -365,16 +382,16 @@ class _ChatViewState extends State<ChatView> {
   Widget _createChatView(BuildContext context) {
     return Column(
       children: <Widget>[
-        SizedBox(height: 10),
         Expanded(
           child: ListView.builder(
+            reverse: true,
+            controller: scrollController,
             itemCount: messages.length,
             itemBuilder: (context, index) {
               return messages[index];
             },
           ),
         ),
-
 //        messages[0],
 //        messages[1],
 //        messages[2],
@@ -398,6 +415,11 @@ class _ChatViewState extends State<ChatView> {
           // TEXT FIELD
           Expanded(
             child: TextField(
+              onTap: () {
+//                scrollController.animateTo(scrollController.position.maxScrollExtent,
+//                    duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+              },
+              textCapitalization: TextCapitalization.sentences,
               keyboardType: TextInputType.multiline,
               // maxLength: 200,
               maxLines: 1,
@@ -416,7 +438,22 @@ class _ChatViewState extends State<ChatView> {
           FlatButton(
             onPressed: () {
               //TODO send message to database
-              // How? this chatroom should have access to its id
+              // Look for chatroomid of this room in database
+              // Then send message to database
+//              Firestore.instance.collection('chatrooms').document(widget.docId).updateData({
+//                'messages': FieldValue.arrayUnion(["test"]),
+//              });
+              Map<dynamic, dynamic> arguments = Map<dynamic, dynamic>();
+              arguments['message'] = textController.text;
+              arguments['roomId'] = widget.docId;
+              arguments['name'] = widget.loggedInUserName;
+              print('sending... $arguments');
+              final response = Meetup.sendMessage(arguments);
+              print(response);
+              textController.clear();
+              FocusScope.of(context).requestFocus(new FocusNode());
+//              scrollController.animateTo(scrollController.position.maxScrollExtent,
+//                  duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
             },
             child: Text(
               "Send",
@@ -434,7 +471,7 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   void dispose() {
-    sub.cancel();
+    if (sub != null) sub.cancel();
     super.dispose();
   }
 
@@ -446,6 +483,7 @@ class _ChatViewState extends State<ChatView> {
           child: Stack(
             children: <Widget>[
               _createChatView(context),
+              // Back arrow
               Padding(
                 padding: EdgeInsets.only(top: 15.0, left: 15.0),
                 child: Align(

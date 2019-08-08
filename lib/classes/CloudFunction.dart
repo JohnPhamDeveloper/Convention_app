@@ -8,6 +8,7 @@ class CloudFunction {
   static String acceptButtonVerify = 'acceptButtonVerify';
   static String getSelfieMatchedLocation = 'getSelfieMatchedLocation';
   static String finishSelfie = 'finishSelfie';
+  static String sendMessage = 'sendMessage';
 
   static Future<HttpsCallableResult> call(String functionName, {String key = "nothing", String value = "nothing"}) {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
@@ -21,4 +22,18 @@ class CloudFunction {
       return e;
     }
   }
+
+  static Future<HttpsCallableResult> call2(String functionName, Map<dynamic, dynamic> argument) {
+    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
+      functionName: functionName,
+    );
+
+    try {
+      return callable.call(argument);
+    } catch (e) {
+      print(e);
+      return e;
+    }
+  }
+  // end
 }

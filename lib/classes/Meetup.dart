@@ -25,4 +25,8 @@ class Meetup {
     return CloudFunction.call(CloudFunction.checkIfOtherUserSentSelfieRequest,
         key: 'otherUserUid', value: otherUserData.documentID);
   }
+
+  static Future<HttpsCallableResult> sendMessage(Map<dynamic, dynamic> arguments) {
+    return CloudFunction.call2(CloudFunction.sendMessage, arguments);
+  }
 }
