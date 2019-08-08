@@ -296,6 +296,8 @@ class _ChatViewState extends State<ChatView> {
     Firestore.instance.collection('chatrooms').document(widget.docId).snapshots().listen((snapshot) {
       // Map<dynamic, dynamic> messages = snapshot.data['messages'];
 
+      messages.clear();
+
       for (Map<dynamic, dynamic> message in snapshot.data['messages']) {
         var dateFormat = DateFormat.yMd().add_jm();
         String sentAt = dateFormat.format(message['sentAt'].toDate());
@@ -325,9 +327,21 @@ class _ChatViewState extends State<ChatView> {
           : Alignment.centerLeft, //TODO DEPENDING ON WHETHER ITS CURRENT USER OR OTHER USER
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Container(
-          child: CircularBoxClipped(
-              topRight: Radius.circular(20.0),
+        child: Column(
+          crossAxisAlignment: !isLoggedInUser ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+          children: <Widget>[
+            Text(
+              '$sentAt',
+              style: TextStyle(
+                fontSize: 10.0,
+                color: Colors.white,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            SizedBox(height: 3.0),
+            CircularBoxClipped(
+              topRight: !isLoggedInUser ? Radius.circular(20.0) : Radius.circular(0.0),
+              topLeft: !isLoggedInUser ? Radius.circular(0.0) : Radius.circular(20.0),
               bottomRight: Radius.circular(20.0),
               bottomLeft: Radius.circular(20.0),
               child: Text(
@@ -337,7 +351,9 @@ class _ChatViewState extends State<ChatView> {
                   color: Colors.black87,
                   fontWeight: FontWeight.w500,
                 ),
-              )),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -346,7 +362,7 @@ class _ChatViewState extends State<ChatView> {
   Widget _createChatView(BuildContext context) {
     return Column(
       children: <Widget>[
-        SizedBox(height: 20),
+        SizedBox(height: 10),
         Expanded(
           child: ListView.builder(
             itemCount: messages.length,
