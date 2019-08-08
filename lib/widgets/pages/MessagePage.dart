@@ -21,9 +21,6 @@ class _MessagePageState extends State<MessagePage> {
   List<Widget> roomPreviews = List<Widget>();
   List<StreamSubscription> subscriptionList = List<StreamSubscription>();
 
-  // Belongs to chatview
-  TextEditingController textController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -37,12 +34,10 @@ class _MessagePageState extends State<MessagePage> {
         }
       }
 
-      setState(() {
-        print("TRYING TO CLEAR ROOMS");
-        roomPreviews.clear();
-      });
-
-      print("CLEAR $roomPreviews");
+//      setState(() {
+//        print("TRYING TO CLEAR ROOMS");
+//        roomPreviews.clear();
+//      });
 
       // Get all the rooms this user is in (documentIds are the rooms)
       for (DocumentSnapshot snapshot in snapshot.documents) {
@@ -176,24 +171,12 @@ class _MessagePageState extends State<MessagePage> {
 //    }
 //  }
 
-//  _wrapInScaffold(Widget room, BuildContext context) {
-//    return Scaffold(
-//      backgroundColor: Theme.of(context).primaryColor,
-//      body: SafeArea(
-//          child: Expanded(
-//        child: ListView.builder(
-//            itemCount: roomPreviews.length,
-//            itemBuilder: (context, index) {
-//              return roomPreviews[index];
-//            }),
-//      )),
-//    );
-//  }
+//
 
   Widget room(String message, String name, String sentDate, String imageUrl, String roomId, BuildContext context) {
     return InkWell(
       onTap: () {
-//        Navigator.push(context, MaterialPageRoute(builder: (context) => clickedProfile));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ChatView(docId: roomId)));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
@@ -242,55 +225,6 @@ class _MessagePageState extends State<MessagePage> {
     );
   }
 
-  void _pushChatView() {}
-
-  // TODO chatview should be pushed onto screen to avoid interaction with bottom nav bar
-  Widget chatView() {
-    return Container(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            // TEXT FIELD
-            Expanded(
-              child: TextField(
-                keyboardType: TextInputType.multiline,
-                maxLength: 200,
-                maxLines: 2,
-                controller: textController,
-                style: new TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                  hintText: 'Type message here!',
-                  hintStyle: TextStyle(color: Colors.white),
-                  labelStyle: TextStyle(color: Colors.white),
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-            // SEND BUTTON
-            FlatButton(
-              onPressed: () {
-                //TODO send message to database
-                // How? this chatroom should have access to its id
-              },
-              child: Text(
-                "Send",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0,
-                ),
-              ),
-            ),
-          ],
-        ),
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Colors.white, width: 2.0),
-          ),
-        ));
-  }
-
   @override
   void dispose() {
     for (StreamSubscription sub in subscriptionList) {
@@ -311,10 +245,6 @@ class _MessagePageState extends State<MessagePage> {
         ),
       ),
       SizedBox(height: 20.0),
-      // Messages
-//      Column(
-//        children: rooms,
-//      ),
       Expanded(
         child: ListView.builder(
             itemCount: roomPreviews.length,
@@ -322,8 +252,142 @@ class _MessagePageState extends State<MessagePage> {
               return roomPreviews[index];
             }),
       ),
-      //Textfield
-//      chatView()
     ]);
+  }
+}
+
+//
+//
+//
+//
+//
+//
+
+class ChatView extends StatefulWidget {
+  final String docId;
+
+  ChatView({@required this.docId});
+
+  @override
+  _ChatViewState createState() => _ChatViewState();
+}
+
+class _ChatViewState extends State<ChatView> {
+  // Belongs to chatview
+  TextEditingController textController = TextEditingController();
+  List<Widget> messages = List<Widget>();
+  StreamSubscription sub;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Listen to the chatroom ID
+    Firestore.instance.collection('chatrooms').document(widget.docId).snapshots().listen((snapshot) {
+      // Map<dynamic, dynamic> messages = snapshot.data['messages'];
+
+      for (Map<dynamic, dynamic> message in snapshot.data['messages']) {
+        var dateFormat = DateFormat.yMd().add_jm();
+        String sentAt = dateFormat.format(message['sentAt'].toDate());
+
+        print(message['message']);
+        String messageUId = message['uid']; //TODO need UID to identiy whos talking
+
+        setState(() {
+          messages.add(_createMessageWidget(message['message'], sentAt));
+        });
+      }
+
+      // Get messages and timestamp of each messages
+      //_createMessageWidget(message);
+    });
+  }
+
+  Widget _createMessageWidget(String message, String sentAt) {
+    return Container(
+      color: Colors.pink,
+      child: Text(
+        '$message || $sentAt',
+        style: TextStyle(fontSize: 20.0, color: Colors.white),
+      ),
+    );
+  }
+
+  Widget _createChatView(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Container(color: Colors.red, height: 20, width: 20),
+        Expanded(
+          child: ListView.builder(
+            itemCount: messages.length,
+            itemBuilder: (context, index) {
+              return messages[index];
+            },
+          ),
+        ),
+        inputField(context),
+      ],
+    );
+  }
+
+  // TODO chatview should be pushed onto screen to avoid interaction with bottom nav bar
+  Widget inputField(BuildContext context) {
+    return Container(
+      color: Colors.orange,
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          // TEXT FIELD
+          Expanded(
+            child: TextField(
+              keyboardType: TextInputType.multiline,
+              // maxLength: 200,
+              maxLines: 1,
+              controller: textController,
+              style: new TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                hintText: 'Type message here!',
+                hintStyle: TextStyle(color: Colors.white),
+                labelStyle: TextStyle(color: Colors.white),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+          // SEND BUTTON
+          FlatButton(
+            onPressed: () {
+              //TODO send message to database
+              // How? this chatroom should have access to its id
+            },
+            child: Text(
+              "Send",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18.0,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    sub.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      body: SafeArea(
+        child: _createChatView(context),
+      ),
+    );
   }
 }
