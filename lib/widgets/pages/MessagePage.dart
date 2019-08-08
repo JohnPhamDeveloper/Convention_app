@@ -29,147 +29,83 @@ class _MessagePageState extends State<MessagePage> {
     super.initState();
 
     print("================================== MESSAGE ==================================================");
-    Firestore.instance.collection('private').document(widget.firebaseUser.uid).collection('rooms').snapshots().listen((snapshot) {
-      // Whenever the private->rooms changes, clear all current chatrooms->roomId listeners and remake them
-      for (StreamSubscription sub in subscriptionList) {
-        if (sub != null) {
-          sub.cancel();
-        }
-      }
+//    for (StreamSubscription sub in subscriptionList) {
+//      if (sub != null) {
+//        sub.cancel();
+//      }
+//    }
 
-      List<Map<dynamic, dynamic>> unsortedData = List<Map<dynamic, dynamic>>();
+    // Get all the rooms this user is in (documentIds are the rooms)
 
-      // Get all the rooms this user is in (documentIds are the rooms)
+    // if rooms does change, (removed or added), then the user will only get those new rooms now.
+    StreamSubscription subscription = Firestore.instance
+        .collection('chatrooms')
+        .where('users.${widget.firebaseUser.uid}', isEqualTo: true)
+//        .orderBy('recent', descending: true)
+        .snapshots()
+        .listen((snapshot) async {
       for (DocumentSnapshot snapshot in snapshot.documents) {
         String roomId = snapshot.documentID;
 
-        // if rooms does change, (removed or added), then the user will only get those new rooms now.
-        StreamSubscription subscription =
-            Firestore.instance.collection('chatrooms').document(roomId).snapshots().listen((snapshot) async {
-          // We'll use the messages to get the most recent message in the chatroom
-          // Which would be the last message in the array of maps
-          if (snapshot.data['messages'].length <= 0) return;
-
-          setState(() {
-            print("TRYING TO CLEAR ROOMS");
-            roomPreviews.clear();
-          });
-
-          int lastMessageIndex = snapshot.data['messages'].length - 1;
-          String circlePhotoUrl;
-          String displayName;
-
-          // message, name, sentAt
-          Map<dynamic, dynamic> mostRecentMessage = snapshot.data['messages'][lastMessageIndex];
-
-          // So go through the array and look for everyone thats not the logged in user and fetch their image
-          for (String userId in snapshot.data['users']) {
-            // If the user isn't the logged in user...
-            if (userId != widget.firebaseUser.uid) {
-              // Get the user's photo
-              await Firestore.instance.collection('users').document(userId).get().then((snapshot) {
-                circlePhotoUrl = snapshot.data['photos'][0];
-                displayName = snapshot.data['displayName'];
-              });
-            }
-          }
-
-          var dateFormat = DateFormat.yMd().add_jm();
-
-          print(mostRecentMessage);
-          print("BEFORE ${mostRecentMessage['sentAt']}");
-          String mostRecentMessageTime = dateFormat.format(mostRecentMessage['sentAt'].toDate());
-
-          // Need to add all the values in a map, then sort the maps, and then create the Widgets after
-          unsortedData.add({
-            'displayName': displayName,
-            'message': mostRecentMessage['message'],
-            'name': mostRecentMessage['name'],
-            'mostRecentMessageTime': mostRecentMessageTime,
-            'circlePhotoUrl': circlePhotoUrl,
-            'roomId': roomId
-          });
-
-          print("how many times");
-          print(unsortedData);
-
-          setState(() {
-            roomPreviews.add(room(displayName, mostRecentMessage['message'], mostRecentMessage['name'], mostRecentMessageTime,
-                circlePhotoUrl, roomId, context));
-          });
+        print("LISTENGING TO DOCUMENTS");
+        setState(() {
+          roomPreviews.clear();
         });
+        // We'll use the messages to get the most recent message in the chatroom
+        // Which would be the last message in the array of maps
+        if (snapshot.data['messages'].length <= 0) return;
 
-        subscriptionList.add(subscription);
-      }
 
-      // Sort here
-      for (int i = 0; i < unsortedData.length; i++) {
-        print("?");
-        print(unsortedData[i]);
+
+        int lastMessageIndex = snapshot.data['messages'].length - 1;
+        String circlePhotoUrl;
+        String displayName;
+
+        // message, name, sentAt
+        Map<dynamic, dynamic> mostRecentMessage = snapshot.data['messages'][lastMessageIndex];
+
+        // So go through the array and look for everyone thats not the logged in user and fetch their image
+        for (String userId in snapshot.data['users'].keys) {
+          print("YO");
+          print(userId);
+          // If the user isn't the logged in user...
+          if (userId != widget.firebaseUser.uid) {
+            // Get the user's photo
+            await Firestore.instance.collection('users').document(userId).get().then((snapshot) {
+              circlePhotoUrl = snapshot.data['photos'][0];
+              displayName = snapshot.data['displayName'];
+            });
+          }
+        }
+
+        var dateFormat = DateFormat.yMd().add_jm();
+
+        //print(mostRecentMessage);
+        // print("BEFORE ${mostRecentMessage['sentAt']}");
+        String mostRecentMessageTime = dateFormat.format(mostRecentMessage['sentAt'].toDate());
+        print(displayName);
+
+        setState(() {
+          roomPreviews.add(room(displayName, mostRecentMessage['message'], mostRecentMessage['name'], mostRecentMessageTime,
+              circlePhotoUrl, roomId, context));
+          print("SHOW ROOMS");
+          print(roomPreviews);
+        });
       }
     });
 
-    // Initially setup a listener for all those rooms...
-    // But what if a chatroom is deleted?
-    // We shouldnt be able to listen to that room anymore
-    // So the user->rooms listener should remove it from the array...
-    // What we can do is just create a listener for each and then when the room listenr is called,
-    // Clear all listeners and create new ones
-//    Firestore.instance.collection('chatrooms').document(roomId).snapshots().listen((snapshot) async {
-//      if (snapshot.data['messages'].length <= 0) return;
-//
-//      int lastMessageIndex = snapshot.data['messages'].length - 1;
-//      String circlePhotoUrl;
-//
-//      Map<dynamic, dynamic> mostRecentMessage = snapshot.data['messages'][lastMessageIndex];
-//
-//      for (String userId in snapshot.data['users']) {
-//        // If the user isn't the logged in user...
-//        if (userId != widget.firebaseUser.uid) {
-//          // Get the user's photo
-//          await Firestore.instance.collection('users').document(userId).get().then((snapshot) {
-//            circlePhotoUrl = snapshot.data['photos'][0];
-//          });
-//        }
-//      }
-//
-//      var dateFormat = DateFormat.yMd().add_jm();
-//      String mostRecentMessageTime = dateFormat.format(mostRecentMessage['sentAt'].toDate());
-//
-//      setState(() {
-//        roomPreviews.add(room(
-//            mostRecentMessage['message'], mostRecentMessage['name'], mostRecentMessageTime, circlePhotoUrl, roomId, context));
-//      });
-//    });
+    subscriptionList.add(subscription);
   }
 
-//  _createRoomPreview(DocumentSnapshot snapshot, String roomId) {
-//    for (Map<dynamic, dynamic> message in snapshot.data['messages']) {
-//      String name = message['name'];
-//      String text = message['message'];
-//      // String image = message['image'];
-//      print(text);
-////      Timestamp sentAt = message['sentAt'];
-////      var dateFormat = DateFormat.yMd().add_jm();
-////      String sentDate = dateFormat.format(sentAt.toDate());
-////      print(sentAt);
-//      // Build a message widget with text
-//      print('ADDING ROOM');
-//      setState(() {
-//        roomPreviews.add(room(text, name, sentDate, image, roomId, context));
-//      });
-//    }
-//  }
-
-  Widget room(String loggedInUserName, String message, String name, String sentDate, String imageUrl, String roomId,
-      BuildContext context) {
+  Widget room(
+      String displayName, String message, String name, String sentDate, String imageUrl, String roomId, BuildContext context) {
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => ChatView(
-              loggedInUserName: loggedInUserName,
+              loggedInUserName: displayName,
               docId: roomId,
               firebaseUser: widget.firebaseUser,
             ),
@@ -196,7 +132,7 @@ class _MessagePageState extends State<MessagePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    name,
+                    displayName,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.w500),
                   ),
