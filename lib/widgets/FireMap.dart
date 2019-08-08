@@ -74,31 +74,18 @@ class _FireMapState extends State<FireMap> {
 
     Firestore.instance.collection('selfie').document(user.uid).snapshots().listen((snapshot) {
       print("RE--------------------------------------------------------------------");
-
-      // {{uid: ..., timeStamp:...},{uid: ..., timeStamp:...}, ...}
-//      print(snapshot.data[FirestoreManager.keyMatchedUsers]);
-//      Map<dynamic, dynamic> matchedUsers = snapshot.data[FirestoreManager.keyMatchedUsers];
-
-      // Copy matched users
-//      for (Map<dynamic, dynamic> matchUser in snapshot.data[FirestoreManager.keyMatchedUsers]) {
-//        matchedUsers.
-//      }
-
-      print("TRYING TO PRINT MATCH");
-//      print(matchedUsers);
-
-      print("AFTER TRYING TO PRINT MATCH");
-
-      // Stop updating map & sending location since match list is empty
-      //TODO WARNING: IF A MAP BECOMES EMPTY, IT TURNS INTO AN ARRAY IN FIRESTORE. isEmpty covers both "Array" and "Map" type
-      if (snapshot.data[FirestoreManager.keyMatchedUsers].isEmpty) {
-        print("STOP TYIMER");
-        isMatched = false;
-        _stopMapUpdate();
-      } else {
-        print("ATTEMPING TO START TIMER");
-        isMatched = true;
-        _startMapUpdateTimer();
+      if (snapshot.data[FirestoreManager.keyMatchedUsers] != null) {
+        // Stop updating map & sending location since match list is empty
+        //TODO WARNING: IF A MAP BECOMES EMPTY, IT TURNS INTO AN ARRAY IN FIRESTORE. isEmpty covers both "Array" and "Map" type
+        if (snapshot.data[FirestoreManager.keyMatchedUsers].isEmpty) {
+          print("STOP TYIMER");
+          isMatched = false;
+          _stopMapUpdate();
+        } else {
+          print("ATTEMPING TO START TIMER");
+          isMatched = true;
+          _startMapUpdateTimer();
+        }
       }
     });
   }

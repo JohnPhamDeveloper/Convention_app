@@ -34,15 +34,17 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
   _initAsync() async {
     // TODO First time loading this, push the 20 latest notification to the notifications queue
     await Firestore.instance.collection('private').document(widget.firebaseUser.uid).get().then((snapshot) {
-      final notificationLength = snapshot.data['notifications'].length;
-      var start = notificationLength - 20 - 1;
-      if (start < 0) start = 0;
-      var numberOfNotificationsToShow = 15;
-      if (notificationLength < numberOfNotificationsToShow) numberOfNotificationsToShow = notificationLength;
+      if (snapshot.data['notifications'] != null) {
+        final notificationLength = snapshot.data['notifications'].length;
+        var start = notificationLength - 20 - 1;
+        if (start < 0) start = 0;
+        var numberOfNotificationsToShow = 15;
+        if (notificationLength < numberOfNotificationsToShow) numberOfNotificationsToShow = notificationLength;
 
-      // Load the recent 15 notifications only
-      for (int i = start; i < start + numberOfNotificationsToShow; i++) {
-        _buildNotificationItem(snapshot.data['notifications'][i]);
+        // Load the recent 15 notifications only
+        for (int i = start; i < start + numberOfNotificationsToShow; i++) {
+          _buildNotificationItem(snapshot.data['notifications'][i]);
+        }
       }
     });
 

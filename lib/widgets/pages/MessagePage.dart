@@ -44,6 +44,8 @@ class _MessagePageState extends State<MessagePage> {
 //        .orderBy('recent', descending: true)
         .snapshots()
         .listen((snapshot) async {
+      List<Map<dynamic, dynamic>> unsortedChatRooms = List<Map<dynamic, dynamic>>();
+
       for (DocumentSnapshot snapshot in snapshot.documents) {
         String roomId = snapshot.documentID;
 
@@ -61,6 +63,7 @@ class _MessagePageState extends State<MessagePage> {
 
         // message, name, sentAt
         Map<dynamic, dynamic> mostRecentMessage = snapshot.data['messages'][lastMessageIndex];
+        Timestamp recent = snapshot.data['recent'];
 
         // So go through the array and look for everyone thats not the logged in user and fetch their image
         for (String userId in snapshot.data['users'].keys) {
@@ -80,8 +83,20 @@ class _MessagePageState extends State<MessagePage> {
 
         //print(mostRecentMessage);
         // print("BEFORE ${mostRecentMessage['sentAt']}");
-        String mostRecentMessageTime = dateFormat.format(mostRecentMessage['sentAt'].toDate());
-        print(displayName);
+        // String mostRecentMessageTime = dateFormat.format(mostRecentMessage['sentAt'].toDate());
+        String mostRecentMessageTime = dateFormat.format(recent.toDate());
+
+        Map<dynamic, dynamic> newData = {
+          'displayName': displayName,
+          'message': mostRecentMessage['message'],
+          'name': mostRecentMessage['name'],
+          'mostRecentMessageTime': mostRecentMessageTime,
+          'circlePhotoUrl': circlePhotoUrl,
+          'roomId': roomId,
+          'recent': recent
+        };
+
+        unsortedChatRooms.add(newData);
 
         setState(() {
           roomPreviews.add(room(displayName, mostRecentMessage['message'], mostRecentMessage['name'], mostRecentMessageTime,
@@ -89,6 +104,26 @@ class _MessagePageState extends State<MessagePage> {
           print("SHOW ROOMS");
           print(roomPreviews);
         });
+      }
+
+      // Sort by 'recent'
+      int minIndex;
+      for (int i = 0; i < unsortedChatRooms.length; i++) {
+        minIndex = i;
+        for (int j = i + 1; j < unsortedChatRooms.length; j++) {
+          Timestamp recentI = unsortedChatRooms[i]['recent'];
+          Timestamp recentJ = unsortedChatRooms[j]['recent'];
+          // J timestamp is greater than I timestamp (J is more recent); mark J as min
+          print(recentJ.millisecondsSinceEpoch);
+          print(recentI.millisecondsSinceEpoch);
+          if (recentJ.millisecondsSinceEpoch > recentI.millisecondsSinceEpoch) minIndex = j;
+        }
+        // Swap min and I
+        Map<dynamic, dynamic> pointerI = unsortedChatRooms[i];
+        Map<dynamic, dynamic> pointerMin = unsortedChatRooms[minIndex];
+
+        unsortedChatRooms[i] = pointerMin;
+        unsortedChatRooms[minIndex] = pointerI;
       }
     });
 

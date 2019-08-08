@@ -76,6 +76,7 @@ class FirestoreManager {
     int cosplayYearsExperience,
     int cosplayMonthsExperience,
   }) async {
+    // PUBLIC
     await Firestore.instance.collection("users").document(documentName).setData({
       keyFame: fame,
       keyFriendliness: friendliness,
@@ -95,7 +96,22 @@ class FirestoreManager {
       keyCosplayYearsExperience: cosplayYearsExperience,
       keyDateRegistered: DateTime.now(),
     }, merge: true);
-    // print("Finished creating mock user");
+
+    // PRIVATE
+//    await Firestore.instance.collection("selfie").document(documentName).setData({
+//      'matchedUsers': {},
+//    }, merge: true);
+
+    List<dynamic> empty = List<dynamic>();
+    Map<dynamic, dynamic> emptyMap = Map<dynamic, dynamic>();
+
+    Firestore.instance.collection('private').document(documentName).setData({"incomingSelfieRequests": empty}, merge: true);
+    Firestore.instance.collection('private').document(documentName).setData({"outgoingSelfieRequests": empty}, merge: true);
+    Firestore.instance.collection('private').document(documentName).setData({"notifications": empty}, merge: true);
+    Firestore.instance.collection('selfie').document(documentName).setData({'matchedUsers': emptyMap}, merge: true);
+    // SELFIE
+    // LOCATION (google)
+    //
   }
 
   // Updates local user information using the database information whenever
@@ -115,7 +131,20 @@ class FirestoreManager {
     }).onError((error) {
       print("FirestoreManager stream failed");
     });
-    ;
+
+//    Firestore.instance.collection("private").document(uid).snapshots().listen((snapshot) {
+//      print("---------------Database Updated----------------------");
+//      FirestoreReadcheck.userProfileReads++;
+//      FirestoreReadcheck.printUserProfileReads();
+//
+//      // Go through each document in the user and update the local data
+//      _copyUserDatabaseInformationToLocalData(snapshot, loggedInUser);
+//
+//      // callback notifies listeners of loggedInUser
+//      callback();
+//    }).onError((error) {
+//      print("FirestoreManager stream failed");
+//    });
 
     // Going into our user collection and finding a user by their display name
 //    _getUserByDisplayName("Chibata").snapshots().listen(
@@ -194,11 +223,7 @@ class FirestoreManager {
   }
 
   static _copyUserDatabaseInformationToLocalData(DocumentSnapshot documentSnapshot, LoggedInUser loggedInUser) {
-    //loggedInUser.getHashMap[FirestoreManager.keyDocumentReference] = documentSnapshot.reference;
-    //loggedInUser.getHashMap[FirestoreManager.keyDocumentId] = documentSnapshot.documentID;
     documentSnapshot.data.forEach((key, value) {
-      //print("Updating $key...$value");
-      // FirestoreManager.keys[key] = key; // (delete) Not useful
       loggedInUser.getHashMap[key] = value;
     });
   }
