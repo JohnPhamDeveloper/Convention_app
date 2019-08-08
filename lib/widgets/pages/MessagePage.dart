@@ -37,7 +37,12 @@ class _MessagePageState extends State<MessagePage> {
         }
       }
 
-      roomPreviews.clear();
+      setState(() {
+        print("TRYING TO CLEAR ROOMS");
+        roomPreviews.clear();
+      });
+
+      print("CLEAR $roomPreviews");
 
       // Get all the rooms this user is in (documentIds are the rooms)
       for (DocumentSnapshot snapshot in snapshot.documents) {
@@ -51,6 +56,11 @@ class _MessagePageState extends State<MessagePage> {
           // We'll use the messages to get the most recent message in the chatroom
           // Which would be the last message in the array of maps
           if (snapshot.data['messages'].length <= 0) return;
+
+          setState(() {
+            print("TRYING TO CLEAR ROOMS");
+            roomPreviews.clear();
+          });
 
           int lastMessageIndex = snapshot.data['messages'].length - 1;
           String circlePhotoUrl;
@@ -78,6 +88,8 @@ class _MessagePageState extends State<MessagePage> {
 
           var dateFormat = DateFormat.yMd().add_jm();
           String mostRecentMessageTime = dateFormat.format(mostRecentMessage['sentAt'].toDate());
+
+          print("is this ever alled again");
 
           // OK now we need to generate the chatroom preview with the information above, let's start with the photo
           setState(() {
@@ -204,11 +216,13 @@ class _MessagePageState extends State<MessagePage> {
                 children: <Widget>[
                   Text(
                     name,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.w500),
                   ),
                   SizedBox(height: 4.0),
                   Text(
                     message,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(color: Colors.white, fontSize: 15.0),
                   ),
                 ],
