@@ -4,22 +4,25 @@ import 'package:cosplay_app/constants/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/widgets/RankCard.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RankingListPage extends StatefulWidget {
+  FirebaseUser firebaseUser;
+
+  RankingListPage({@required firebaseUser});
+
   @override
   _RankingListPageState createState() => _RankingListPageState();
 }
 
-class _RankingListPageState extends State<RankingListPage>
-    with AutomaticKeepAliveClientMixin {
+class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAliveClientMixin {
   List<Widget> friendlinessCards = List<Widget>();
   List<Widget> fameCards = List<Widget>();
 
   @override
   void initState() {
     super.initState();
-    constructCards(friendlinessCards, FirestoreManager.keyFriendliness,
-        Icons.sentiment_very_satisfied);
+    constructCards(friendlinessCards, FirestoreManager.keyFriendliness, Icons.sentiment_very_satisfied);
     constructCards(fameCards, FirestoreManager.keyFame, Icons.star);
   }
 
@@ -28,21 +31,17 @@ class _RankingListPageState extends State<RankingListPage>
     cards.add(SizedBox(width: 20.0));
     try {
       // Go into our database and order by the key.
-      Firestore.instance
-          .collection("users")
-          .orderBy(orderBy, descending: true)
-          .getDocuments()
-          .then((snapshot) {
+      Firestore.instance.collection("users").orderBy(orderBy, descending: true).getDocuments().then((snapshot) {
         // Now that it's ordered by the key, construct a card for everyone in the database in order
         snapshot.documents.forEach((data) {
-          String url =
-              data[FirestoreManager.keyPhotos][0]; // Network URL to image
+          String url = data[FirestoreManager.keyPhotos][0]; // Network URL to image
           Key key = UniqueKey(); // Used for the dot hero animation
           String dotHeroName = key.toString() + "rankedDot";
           String imageHeroName = key.toString() + "rankedToHero";
 
           // Create the card
           RankCard card = RankCard(
+            firebaseUser: widget.firebaseUser,
             documentSnapshot: data,
             heroName: dotHeroName,
             //imageHeroName: imageHeroName,

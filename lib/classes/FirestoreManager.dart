@@ -59,6 +59,7 @@ class FirestoreManager {
   static Future<void> createUserInDatabase({
     String documentName,
     int fame,
+    Timestamp dateRegistered,
     int friendliness,
     String displayName,
     List<String> photoUrls,

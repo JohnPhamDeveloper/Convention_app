@@ -7,11 +7,13 @@ import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cosplay_app/widgets/UserSearchInfo.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SearchSectionItem extends StatefulWidget {
   final String userType;
+  final FirebaseUser firebaseUser;
 
-  SearchSectionItem({@required this.userType});
+  SearchSectionItem({@required this.userType, @required this.firebaseUser});
 
   @override
   _SearchSectionItemState createState() => _SearchSectionItemState();
@@ -19,18 +21,17 @@ class SearchSectionItem extends StatefulWidget {
 
 class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKeepAliveClientMixin {
   List<Widget> searchInfoWidgets = List<Widget>();
-
   @override
   bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
-    createSearchUsers(context);
+    createSearchUsers(context, widget.firebaseUser);
   }
 
   // Initial creation of search users on app launch
-  void createSearchUsers(BuildContext context) {
+  void createSearchUsers(BuildContext context, FirebaseUser firebaseUser) {
     // Go through every person in the users (though we'll change this to users around us)
     // Check if they are a cosplayer, if they are, then put into cosplayer list
     //List<LoggedInUser> userList = List<LoggedInUser>();
@@ -74,7 +75,7 @@ class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKee
             cost: cosplayerCost,
             rarity: rarity,
             onTap: () {
-              HeroCreator.pushProfileIntoView(docSnapshot.reference, context);
+              HeroCreator.pushProfileIntoView(docSnapshot.reference, context, firebaseUser);
             },
             key: UniqueKey(),
           );
@@ -123,7 +124,7 @@ class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKee
       cost: photographerCost,
       rarity: rarity,
       onTap: () {
-        HeroCreator.pushProfileIntoView(docSnapshot.reference, context);
+        //HeroCreator.pushProfileIntoView(docSnapshot.reference, context);
       },
       key: UniqueKey(),
     );

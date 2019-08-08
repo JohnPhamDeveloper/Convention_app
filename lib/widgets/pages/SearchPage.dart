@@ -6,8 +6,13 @@ import 'package:cosplay_app/widgets/RoundButton.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:cosplay_app/widgets/FireMap.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SearchPage extends StatefulWidget {
+  final FirebaseUser firebaseUser;
+
+  SearchPage({@required this.firebaseUser});
+
   @override
   _SearchPageState createState() => _SearchPageState();
 }
@@ -36,8 +41,11 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       },
       controller: pageController,
       children: <Widget>[
-        SearchSectionItem(userType: FirestoreManager.keyIsCosplayer),
-        SearchSectionItem(userType: FirestoreManager.keyIsPhotographer),
+        SearchSectionItem(
+          userType: FirestoreManager.keyIsCosplayer,
+          firebaseUser: widget.firebaseUser,
+        ),
+        SearchSectionItem(userType: FirestoreManager.keyIsPhotographer, firebaseUser: widget.firebaseUser),
         // PhotographerSearchSection(),
       ],
     );

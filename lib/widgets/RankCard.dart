@@ -7,8 +7,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/HeroCreator.dart';
 import 'package:cosplay_app/widgets/HeroProfileDetails.dart';
 import 'package:cosplay_app/widgets/HeroProfileStart.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class RankCard extends StatelessWidget {
+class RankCard extends StatefulWidget {
+  final FirebaseUser firebaseUser;
   final DocumentSnapshot documentSnapshot;
   final String heroName;
   final String image;
@@ -20,10 +22,8 @@ class RankCard extends StatelessWidget {
   final Key key;
   final String imageHeroName;
 
-  HeroProfileDetails _details;
-  HeroProfileStart _start;
-
   RankCard({
+    @required this.firebaseUser,
     this.heroName = "",
     this.imageHeroName = "",
     @required this.documentSnapshot,
@@ -38,14 +38,23 @@ class RankCard extends StatelessWidget {
     //createClickedProfileBeforeHand();
   }
 
+  @override
+  _RankCardState createState() => _RankCardState();
+}
+
+class _RankCardState extends State<RankCard> {
+  HeroProfileDetails _details;
+
+  HeroProfileStart _start;
+
   Widget renderHeroDot() {
-    if (heroName.isNotEmpty) {
+    if (widget.heroName.isNotEmpty) {
       return Hero(
-        tag: heroName,
+        tag: widget.heroName,
         child: NotificationDot(
           outerSize: 25.0,
           innerSize: 25.0,
-          innerColor: dotIsOn ? Colors.pinkAccent : Colors.grey[50],
+          innerColor: widget.dotIsOn ? Colors.pinkAccent : Colors.grey[50],
         ),
       );
     }
@@ -53,19 +62,12 @@ class RankCard extends StatelessWidget {
     return NotificationDot(
       outerSize: 25.0,
       innerSize: 25.0,
-      innerColor: dotIsOn ? Colors.pinkAccent : Colors.grey[50],
+      innerColor: widget.dotIsOn ? Colors.pinkAccent : Colors.grey[50],
     );
   }
 
-  // Precreate profiles for no lag when clicking on a ranked user
-//  void createClickedProfileBeforeHand() {
-//    _start = HeroCreator.createHeroProfileStart(
-//        heroName, imageHeroName, documentSnapshot);
-//    _details = HeroCreator.createHeroProfileDetails(documentSnapshot);
-//  }
-
   void createClickedProfileOnlyOnTap(BuildContext context) {
-    HeroCreator.pushProfileIntoView(documentSnapshot.reference, context);
+    HeroCreator.pushProfileIntoView(widget.documentSnapshot.reference, context, widget.firebaseUser);
   }
 
   @override
@@ -98,9 +100,9 @@ class RankCard extends StatelessWidget {
                   borderWidth: 3.5,
                   borderRadius: 25.0,
                   enableShadows: true,
-                  rarityBorderColor: kRarityBorders[rarityBorder],
+                  rarityBorderColor: kRarityBorders[widget.rarityBorder],
                   width: 220,
-                  imageURL: image),
+                  imageURL: widget.image),
             ),
             // Dot
             Positioned(
@@ -119,16 +121,16 @@ class RankCard extends StatelessWidget {
                     icon: Icons.face,
                     iconSize: 25.0,
                     text: Text(
-                      name,
+                      widget.name,
                       style: kProfileOverlayNameStyle,
                     ),
                   ),
                   SizedBox(height: 2.0),
                   IconText(
-                    icon: icon,
+                    icon: widget.icon,
                     iconSize: 25.0,
                     text: Text(
-                      value.toString(),
+                      widget.value.toString(),
                       style: kProfileOverlayTextStyle,
                     ),
                   ),

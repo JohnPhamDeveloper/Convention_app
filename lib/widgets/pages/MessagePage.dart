@@ -28,7 +28,7 @@ class _MessagePageState extends State<MessagePage> {
   void initState() {
     super.initState();
 
-    print("MESSAGE ==================================================");
+    print("================================== MESSAGE ==================================================");
     Firestore.instance.collection('private').document(widget.firebaseUser.uid).collection('rooms').snapshots().listen((snapshot) {
       // Whenever the private->rooms changes, clear all current chatrooms->roomId listeners and remake them
       for (StreamSubscription sub in subscriptionList) {
@@ -37,17 +37,12 @@ class _MessagePageState extends State<MessagePage> {
         }
       }
 
-//      setState(() {
-//        print("TRYING TO CLEAR ROOMS");
-//        roomPreviews.clear();
-//      });
+      List<Map<dynamic, dynamic>> unsortedData = List<Map<dynamic, dynamic>>();
 
       // Get all the rooms this user is in (documentIds are the rooms)
       for (DocumentSnapshot snapshot in snapshot.documents) {
         String roomId = snapshot.documentID;
-        print(snapshot.documentID);
 
-        // So this is a one-shot method when rooms changes.
         // if rooms does change, (removed or added), then the user will only get those new rooms now.
         StreamSubscription subscription =
             Firestore.instance.collection('chatrooms').document(roomId).snapshots().listen((snapshot) async {
@@ -67,13 +62,6 @@ class _MessagePageState extends State<MessagePage> {
           // message, name, sentAt
           Map<dynamic, dynamic> mostRecentMessage = snapshot.data['messages'][lastMessageIndex];
 
-          // ??
-          //snapshot.data['created']
-
-          // When a message is sent, this field will update? Why not just get the most recent sentAt instead
-          //snapshot.data['recent']
-
-          // Users in the chatroom
           // So go through the array and look for everyone thats not the logged in user and fetch their image
           for (String userId in snapshot.data['users']) {
             // If the user isn't the logged in user...
@@ -92,38 +80,32 @@ class _MessagePageState extends State<MessagePage> {
           print("BEFORE ${mostRecentMessage['sentAt']}");
           String mostRecentMessageTime = dateFormat.format(mostRecentMessage['sentAt'].toDate());
 
-          print("is this ever alled again");
+          // Need to add all the values in a map, then sort the maps, and then create the Widgets after
+          unsortedData.add({
+            'displayName': displayName,
+            'message': mostRecentMessage['message'],
+            'name': mostRecentMessage['name'],
+            'mostRecentMessageTime': mostRecentMessageTime,
+            'circlePhotoUrl': circlePhotoUrl,
+            'roomId': roomId
+          });
 
-          // OK now we need to generate the chatroom preview with the information above, let's start with the photo
+          print("how many times");
+          print(unsortedData);
+
           setState(() {
             roomPreviews.add(room(displayName, mostRecentMessage['message'], mostRecentMessage['name'], mostRecentMessageTime,
                 circlePhotoUrl, roomId, context));
           });
-
-//          // This part is for the chatroomVIEW MOVE
-//          if (snapshot.data['messages'].isNotEmpty) {
-//            List<String> usersInChat = List<String>();
-//            for (String userId in snapshot.data['users']) {
-//              usersInChat.add(userId);
-//            }
-//            print(usersInChat);
-//            Timestamp created = snapshot.data['created'];
-//            print(created);
-//            Timestamp recent = snapshot.data['recent'];
-//            print(recent);
-//            var dateFormat = DateFormat.yMd().add_jm();
-//            String lastRoomUpdate = dateFormat.format(recent.toDate());
-//
-//            // In order to create the room preview we need to get the other persons image...
-//            // The last message sent (can be either person)
-//            // The timestamp of the most recent message (either person)
-//            // Name of the OTHER person
-//
-//            //  _createRoomPreview(snapshot, roomId);
-//          }
         });
 
         subscriptionList.add(subscription);
+      }
+
+      // Sort here
+      for (int i = 0; i < unsortedData.length; i++) {
+        print("?");
+        print(unsortedData[i]);
       }
     });
 
@@ -178,8 +160,6 @@ class _MessagePageState extends State<MessagePage> {
 //      });
 //    }
 //  }
-
-//
 
   Widget room(String loggedInUserName, String message, String name, String sentDate, String imageUrl, String roomId,
       BuildContext context) {

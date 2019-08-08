@@ -48,7 +48,7 @@ class _MainScreenState extends State<MainScreen> {
 
     // Get data from database for logged in user when it changes
     // Set loading is called if data is successfuly updated into loggedInUser
-    _loginUser();
+    _loginUser2();
 
     //createMockUser();
   }
@@ -90,6 +90,22 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  // TODO REMOVE TEST
+  _loginUser3() async {
+    // print("FAKE LOGGING IN");
+    return FirebaseAuth.instance.signInWithEmailAndPassword(email: 'bob3@hotmail.com', password: '123456').then((user) async {
+      print("Successfully logged in");
+      firebaseUser = await FirebaseAuth.instance.currentUser();
+      if (firebaseUser != null) {
+        _initAfterLoggedIn();
+        FirestoreManager.streamUserData(loggedInUser, setLoading, user.uid);
+      }
+    }).catchError((error) {
+      print('unable to login');
+      print(error);
+    });
+  }
+
   _initAfterLoggedIn() async {
     loggedInUser = LoggedInUser();
     preloadPageController = PreloadPageController(initialPage: navIndex);
@@ -105,12 +121,35 @@ class _MainScreenState extends State<MainScreen> {
       controller: preloadPageController,
       children: <Widget>[
 //        RankingListPage(),
-        SearchPage(),
+        SearchPage(firebaseUser: firebaseUser),
 //        FamePage(),
         NotificationPage(firebaseUser: firebaseUser),
         MessagePage(firebaseUser: firebaseUser)
         //  ProfilePage(),
       ],
+    );
+  }
+
+  void createSingleUser() async {
+    await FirestoreManager.createUserInDatabase(
+      documentName: "aaxXgxRl9BVe2zJcEomloI5yu0D3", // uid
+      fame: 45,
+      friendliness: 612,
+      dateRegistered: Timestamp.now(),
+      displayName: "Regardo The Fifth",
+      photoUrls: ['https://c.pxhere.com/photos/fc/88/boy_portrait_people_man_anime_face_35mm_comic-185839.jpg!d'],
+      cosplayName: "Naruto",
+      seriesName: "NarutoSasuke",
+      isCosplayer: true,
+      isPhotographer: false,
+      rarityBorder: 3,
+      realName: "Bobby Jones", // Wont use this field
+      cosplayerCost: "\$52.00/hr",
+      photographerCost: "\$42.00/hr",
+      photographyMonthsExperience: 2,
+      photographyYearsExperience: 5,
+      cosplayMonthsExperience: 0,
+      cosplayYearsExperience: 0,
     );
   }
 

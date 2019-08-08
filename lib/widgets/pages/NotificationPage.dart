@@ -151,7 +151,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
         // Add item
         item = NotificationItem(
           onTap: () {
-            HeroCreator.pushProfileIntoView(snapshot.reference, context);
+            HeroCreator.pushProfileIntoView(snapshot.reference, context, widget.firebaseUser);
           },
           name: name,
           miniUser: MiniUser(
@@ -177,6 +177,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
         // String created = timeago.format(date);
 
         item = NotificationItem(
+          onTap: () {},
           name: "????",
           message: "Unable to get this user's information",
           timeCreated: timestamp,

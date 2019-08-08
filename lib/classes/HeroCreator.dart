@@ -13,7 +13,7 @@ import 'package:cosplay_app/classes/Meetup.dart';
 
 class HeroCreator {
   // Construct HeroProfile widget from the information on the clicked avatar
-  static pushProfileIntoView(DocumentReference otherUserDataReference, BuildContext context) async {
+  static pushProfileIntoView(DocumentReference otherUserDataReference, BuildContext context, FirebaseUser firebaseUser) async {
     // Get latest snapshot of the user from the database
     print("getting latest database information?");
 
@@ -31,7 +31,7 @@ class HeroCreator {
     HeroProfileStart heroProfileStart = HeroCreator.createHeroProfileStart(otherUserDataSnapshot, currentLoggedInUser);
 
     HeroProfileDetails heroProfileDetails =
-        HeroCreator.createHeroProfileDetails(otherUserDataSnapshot, context, currentLoggedInUser);
+        await HeroCreator.createHeroProfileDetails(otherUserDataSnapshot, context, currentLoggedInUser, firebaseUser);
     Widget clickedProfile = HeroCreator._wrapInScaffold([heroProfileStart, heroProfileDetails], context);
 
     // Push that profile into view
@@ -51,8 +51,8 @@ class HeroCreator {
     );
   }
 
-  static HeroProfileDetails createHeroProfileDetails(
-      DocumentSnapshot otherUserDocumentSnapshot, BuildContext context, LoggedInUser currentLoggedInUser) {
+  static Future<HeroProfileDetails> createHeroProfileDetails(DocumentSnapshot otherUserDocumentSnapshot, BuildContext context,
+      LoggedInUser currentLoggedInUser, FirebaseUser firebaseUser) async {
     // Build a profile with different buttons if they're looking at themselves
     bool isLookingAtOwnProfile = _checkSame(currentLoggedInUser, otherUserDocumentSnapshot);
 
@@ -60,9 +60,21 @@ class HeroCreator {
     bool displayAcceptButton = false;
     bool displayFinishButton = false;
 
-    // Get logged in users incoming and outgoing selfie requests
-    List<dynamic> loggedInUserIncomingSelfie = currentLoggedInUser.getHashMap[FirestoreManager.keyIncomingSelfieRequests];
-    List<dynamic> loggedInUserOutgoingSelfie = currentLoggedInUser.getHashMap[FirestoreManager.keyOutgoingSelfieRequests];
+    // Get logged in users incoming and outgoing selfie requests (PREV VERSION)
+//    List<dynamic> loggedInUserIncomingSelfie = currentLoggedInUser.getHashMap[FirestoreManager.keyIncomingSelfieRequests];
+//    List<dynamic> loggedInUserOutgoingSelfie = currentLoggedInUser.getHashMap[FirestoreManager.keyOutgoingSelfieRequests];
+    List<dynamic> loggedInUserIncomingSelfie = List<dynamic>();
+    List<dynamic> loggedInUserOutgoingSelfie = List<dynamic>();
+
+    // Need to read private? Yes that's ok they can read their own private database
+    await Firestore.instance.collection("private").document(firebaseUser.uid).get().then((snapshot) {
+      loggedInUserIncomingSelfie = snapshot.data[FirestoreManager.keyIncomingSelfieRequests];
+      loggedInUserOutgoingSelfie = snapshot.data[FirestoreManager.keyOutgoingSelfieRequests];
+    });
+
+    print("YES");
+    print(loggedInUserOutgoingSelfie);
+    print(loggedInUserIncomingSelfie);
 
     // If current user sent and recieved a selfie request from other user
     if (loggedInUserIncomingSelfie.contains(otherUserDocumentSnapshot.documentID) &&
