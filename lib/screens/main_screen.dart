@@ -48,8 +48,8 @@ class _MainScreenState extends State<MainScreen> {
 
     // Get data from database for logged in user when it changes
     // Set loading is called if data is successfuly updated into loggedInUser
-    _loginUser3();
-    createSingleUser();
+    _loginUser();
+    //createSingleUser();
 
     //createMockUser();
   }

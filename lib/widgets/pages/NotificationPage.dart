@@ -36,10 +36,13 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
     await Firestore.instance.collection('private').document(widget.firebaseUser.uid).get().then((snapshot) {
       if (snapshot.data['notifications'] != null) {
         final notificationLength = snapshot.data['notifications'].length;
+        print('NotificationLength: $notificationLength');
         var start = notificationLength - 20 - 1;
         if (start < 0) start = 0;
+        print('Start: $start');
         var numberOfNotificationsToShow = 15;
         if (notificationLength < numberOfNotificationsToShow) numberOfNotificationsToShow = notificationLength;
+        print('number of notifications to show: $numberOfNotificationsToShow');
 
         // Load the recent 15 notifications only
         for (int i = start; i < start + numberOfNotificationsToShow; i++) {
@@ -64,6 +67,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
       // When we load the previous notifications, this will run on start, which causes the most recent notification
       // To be duplicated
       if (loadedPreviousNotifications) {
+        notifications.clear();
         //if (!snapshot.exists) return Text("Nothing loaded...");
         final lastItemIndex = snapshot.data['notifications'].length - 1;
 

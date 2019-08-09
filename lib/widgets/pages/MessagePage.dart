@@ -35,17 +35,15 @@ class _MessagePageState extends State<MessagePage> {
 //      }
 //    }
 
-    // Get all the rooms this user is in (documentIds are the rooms)
-
-    // if rooms does change, (removed or added), then the user will only get those new rooms now.
+    // Find chatrooms and this user is in
     StreamSubscription subscription = Firestore.instance
         .collection('chatrooms')
         .where('users.${widget.firebaseUser.uid}', isEqualTo: true)
-//        .orderBy('recent', descending: true)
         .snapshots()
         .listen((snapshot) async {
       List<Map<dynamic, dynamic>> unsortedChatRooms = List<Map<dynamic, dynamic>>();
 
+      // Get all chatrooms and create a preview
       for (DocumentSnapshot snapshot in snapshot.documents) {
         String roomId = snapshot.documentID;
 
@@ -65,7 +63,7 @@ class _MessagePageState extends State<MessagePage> {
         Map<dynamic, dynamic> mostRecentMessage = snapshot.data['messages'][lastMessageIndex];
         Timestamp recent = snapshot.data['recent'];
 
-        // So go through the array and look for everyone thats not the logged in user and fetch their image
+        // Look for everyone that's not the logged in user and fetch their image
         for (String userId in snapshot.data['users'].keys) {
           print("YO");
           print(userId);
@@ -98,17 +96,19 @@ class _MessagePageState extends State<MessagePage> {
 
         unsortedChatRooms.add(newData);
 
-        setState(() {
-          roomPreviews.add(room(displayName, mostRecentMessage['message'], mostRecentMessage['name'], mostRecentMessageTime,
-              circlePhotoUrl, roomId, context));
-          print("SHOW ROOMS");
-          print(roomPreviews);
-        });
+//        setState(() {
+//          roomPreviews.add(room(displayName, mostRecentMessage['message'], mostRecentMessage['name'], mostRecentMessageTime,
+//              circlePhotoUrl, roomId, context));
+//          print("SHOW ROOMS");
+//          print(roomPreviews);
+//        });
       }
 
+      print("Beginning of recent...........");
       // Sort by 'recent'
       int minIndex;
       for (int i = 0; i < unsortedChatRooms.length; i++) {
+        print('Inner for loop..................');
         minIndex = i;
         for (int j = i + 1; j < unsortedChatRooms.length; j++) {
           Timestamp recentI = unsortedChatRooms[i]['recent'];
@@ -125,9 +125,47 @@ class _MessagePageState extends State<MessagePage> {
         unsortedChatRooms[i] = pointerMin;
         unsortedChatRooms[minIndex] = pointerI;
       }
+
+      // Now that it's sorted, add it.
+      for (int i = 0; i < unsortedChatRooms.length; i++) {
+        setState(
+          () {
+            roomPreviews.add(room(
+                unsortedChatRooms[i]['displayName'],
+                unsortedChatRooms[i]['message'],
+                unsortedChatRooms[i]['name'],
+                unsortedChatRooms[i]['mostRecentMessageTime'],
+                unsortedChatRooms[i]['circlePhotoUrl'],
+                unsortedChatRooms[i]['roomId'],
+                context));
+          },
+        );
+      }
     });
 
     subscriptionList.add(subscription);
+  }
+
+  _sortRoomByTimestamp(List<Map<dynamic, dynamic>> unsortedChatRooms) {
+    int minIndex;
+    for (int i = 0; i < unsortedChatRooms.length; i++) {
+      print('Inner for loop..................');
+      minIndex = i;
+      for (int j = i + 1; j < unsortedChatRooms.length; j++) {
+        Timestamp recentI = unsortedChatRooms[i]['recent'];
+        Timestamp recentJ = unsortedChatRooms[j]['recent'];
+        // J timestamp is greater than I timestamp (J is more recent); mark J as min
+        print(recentJ.millisecondsSinceEpoch);
+        print(recentI.millisecondsSinceEpoch);
+        if (recentJ.millisecondsSinceEpoch > recentI.millisecondsSinceEpoch) minIndex = j;
+      }
+      // Swap min and I
+      Map<dynamic, dynamic> pointerI = unsortedChatRooms[i];
+      Map<dynamic, dynamic> pointerMin = unsortedChatRooms[minIndex];
+
+      unsortedChatRooms[i] = pointerMin;
+      unsortedChatRooms[minIndex] = pointerI;
+    }
   }
 
   Widget room(
