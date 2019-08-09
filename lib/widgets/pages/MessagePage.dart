@@ -267,7 +267,7 @@ class _ChatViewState extends State<ChatView> {
       //messages.add(SizedBox(height: 50));
       bool isFirstMessage = true;
 
-      if (snapshot.data['messages'] != null) {
+      if (snapshot.exists) {
         for (Map<dynamic, dynamic> message in snapshot.data['messages']) {
           // SKip first message which is a welcome message
           if (isFirstMessage) {

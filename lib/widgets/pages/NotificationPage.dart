@@ -65,7 +65,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
       // To be duplicated
       if (loadedPreviousNotifications) {
         print("DID THIS RUN?");
-        notifications.clear();
+        // notifications.clear();
         //if (!snapshot.exists) return Text("Nothing loaded...");
         final lastItemIndex = snapshot.data['notifications'].length - 1;
 
