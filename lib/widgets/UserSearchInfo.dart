@@ -8,7 +8,7 @@ import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/widgets/MiniUser.dart';
 
 // COSPLAYER
-class UserSearchInfo extends StatefulWidget {
+class SearchUserItem extends StatefulWidget {
   final String imageHeroName;
   final String backgroundImage;
   final String name;
@@ -20,7 +20,7 @@ class UserSearchInfo extends StatefulWidget {
   final int friendliness;
   final Key key;
 
-  UserSearchInfo({
+  SearchUserItem({
     this.backgroundImage =
         "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/300px-Icon-round-Question_mark.svg.png",
     this.imageHeroName = "",
@@ -35,10 +35,10 @@ class UserSearchInfo extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _UserSearchInfoState createState() => _UserSearchInfoState();
+  _SearchUserItemState createState() => _SearchUserItemState();
 }
 
-class _UserSearchInfoState extends State<UserSearchInfo> {
+class _SearchUserItemState extends State<SearchUserItem> {
   bool _isLoggedInUser = false;
 //  Color _selfieDotColor = Colors.pinkAccent;
 

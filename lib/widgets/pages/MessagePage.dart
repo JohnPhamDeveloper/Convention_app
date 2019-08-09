@@ -258,7 +258,10 @@ class _ChatViewState extends State<ChatView> {
   @override
   void initState() {
     super.initState();
+    _listenToActiveChatrooms();
+  }
 
+  _listenToActiveChatrooms() {
     // Listen to the chatroom ID
     Firestore.instance.collection('chatrooms').document(widget.docId).snapshots().listen((snapshot) {
       // Map<dynamic, dynamic> messages = snapshot.data['messages'];
@@ -280,7 +283,7 @@ class _ChatViewState extends State<ChatView> {
           String sentAt = dateFormat.format(message['sentAt'].toDate());
 
           print(message['message']);
-          String messageUid = message['uid']; //TODO need UID to identiy whos talking
+          String messageUid = message['uid'];
           bool isLoggedInUser = false;
 
           if (messageUid == widget.firebaseUser.uid) {

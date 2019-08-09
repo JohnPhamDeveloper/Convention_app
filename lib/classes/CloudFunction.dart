@@ -9,6 +9,7 @@ class CloudFunction {
   static String getSelfieMatchedLocation = 'getSelfieMatchedLocation';
   static String finishSelfie = 'finishSelfie';
   static String sendMessage = 'sendMessage';
+  static String getEveryoneAround = 'getEveryoneAround';
 
   static Future<HttpsCallableResult> call(String functionName, {String key = "nothing", String value = "nothing"}) {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(

@@ -31,7 +31,10 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     //_loginUser();
 
     _checkPermission();
+    _createPages();
+  }
 
+  _createPages() {
     pageController = PageController(initialPage: navIndex);
     pageView = PageView(
       onPageChanged: (index) {
@@ -41,11 +44,11 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       },
       controller: pageController,
       children: <Widget>[
-        SearchSectionItem(
+        SearchSection(
           userType: FirestoreManager.keyIsCosplayer,
           firebaseUser: widget.firebaseUser,
         ),
-        SearchSectionItem(userType: FirestoreManager.keyIsPhotographer, firebaseUser: widget.firebaseUser),
+        SearchSection(userType: FirestoreManager.keyIsPhotographer, firebaseUser: widget.firebaseUser),
         // PhotographerSearchSection(),
       ],
     );

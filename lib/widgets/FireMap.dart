@@ -78,7 +78,7 @@ class _FireMapState extends State<FireMap> {
         // Stop updating map & sending location since match list is empty
         //TODO WARNING: IF A MAP BECOMES EMPTY, IT TURNS INTO AN ARRAY IN FIRESTORE. isEmpty covers both "Array" and "Map" type
         if (snapshot.data[FirestoreManager.keyMatchedUsers].isEmpty) {
-          print("STOP TYIMER");
+          print("STOP TIMER");
           isMatched = false;
           _stopMapUpdate();
         } else {
@@ -171,11 +171,23 @@ class _FireMapState extends State<FireMap> {
     final Geoflutterfire geo = Geoflutterfire();
     GeoFirePoint newGeoPoint = geo.point(latitude: latlng.latitude, longitude: latlng.longitude);
 
+    // For cloud (g: hash, l: geopoint, d: (documentData)
+    String g = newGeoPoint.hash;
+    GeoPoint l = newGeoPoint.geoPoint;
+
+    // TODO REMOVE
+    Map<dynamic, dynamic> arguments = Map<dynamic, dynamic>();
+    arguments['lat'] = l.latitude;
+    arguments['lng'] = l.longitude;
+    Meetup.getEveryoneAround(arguments);
+
     print("Updating locations...");
     // Update the database with the logged in user's new position & displayName
     Firestore.instance.collection("locations").document(user.uid).setData({
       FirestoreManager.keyDisplayName: loggedInUser.getHashMap[FirestoreManager.keyDisplayName],
       FirestoreManager.keyPosition: newGeoPoint.data,
+      'g': g,
+      'l': l
     }, merge: true).catchError((error) {
       print("Firemap: Failed to update logged in users position");
     });

@@ -9,17 +9,17 @@ import 'package:cosplay_app/widgets/UserSearchInfo.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class SearchSectionItem extends StatefulWidget {
+class SearchSection extends StatefulWidget {
   final String userType;
   final FirebaseUser firebaseUser;
 
-  SearchSectionItem({@required this.userType, @required this.firebaseUser});
+  SearchSection({@required this.userType, @required this.firebaseUser});
 
   @override
-  _SearchSectionItemState createState() => _SearchSectionItemState();
+  _SearchSectionState createState() => _SearchSectionState();
 }
 
-class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKeepAliveClientMixin {
+class _SearchSectionState extends State<SearchSection> with AutomaticKeepAliveClientMixin {
   List<Widget> searchInfoWidgets = List<Widget>();
   @override
   bool get wantKeepAlive => true;
@@ -30,17 +30,14 @@ class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKee
     createSearchUsers(context, widget.firebaseUser);
   }
 
-  // Initial creation of search users on app launch
   void createSearchUsers(BuildContext context, FirebaseUser firebaseUser) {
-    // Go through every person in the users (though we'll change this to users around us)
-    // Check if they are a cosplayer, if they are, then put into cosplayer list
-    //List<LoggedInUser> userList = List<LoggedInUser>();
     LoggedInUser user = LoggedInUser();
 
     // TODO should only get user around the radius of the user
+    // Call cloud function which goes to location and pulls up all docId in 3 mile radius... (subscribe up to 10 miles)
+    // Then use those documents to pull up the public information of everyone in 0.5 mile increments (rounded down)
     Firestore.instance.collection("users").getDocuments().then((snapshot) {
       // Go through each user in the database
-
       snapshot.documents.forEach((docSnapshot) {
         FirestoreReadcheck.searchInfoPageReads++;
         FirestoreReadcheck.printSearchInfoPageReads();
@@ -49,6 +46,7 @@ class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKee
           user.getHashMap[key] = value;
         });
 
+        // TODO get rid of years and months cosplay and cosplay cost
         // All of the data in our database
         bool isCosplayer = user.getHashMap[FirestoreManager.keyIsCosplayer];
         bool isPhotographer = user.getHashMap[FirestoreManager.keyIsPhotographer];
@@ -66,7 +64,7 @@ class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKee
         // Handle cosplayer data
         if (widget.userType == FirestoreManager.keyIsCosplayer && isCosplayer) {
           // store that users information into the widget
-          UserSearchInfo widget = UserSearchInfo(
+          SearchUserItem widget = SearchUserItem(
             backgroundImage: circleImageUrl,
             name: name,
             subtitle: subtitle,
@@ -115,7 +113,7 @@ class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKee
     DocumentSnapshot docSnapshot,
     BuildContext context,
   ) {
-    UserSearchInfo widget = UserSearchInfo(
+    SearchUserItem widget = SearchUserItem(
       backgroundImage: circleImageUrl,
       name: name,
       subtitle: "",

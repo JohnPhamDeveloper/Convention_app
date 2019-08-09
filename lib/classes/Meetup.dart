@@ -29,4 +29,8 @@ class Meetup {
   static Future<HttpsCallableResult> sendMessage(Map<dynamic, dynamic> arguments) {
     return CloudFunction.call2(CloudFunction.sendMessage, arguments);
   }
+
+  static Future<HttpsCallableResult> getEveryoneAround(Map<dynamic, dynamic> arguments) {
+    return CloudFunction.call2(CloudFunction.getEveryoneAround, arguments);
+  }
 }
