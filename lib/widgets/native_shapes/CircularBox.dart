@@ -9,9 +9,11 @@ class CircularBox extends StatelessWidget {
   final Color backgroundColor;
   final bool hasShadow;
   final EdgeInsets padding;
+  final double maxWidth;
 
   CircularBox({
     @required this.child,
+    this.maxWidth = double.infinity,
     this.radius = 20.0,
     this.borderRadius,
     this.width,
@@ -47,6 +49,7 @@ class CircularBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      constraints: BoxConstraints(maxWidth: maxWidth),
       width: width,
       height: height,
       decoration: BoxDecoration(

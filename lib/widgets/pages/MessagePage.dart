@@ -29,13 +29,8 @@ class _MessagePageState extends State<MessagePage> {
     super.initState();
 
     print("================================== MESSAGE ==================================================");
-//    for (StreamSubscription sub in subscriptionList) {
-//      if (sub != null) {
-//        sub.cancel();
-//      }
-//    }
 
-    // Find chatrooms and this user is in
+    // Find chatrooms this user is in
     StreamSubscription subscription = Firestore.instance
         .collection('chatrooms')
         .where('users.${widget.firebaseUser.uid}', isEqualTo: true)
@@ -45,118 +40,70 @@ class _MessagePageState extends State<MessagePage> {
 
       // Get all chatrooms and create a preview
       for (DocumentSnapshot snapshot in snapshot.documents) {
-        String roomId = snapshot.documentID;
-
-        print("LISTENGING TO DOCUMENTS");
         setState(() {
           roomPreviews.clear();
         });
-        // We'll use the messages to get the most recent message in the chatroom
-        // Which would be the last message in the array of maps
+
         if (snapshot.data['messages'].length <= 0) return;
-
-        int lastMessageIndex = snapshot.data['messages'].length - 1;
-        String circlePhotoUrl;
-        String displayName;
-
-        // message, name, sentAt
-        Map<dynamic, dynamic> mostRecentMessage = snapshot.data['messages'][lastMessageIndex];
-        Timestamp recent = snapshot.data['recent'];
-
-        // Look for everyone that's not the logged in user and fetch their image
-        for (String userId in snapshot.data['users'].keys) {
-          print("YO");
-          print(userId);
-          // If the user isn't the logged in user...
-          if (userId != widget.firebaseUser.uid) {
-            // Get the user's photo
-            await Firestore.instance.collection('users').document(userId).get().then((snapshot) {
-              circlePhotoUrl = snapshot.data['photos'][0];
-              displayName = snapshot.data['displayName'];
-            });
-          }
-        }
-
-        var dateFormat = DateFormat.yMd().add_jm();
-
-        //print(mostRecentMessage);
-        // print("BEFORE ${mostRecentMessage['sentAt']}");
-        // String mostRecentMessageTime = dateFormat.format(mostRecentMessage['sentAt'].toDate());
-        String mostRecentMessageTime = dateFormat.format(recent.toDate());
-
-        Map<dynamic, dynamic> newData = {
-          'displayName': displayName,
-          'message': mostRecentMessage['message'],
-          'name': mostRecentMessage['name'],
-          'mostRecentMessageTime': mostRecentMessageTime,
-          'circlePhotoUrl': circlePhotoUrl,
-          'roomId': roomId,
-          'recent': recent
-        };
-
-        unsortedChatRooms.add(newData);
-
-//        setState(() {
-//          roomPreviews.add(room(displayName, mostRecentMessage['message'], mostRecentMessage['name'], mostRecentMessageTime,
-//              circlePhotoUrl, roomId, context));
-//          print("SHOW ROOMS");
-//          print(roomPreviews);
-//        });
+        await _getOtherUserPublicInformation(snapshot, unsortedChatRooms);
       }
-
-      print("Beginning of recent...........");
-      // Sort by 'recent'
-      int minIndex;
-      for (int i = 0; i < unsortedChatRooms.length; i++) {
-        print('Inner for loop..................');
-        minIndex = i;
-        for (int j = i + 1; j < unsortedChatRooms.length; j++) {
-          Timestamp recentI = unsortedChatRooms[i]['recent'];
-          Timestamp recentJ = unsortedChatRooms[j]['recent'];
-          // J timestamp is greater than I timestamp (J is more recent); mark J as min
-          print(recentJ.millisecondsSinceEpoch);
-          print(recentI.millisecondsSinceEpoch);
-          if (recentJ.millisecondsSinceEpoch > recentI.millisecondsSinceEpoch) minIndex = j;
-        }
-        // Swap min and I
-        Map<dynamic, dynamic> pointerI = unsortedChatRooms[i];
-        Map<dynamic, dynamic> pointerMin = unsortedChatRooms[minIndex];
-
-        unsortedChatRooms[i] = pointerMin;
-        unsortedChatRooms[minIndex] = pointerI;
-      }
-
-      // Now that it's sorted, add it.
-      for (int i = 0; i < unsortedChatRooms.length; i++) {
-        setState(
-          () {
-            roomPreviews.add(room(
-                unsortedChatRooms[i]['displayName'],
-                unsortedChatRooms[i]['message'],
-                unsortedChatRooms[i]['name'],
-                unsortedChatRooms[i]['mostRecentMessageTime'],
-                unsortedChatRooms[i]['circlePhotoUrl'],
-                unsortedChatRooms[i]['roomId'],
-                context));
-          },
-        );
-      }
+      _sortRoomByTimestamp(unsortedChatRooms);
+      _addRoomPreviewRecentFirst(unsortedChatRooms);
     });
 
     subscriptionList.add(subscription);
   }
 
+  _getOtherUserPublicInformation(DocumentSnapshot snapshot, List<Map<dynamic, dynamic>> unsortedChatRooms) async {
+    String roomId = snapshot.documentID;
+    int lastMessageIndex = snapshot.data['messages'].length - 1;
+    String circlePhotoUrl;
+    String displayName;
+    Map<dynamic, dynamic> mostRecentMessage = snapshot.data['messages'][lastMessageIndex];
+    Timestamp recent = snapshot.data['recent'];
+
+    // Look for everyone that's not the logged in user and fetch their image
+    for (String userId in snapshot.data['users'].keys) {
+      // If the user isn't the logged in user...
+      if (userId != widget.firebaseUser.uid) {
+        // Get the user's photo
+        await Firestore.instance.collection('users').document(userId).get().then((snapshot) {
+          circlePhotoUrl = snapshot.data['photos'][0];
+          displayName = snapshot.data['displayName'];
+        });
+      }
+    }
+
+    var dateFormat = DateFormat.yMd().add_jm();
+
+    //print(mostRecentMessage);
+    // print("BEFORE ${mostRecentMessage['sentAt']}");
+    // String mostRecentMessageTime = dateFormat.format(mostRecentMessage['sentAt'].toDate());
+    String mostRecentMessageTime = dateFormat.format(recent.toDate());
+
+    Map<dynamic, dynamic> userData = {
+      'displayName': displayName,
+      'message': mostRecentMessage['message'],
+      'name': mostRecentMessage['name'],
+      'mostRecentMessageTime': mostRecentMessageTime,
+      'circlePhotoUrl': circlePhotoUrl,
+      'roomId': roomId,
+      'recent': recent
+    };
+
+    unsortedChatRooms.add(userData);
+  }
+
   _sortRoomByTimestamp(List<Map<dynamic, dynamic>> unsortedChatRooms) {
     int minIndex;
     for (int i = 0; i < unsortedChatRooms.length; i++) {
-      print('Inner for loop..................');
       minIndex = i;
       for (int j = i + 1; j < unsortedChatRooms.length; j++) {
         Timestamp recentI = unsortedChatRooms[i]['recent'];
         Timestamp recentJ = unsortedChatRooms[j]['recent'];
         // J timestamp is greater than I timestamp (J is more recent); mark J as min
-        print(recentJ.millisecondsSinceEpoch);
-        print(recentI.millisecondsSinceEpoch);
+//        print(recentJ.millisecondsSinceEpoch);
+//        print(recentI.millisecondsSinceEpoch);
         if (recentJ.millisecondsSinceEpoch > recentI.millisecondsSinceEpoch) minIndex = j;
       }
       // Swap min and I
@@ -165,6 +112,23 @@ class _MessagePageState extends State<MessagePage> {
 
       unsortedChatRooms[i] = pointerMin;
       unsortedChatRooms[minIndex] = pointerI;
+    }
+  }
+
+  _addRoomPreviewRecentFirst(List<Map<dynamic, dynamic>> unsortedChatRooms) {
+    for (int i = 0; i < unsortedChatRooms.length; i++) {
+      setState(
+        () {
+          roomPreviews.add(room(
+              unsortedChatRooms[i]['displayName'],
+              unsortedChatRooms[i]['message'],
+              unsortedChatRooms[i]['name'],
+              unsortedChatRooms[i]['mostRecentMessageTime'],
+              unsortedChatRooms[i]['circlePhotoUrl'],
+              unsortedChatRooms[i]['roomId'],
+              context));
+        },
+      );
     }
   }
 

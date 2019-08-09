@@ -128,10 +128,12 @@ class _NotificationItemState extends State<NotificationItem> {
               left: 100,
               child: CircularBox(
                 padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10.0, right: 10.0),
+                maxWidth: 100,
                 radius: 20.0,
                 // Name bubble
                 child: Text(
                   widget.name,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: kBlack, fontWeight: FontWeight.w600, fontSize: 14.0),
                 ),
               ),
@@ -145,6 +147,7 @@ class _NotificationItemState extends State<NotificationItem> {
                 radius: 20.0,
                 child: Text(
                   newTimeAgo,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: kBlack, fontWeight: FontWeight.w600, fontSize: 10.0),
                 ),
               ),
