@@ -59,6 +59,7 @@ class _MessagePageState extends State<MessagePage> {
     int lastMessageIndex = snapshot.data['messages'].length - 1;
     String circlePhotoUrl;
     String displayName;
+    int rarity;
     Map<dynamic, dynamic> mostRecentMessage = snapshot.data['messages'][lastMessageIndex];
     Timestamp recent = snapshot.data['recent'];
 
@@ -70,6 +71,7 @@ class _MessagePageState extends State<MessagePage> {
         await Firestore.instance.collection('users').document(userId).get().then((snapshot) {
           circlePhotoUrl = snapshot.data['photos'][0];
           displayName = snapshot.data['displayName'];
+          rarity = snapshot.data['rarityBorder'];
         });
       }
     }
@@ -88,7 +90,8 @@ class _MessagePageState extends State<MessagePage> {
       'mostRecentMessageTime': mostRecentMessageTime,
       'circlePhotoUrl': circlePhotoUrl,
       'roomId': roomId,
-      'recent': recent
+      'recent': recent,
+      'rarity': rarity,
     };
 
     unsortedChatRooms.add(userData);
@@ -119,21 +122,24 @@ class _MessagePageState extends State<MessagePage> {
     for (int i = 0; i < unsortedChatRooms.length; i++) {
       setState(
         () {
-          roomPreviews.add(room(
-              unsortedChatRooms[i]['displayName'],
-              unsortedChatRooms[i]['message'],
-              unsortedChatRooms[i]['name'],
-              unsortedChatRooms[i]['mostRecentMessageTime'],
-              unsortedChatRooms[i]['circlePhotoUrl'],
-              unsortedChatRooms[i]['roomId'],
-              context));
+          roomPreviews.add(
+            room(
+                unsortedChatRooms[i]['displayName'],
+                unsortedChatRooms[i]['message'],
+                unsortedChatRooms[i]['name'],
+                unsortedChatRooms[i]['mostRecentMessageTime'],
+                unsortedChatRooms[i]['circlePhotoUrl'],
+                unsortedChatRooms[i]['roomId'],
+                context,
+                unsortedChatRooms[i]['rarity']),
+          );
         },
       );
     }
   }
 
-  Widget room(
-      String displayName, String message, String name, String sentDate, String imageUrl, String roomId, BuildContext context) {
+  Widget room(String displayName, String message, String name, String sentDate, String imageUrl, String roomId,
+      BuildContext context, int rarity) {
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -158,6 +164,7 @@ class _MessagePageState extends State<MessagePage> {
               imageURL: imageUrl,
               width: 60,
               height: 60,
+              rarity: rarity,
             ),
             SizedBox(width: 15),
             // Name and recent text
