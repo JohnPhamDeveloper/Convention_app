@@ -37,13 +37,11 @@ class _MessagePageState extends State<MessagePage> {
         .snapshots()
         .listen((snapshot) async {
       List<Map<dynamic, dynamic>> unsortedChatRooms = List<Map<dynamic, dynamic>>();
-
+      setState(() {
+        roomPreviews.clear();
+      });
       // Get all chatrooms and create a preview
       for (DocumentSnapshot snapshot in snapshot.documents) {
-        setState(() {
-          roomPreviews.clear();
-        });
-
         if (snapshot.data['messages'].length <= 0) return;
         await _getOtherUserPublicInformation(snapshot, unsortedChatRooms);
       }
@@ -269,39 +267,38 @@ class _ChatViewState extends State<ChatView> {
       //messages.add(SizedBox(height: 50));
       bool isFirstMessage = true;
 
-      for (Map<dynamic, dynamic> message in snapshot.data['messages']) {
-        // SKip first message which is a welcome message
-        if (isFirstMessage) {
-          isFirstMessage = false;
-          continue;
+      if (snapshot.data['messages'] != null) {
+        for (Map<dynamic, dynamic> message in snapshot.data['messages']) {
+          // SKip first message which is a welcome message
+          if (isFirstMessage) {
+            isFirstMessage = false;
+            continue;
+          }
+
+          var dateFormat = DateFormat.yMd().add_jm();
+
+          String sentAt = dateFormat.format(message['sentAt'].toDate());
+
+          print(message['message']);
+          String messageUid = message['uid']; //TODO need UID to identiy whos talking
+          bool isLoggedInUser = false;
+
+          if (messageUid == widget.firebaseUser.uid) {
+            isLoggedInUser = true;
+          }
+
+          messages.add(_createMessageWidget(message['message'], sentAt, isLoggedInUser));
         }
+        messages.add(SizedBox(height: 30));
+        final revMessages = messages.reversed.toList();
+        revMessages.add(SizedBox(height: 50));
 
-        var dateFormat = DateFormat.yMd().add_jm();
-
-        String sentAt = dateFormat.format(message['sentAt'].toDate());
-
-        print(message['message']);
-        String messageUid = message['uid']; //TODO need UID to identiy whos talking
-        bool isLoggedInUser = false;
-
-        if (messageUid == widget.firebaseUser.uid) {
-          isLoggedInUser = true;
-        }
-
-        // setState(() {
-        messages.add(_createMessageWidget(message['message'], sentAt, isLoggedInUser));
-        //   });
-
+        // Get messages and timestamp of each messages
+        //_createMessageWidget(message);
+        setState(() {
+          messages = revMessages;
+        });
       }
-      messages.add(SizedBox(height: 30));
-      final revMessages = messages.reversed.toList();
-      revMessages.add(SizedBox(height: 50));
-
-      // Get messages and timestamp of each messages
-      //_createMessageWidget(message);
-      setState(() {
-        messages = revMessages;
-      });
     });
   }
 

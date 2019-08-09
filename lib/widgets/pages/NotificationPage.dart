@@ -33,7 +33,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
 
   _initAsync() async {
     // TODO First time loading this, push the 20 latest notification to the notifications queue
-    await Firestore.instance.collection('private').document(widget.firebaseUser.uid).get().then((snapshot) {
+    await Firestore.instance.collection('private').document(widget.firebaseUser.uid).get().then((snapshot) async {
       if (snapshot.data['notifications'] != null) {
         final notificationLength = snapshot.data['notifications'].length;
         print('NotificationLength: $notificationLength');
@@ -46,27 +46,25 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
 
         // Load the recent 15 notifications only
         for (int i = start; i < start + numberOfNotificationsToShow; i++) {
-          _buildNotificationItem(snapshot.data['notifications'][i]);
+          await _buildNotificationItem(snapshot.data['notifications'][i]);
         }
       }
+
+      // Add a box at the end of the notifications so the last notification doesn't get blocked off
+      notifications.add(SizedBox(height: 150));
+
+      // Add new notifications every time they come in
+      _listenToNotifications();
     });
-
-    // Add a box at the end of the notifications so the last notification doesn't get blocked off
-    notifications.add(SizedBox(height: 150));
-
-    // DEBUG AND FOR LEARNING (though make sure the user is signed in)
-    //getData();
-
-    // Add new notifications every time they come in
-    _listenToNotifications();
   }
 
   _listenToNotifications() {
-    Firestore.instance.collection("private").document(widget.firebaseUser.uid).snapshots().listen((snapshot) {
+    Firestore.instance.collection("private").document(widget.firebaseUser.uid).snapshots().listen((snapshot) async {
       // Prevent this from being called on the initial page load
       // When we load the previous notifications, this will run on start, which causes the most recent notification
       // To be duplicated
       if (loadedPreviousNotifications) {
+        print("DID THIS RUN?");
         notifications.clear();
         //if (!snapshot.exists) return Text("Nothing loaded...");
         final lastItemIndex = snapshot.data['notifications'].length - 1;
@@ -74,7 +72,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
         // Empty notification
         if (lastItemIndex >= 0) {
           //  Take latest notification and add it to beginning of queue
-          _buildNotificationItem(snapshot.data['notifications'][lastItemIndex]);
+          await _buildNotificationItem(snapshot.data['notifications'][lastItemIndex]);
         }
       }
       loadedPreviousNotifications = true;
@@ -125,35 +123,21 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
   bool get wantKeepAlive => true;
 
   // Create a notification widget with the data from the database
-  _buildNotificationItem(Map<dynamic, dynamic> data) {
+  _buildNotificationItem(Map<dynamic, dynamic> data) async {
     Widget item;
-    // final snapshotLength = data['notifications'].length;
-//    final lastItemIndex = snapshotLength - 1;
-//    print(snapshotLength);
-//    if (snapshotLength <= 0) return;
-
     final timestamp = data['timeStamp'];
     String message = data['message'];
     String name = data['name'];
     String uid = data['uid'];
-    //var date = new DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch);
-
-    //print('$timestamp $message $name $date');
 
     // Normal notification
     if (uid == 'null') {
     }
     // User notification
     else {
-      // This is allowed since it's public information.
-      // Client can modify it, but won't really achieve anything other than getting public information
-      Firestore.instance.collection('users').document(uid).get().then((snapshot) {
+      return Firestore.instance.collection('users').document(uid).get().then((snapshot) {
         String imageUrl = snapshot.data['photos'][0];
-        print(imageUrl);
         int rarity = snapshot.data['rarityBorder'];
-        print(rarity);
-        //String created = timeago.format(date);
-        print("Added new other user");
         // Add item
         item = NotificationItem(
           onTap: () {
@@ -201,6 +185,14 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
     super.build(context);
     return Column(
       children: <Widget>[
+        SizedBox(height: 20.0),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 70.0),
+          child: Text(
+            "Notifications",
+            style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.w500),
+          ),
+        ),
         Expanded(
           child: ListView.builder(
             itemCount: notifications.length,
