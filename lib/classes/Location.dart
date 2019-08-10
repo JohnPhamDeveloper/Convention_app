@@ -38,6 +38,7 @@ class Location {
     userLocation['lng'] = loggedInUserLatLng.longitude;
     final response = await Meetup.getEveryoneAround(userLocation);
     print("Get everyone arround: ${response.data['ids']}");
+    return response.data;
   }
 
   static Future<LatLng> getCurrentLocation() async {

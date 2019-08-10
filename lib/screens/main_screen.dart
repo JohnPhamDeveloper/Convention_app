@@ -50,7 +50,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-
+    loggedInUser = LoggedInUser();
     // Get data from database for logged in user when it changes
     // Set loading is called if data is successfuly updated into loggedInUser
 
@@ -65,10 +65,16 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _startMe() async {
-    loggedInUserLatLng = await Location.getCurrentLocation();
-    // Get users around...
-    Location.getUsersNearby(loggedInUserLatLng);
     await _loginUser();
+    loggedInUserLatLng = await Location.getCurrentLocation();
+
+    // Get users nearby
+    final Map<dynamic, dynamic> response = await Location.getUsersNearby(loggedInUserLatLng);
+    List<dynamic> usersNearby = response['ids'];
+    usersNearby = usersNearby.reversed.toList(); // Reverse to make it show nearby at top
+
+    _initAfterLoggedIn(usersNearby);
+    _setLoading();
   }
 
 //  _loadAuthUser() async {
@@ -81,10 +87,10 @@ class _MainScreenState extends State<MainScreen> {
     return FirebaseAuth.instance.signInWithEmailAndPassword(email: 'bob@hotmail.com', password: '123456').then((user) async {
       print("Successfully logged in");
       firebaseUser = await FirebaseAuth.instance.currentUser();
-      _initAfterLoggedIn();
+      //_initAfterLoggedIn();
       if (firebaseUser != null) {
-        _initAfterLoggedIn();
-        FirestoreManager.streamUserData(loggedInUser, setLoading, user.uid);
+        // _initAfterLoggedIn();
+        FirestoreManager.streamUserData(loggedInUser, user.uid);
       }
     }).catchError((error) {
       print('unable to login');
@@ -99,8 +105,8 @@ class _MainScreenState extends State<MainScreen> {
       print("Successfully logged in");
       firebaseUser = await FirebaseAuth.instance.currentUser();
       if (firebaseUser != null) {
-        _initAfterLoggedIn();
-        FirestoreManager.streamUserData(loggedInUser, setLoading, user.uid);
+        //   _initAfterLoggedIn();
+        FirestoreManager.streamUserData(loggedInUser, user.uid);
       }
     }).catchError((error) {
       print('unable to login');
@@ -115,8 +121,8 @@ class _MainScreenState extends State<MainScreen> {
       print("Successfully logged in");
       firebaseUser = await FirebaseAuth.instance.currentUser();
       if (firebaseUser != null) {
-        _initAfterLoggedIn();
-        FirestoreManager.streamUserData(loggedInUser, setLoading, user.uid);
+        //   _initAfterLoggedIn();
+        FirestoreManager.streamUserData(loggedInUser, user.uid);
       }
     }).catchError((error) {
       print('unable to login');
@@ -124,7 +130,7 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  _initAfterLoggedIn() async {
+  _initAfterLoggedIn(List<dynamic> usersNearby) {
     loggedInUser = LoggedInUser();
     preloadPageController = PreloadPageController(initialPage: navIndex);
     _navigationController = CircularBottomNavigationController(navIndex);
@@ -135,11 +141,11 @@ class _MainScreenState extends State<MainScreen> {
         });
       },
       preloadPagesCount: 5,
-      physics: new NeverScrollableScrollPhysics(),
+      physics: NeverScrollableScrollPhysics(),
       controller: preloadPageController,
       children: <Widget>[
 //        RankingListPage(),
-        SearchPage(firebaseUser: firebaseUser, loggedInUserLatLng: loggedInUserLatLng),
+        SearchPage(firebaseUser: firebaseUser, loggedInUserLatLng: loggedInUserLatLng, usersNearby: usersNearby),
 //        FamePage(),
         NotificationPage(firebaseUser: firebaseUser),
         MessagePage(firebaseUser: firebaseUser)
@@ -349,7 +355,7 @@ class _MainScreenState extends State<MainScreen> {
     print("Finished creating mock user");
   }
 
-  void setLoading() {
+  void _setLoading() {
     //print("how many times is this called?");
     loggedInUser.updateWidgetsListeningToThis();
     setState(() {

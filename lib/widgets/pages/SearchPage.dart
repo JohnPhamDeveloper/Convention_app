@@ -8,12 +8,14 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:cosplay_app/widgets/FireMap.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SearchPage extends StatefulWidget {
   final FirebaseUser firebaseUser;
   final LatLng loggedInUserLatLng;
+  final List<dynamic> usersNearby;
 
-  SearchPage({@required this.firebaseUser, @required this.loggedInUserLatLng});
+  SearchPage({@required this.firebaseUser, @required this.loggedInUserLatLng, @required this.usersNearby});
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -21,6 +23,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMixin {
   PageController pageController;
+  List<dynamic> cosplayersNearby = List<dynamic>();
   PageView pageView;
   int navIndex = 0;
 
@@ -31,6 +34,13 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   void initState() {
     super.initState();
     //_loginUser();
+
+    // TODO search page needs to organize who gets who (cosplayers, photographers, ...)
+    // get all cosplayers...
+    for (int i = 0; i < widget.usersNearby.length; i++) {
+      // pretend this is the cosplayers
+      cosplayersNearby.add(widget.usersNearby[i]);
+    }
 
     _checkPermission();
     _createPages();
@@ -47,11 +57,11 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       controller: pageController,
       children: <Widget>[
         SearchSection(
-          userType: FirestoreManager.keyIsCosplayer,
+          cosplayersNearby: cosplayersNearby,
           firebaseUser: widget.firebaseUser,
           loggedInUserLatLng: widget.loggedInUserLatLng,
         ),
-        SearchSection(userType: FirestoreManager.keyIsPhotographer, firebaseUser: widget.firebaseUser),
+        //SearchSection(userType: FirestoreManager.keyIsPhotographer, firebaseUser: widget.firebaseUser),
         // PhotographerSearchSection(),
       ],
     );
@@ -110,18 +120,19 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   Expanded(child: pageView),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(right: 15.0, bottom: 100.0),
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: RoundButton(
-                    icon: FontAwesomeIcons.cog,
-                    iconColor: Colors.white,
-                    fillColor: Colors.pinkAccent,
-                    onTap: () {},
-                  ),
-                ),
-              )
+              // Setting icon
+//              Padding(
+//                padding: const EdgeInsets.only(right: 15.0, bottom: 100.0),
+//                child: Align(
+//                  alignment: Alignment.bottomRight,
+//                  child: RoundButton(
+//                    icon: FontAwesomeIcons.cog,
+//                    iconColor: Colors.white,
+//                    fillColor: Colors.pinkAccent,
+//                    onTap: () {},
+//                  ),
+//                ),
+//              )
             ],
           ),
         ),

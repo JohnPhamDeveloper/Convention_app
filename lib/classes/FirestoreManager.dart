@@ -117,7 +117,7 @@ class FirestoreManager {
   // Updates local user information using the database information whenever
   // the database changes (stream)
   // Callback is called when data is done loading
-  static streamUserData(LoggedInUser loggedInUser, Function callback, String uid) {
+  static streamUserData(LoggedInUser loggedInUser, String uid) {
     Firestore.instance.collection("users").document(uid).snapshots().listen((snapshot) {
       print("---------------Database Updated----------------------");
       FirestoreReadcheck.userProfileReads++;
@@ -127,7 +127,7 @@ class FirestoreManager {
       _copyUserDatabaseInformationToLocalData(snapshot, loggedInUser);
 
       // callback notifies listeners of loggedInUser
-      callback();
+      // callback();
     }).onError((error) {
       print("FirestoreManager stream failed");
     });
