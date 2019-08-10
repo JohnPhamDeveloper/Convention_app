@@ -18,6 +18,9 @@ import 'package:cosplay_app/widgets/native_shapes/CircularBoxClipped.dart';
 import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cosplay_app/widgets/pages/MessagePage.dart';
+import 'package:cosplay_app/classes/Location.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -26,13 +29,15 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   LoggedInUser loggedInUser;
+  LatLng loggedInUserLatLng;
   bool loadedUserData = false;
   PreloadPageController preloadPageController;
   CircularBottomNavigationController _navigationController;
   FirebaseUser firebaseUser;
-  bool playProfilePageCarousel = false;
+  //bool playProfilePageCarousel = false;
   int navIndex = 0;
   PreloadPageView pageView;
+
   List<TabItem> tabItems = List.of([
     TabItem(Icons.home, "Home", Colors.pinkAccent),
     TabItem(Icons.search, "Search", Colors.pinkAccent),
@@ -48,10 +53,22 @@ class _MainScreenState extends State<MainScreen> {
 
     // Get data from database for logged in user when it changes
     // Set loading is called if data is successfuly updated into loggedInUser
-    _loginUser();
-    //createSingleUser();
 
+    //createSingleUser();
     //createMockUser();
+
+    // Get users position...
+
+    _startMe();
+
+    // Main page needs to get all nearby users...
+  }
+
+  _startMe() async {
+    loggedInUserLatLng = await Location.getCurrentLocation();
+    // Get users around...
+    Location.getUsersNearby(loggedInUserLatLng);
+    await _loginUser();
   }
 
 //  _loadAuthUser() async {
@@ -122,7 +139,7 @@ class _MainScreenState extends State<MainScreen> {
       controller: preloadPageController,
       children: <Widget>[
 //        RankingListPage(),
-        SearchPage(firebaseUser: firebaseUser),
+        SearchPage(firebaseUser: firebaseUser, loggedInUserLatLng: loggedInUserLatLng),
 //        FamePage(),
         NotificationPage(firebaseUser: firebaseUser),
         MessagePage(firebaseUser: firebaseUser)

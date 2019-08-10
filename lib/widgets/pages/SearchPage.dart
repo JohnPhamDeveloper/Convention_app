@@ -7,11 +7,13 @@ import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:cosplay_app/widgets/FireMap.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SearchPage extends StatefulWidget {
   final FirebaseUser firebaseUser;
+  final LatLng loggedInUserLatLng;
 
-  SearchPage({@required this.firebaseUser});
+  SearchPage({@required this.firebaseUser, @required this.loggedInUserLatLng});
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -47,6 +49,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
         SearchSection(
           userType: FirestoreManager.keyIsCosplayer,
           firebaseUser: widget.firebaseUser,
+          loggedInUserLatLng: widget.loggedInUserLatLng,
         ),
         SearchSection(userType: FirestoreManager.keyIsPhotographer, firebaseUser: widget.firebaseUser),
         // PhotographerSearchSection(),

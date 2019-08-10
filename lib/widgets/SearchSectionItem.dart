@@ -8,12 +8,14 @@ import 'package:shimmer/shimmer.dart';
 import 'package:cosplay_app/widgets/UserSearchInfo.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SearchSection extends StatefulWidget {
   final String userType;
   final FirebaseUser firebaseUser;
+  final LatLng loggedInUserLatLng;
 
-  SearchSection({@required this.userType, @required this.firebaseUser});
+  SearchSection({@required this.userType, @required this.firebaseUser, @required this.loggedInUserLatLng});
 
   @override
   _SearchSectionState createState() => _SearchSectionState();
