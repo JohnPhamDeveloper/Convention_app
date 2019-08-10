@@ -23,9 +23,20 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMixin {
   PageController pageController;
-  List<dynamic> cosplayersNearby = List<dynamic>();
+  List<Map<dynamic, dynamic>> cosplayersNearby = List<Map<dynamic, dynamic>>();
+  List<Map<dynamic, dynamic>> photographersNearby = List<Map<dynamic, dynamic>>();
   PageView pageView;
+  bool loadedUsers = false;
   int navIndex = 0;
+
+  final Color enabledColor = Colors.pinkAccent;
+  final Color enabledTextColor = Colors.white;
+  final double enabledPressElevation = 0.0;
+  final double enabledElevation = 5.0;
+  final Color disabledColor = Colors.white;
+  final Color disabledTextColor = Colors.black54;
+  final double disabledPressElevation = 5.0;
+  final double disabledElevation = 0.0;
 
   @override
   bool get wantKeepAlive => true;
@@ -35,15 +46,54 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     super.initState();
     //_loginUser();
 
-    // TODO search page needs to organize who gets who (cosplayers, photographers, ...)
-    // get all cosplayers...
+    _checkPermission();
+    _initUsers();
+  }
+
+  _initUsers() async {
     for (int i = 0; i < widget.usersNearby.length; i++) {
-      // pretend this is the cosplayers
-      cosplayersNearby.add(widget.usersNearby[i]);
+      var uid;
+      var distance;
+
+      widget.usersNearby[i].forEach((key, value) {
+        uid = key;
+        distance = value;
+      });
+
+      await Firestore.instance.collection('users').document(uid).get().then((snapshot) {
+        Map<dynamic, dynamic> userData = Map<dynamic, dynamic>();
+        String circleImageUrl = snapshot.data[FirestoreManager.keyPhotos][0];
+        String displayName = snapshot.data[FirestoreManager.keyDisplayName];
+        String seriesName = snapshot.data[FirestoreManager.keySeriesName];
+        String cosplayName = snapshot.data[FirestoreManager.keyCosplayName];
+        int friendliness = snapshot.data[FirestoreManager.keyFriendliness];
+        int rarityBorder = snapshot.data[FirestoreManager.keyRarityBorder];
+        bool isCosplayer = snapshot.data[FirestoreManager.keyIsCosplayer];
+        bool isPhotographer = snapshot.data[FirestoreManager.keyIsPhotographer];
+        DocumentSnapshot docSnapshot = snapshot;
+
+        userData = {
+          'circleImageUrl': circleImageUrl,
+          'displayName': displayName,
+          'seriesName': seriesName,
+          'cosplayName': cosplayName,
+          'friendliness': friendliness,
+          'rarityBorder': rarityBorder,
+          'isCosplayer': isCosplayer,
+          'distance': distance,
+          'snapshot': docSnapshot
+        };
+
+        if (isCosplayer)
+          cosplayersNearby.add(userData);
+        else if (isPhotographer) photographersNearby.add(userData);
+      });
     }
 
-    _checkPermission();
     _createPages();
+    setState(() {
+      loadedUsers = true;
+    });
   }
 
   _createPages() {
@@ -57,7 +107,12 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       controller: pageController,
       children: <Widget>[
         SearchSection(
-          cosplayersNearby: cosplayersNearby,
+          usersNearby: cosplayersNearby,
+          firebaseUser: widget.firebaseUser,
+          loggedInUserLatLng: widget.loggedInUserLatLng,
+        ),
+        SearchSection(
+          usersNearby: photographersNearby,
           firebaseUser: widget.firebaseUser,
           loggedInUserLatLng: widget.loggedInUserLatLng,
         ),
@@ -76,6 +131,32 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       Map<PermissionGroup, PermissionStatus> permissions =
           await PermissionHandler().requestPermissions([PermissionGroup.location]);
     }
+  }
+
+  Widget _renderPages() {
+    if (loadedUsers) {
+      return Expanded(child: pageView);
+    } else {
+      return Text("loading...");
+    }
+  }
+
+  Widget _actionChipWrap(String text, int index) {
+    return ActionChip(
+        label: Text(
+          text,
+          style: TextStyle(color: navIndex == index ? enabledTextColor : disabledTextColor),
+        ),
+        onPressed: () {
+          pageController.animateToPage(
+            index,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOut,
+          );
+        },
+        backgroundColor: navIndex == index ? enabledColor : disabledColor,
+        pressElevation: navIndex == index ? enabledPressElevation : disabledPressElevation,
+        elevation: navIndex == index ? enabledElevation : disabledElevation);
   }
 
   @override
@@ -99,25 +180,37 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  TopNavBarWithLines(
-                    context: context,
-                    index: navIndex,
-                    onCosplayersTap: () {
-                      pageController.animateToPage(
-                        0,
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut,
-                      );
-                    },
-                    onPhotographersTap: () {
-                      pageController.animateToPage(
-                        1,
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut,
-                      );
-                    },
+//                  TopNavBarWithLines(
+//                    context: context,
+//                    index: navIndex,
+//                    onCosplayersTap: () {
+//                      pageController.animateToPage(
+//                        0,
+//                        duration: const Duration(milliseconds: 400),
+//                        curve: Curves.easeInOut,
+//                      );
+//                    },
+//                    onPhotographersTap: () {
+//                      pageController.animateToPage(
+//                        1,
+//                        duration: const Duration(milliseconds: 400),
+//                        curve: Curves.easeInOut,
+//                      );
+//                    },
+//                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15.0),
+                    child: Row(
+                      children: <Widget>[
+                        _actionChipWrap("Cosplayers", 0),
+                        _actionChipWrap("Photographers", 1),
+                        _actionChipWrap("Con-goers", 2)
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                    ),
                   ),
-                  Expanded(child: pageView),
+                  _renderPages()
                 ],
               ),
               // Setting icon

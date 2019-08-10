@@ -14,9 +14,9 @@ class SearchSection extends StatefulWidget {
   //final String userType;
   final FirebaseUser firebaseUser;
   final LatLng loggedInUserLatLng;
-  final List<dynamic> cosplayersNearby;
+  final List<Map<dynamic, dynamic>> usersNearby;
 
-  SearchSection({@required this.firebaseUser, @required this.loggedInUserLatLng, @required this.cosplayersNearby});
+  SearchSection({@required this.firebaseUser, @required this.loggedInUserLatLng, @required this.usersNearby});
 
   @override
   _SearchSectionState createState() => _SearchSectionState();
@@ -30,54 +30,29 @@ class _SearchSectionState extends State<SearchSection> with AutomaticKeepAliveCl
   @override
   void initState() {
     super.initState();
-    // createSearchUsers(context, widget.firebaseUser);
-    _createSearchUsers2();
-  }
-
-  void _createSearchUsers2() async {
-    FirebaseUser firebaseUser = widget.firebaseUser;
-
-    for (int i = 0; i < widget.cosplayersNearby.length; i++) {
-      var uid;
-      var distance;
-
-      widget.cosplayersNearby[i].forEach((key, value) {
-        uid = key;
-        distance = value;
-      });
-
-      await Firestore.instance.collection('users').document(uid).get().then((snapshot) {
-        print("yoclla");
-        String circleImageUrl = snapshot.data[FirestoreManager.keyPhotos][0];
-        String displayName = snapshot.data[FirestoreManager.keyDisplayName];
-        String seriesName = snapshot.data[FirestoreManager.keySeriesName];
-        String cosplayName = snapshot.data[FirestoreManager.keyCosplayName];
-        int friendliness = snapshot.data[FirestoreManager.keyFriendliness];
-        int rarityBorder = snapshot.data[FirestoreManager.keyRarityBorder];
-
-        SearchUserItem widget = SearchUserItem(
-          backgroundImage: circleImageUrl,
-          name: displayName,
-          title: cosplayName,
-          subtitle: seriesName,
-          friendliness: friendliness,
-          cost: '${distance.toStringAsFixed(1)} miles',
-          rarity: rarityBorder,
-          onTap: () {
-            HeroCreator.pushProfileIntoView(snapshot.reference, context, firebaseUser);
-          },
-          key: UniqueKey(),
-        );
-
-        searchInfoWidgets.add(widget);
-      });
+    for (int i = 0; i < widget.usersNearby.length; i++) {
+      _createOneSearchUser(widget.firebaseUser, widget.usersNearby[i]);
     }
-
-    print("DONE ${searchInfoWidgets}");
-    // Bottom list gap
     setState(() {
       searchInfoWidgets.add(SizedBox(height: 90.0));
     });
+  }
+
+  void _createOneSearchUser(FirebaseUser firebaseUser, Map<dynamic, dynamic> cosplayersNearby) {
+    SearchUserItem widget = SearchUserItem(
+      backgroundImage: cosplayersNearby['circleImageUrl'],
+      name: cosplayersNearby['displayName'],
+      title: cosplayersNearby['cosplayName'],
+      subtitle: cosplayersNearby['seriesName'],
+      friendliness: cosplayersNearby['friendliness'],
+      cost: '${cosplayersNearby['distance'].toStringAsFixed(1)} miles',
+      rarity: cosplayersNearby['rarityBorder'],
+      onTap: () {
+        HeroCreator.pushProfileIntoView(cosplayersNearby['snapshot'].reference, context, firebaseUser);
+      },
+      key: UniqueKey(),
+    );
+    searchInfoWidgets.add(widget);
   }
 
 //  void createSearchUsers(BuildContext context, FirebaseUser firebaseUser) {
