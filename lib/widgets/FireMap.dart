@@ -175,11 +175,14 @@ class _FireMapState extends State<FireMap> {
     String g = newGeoPoint.hash;
     GeoPoint l = newGeoPoint.geoPoint;
 
-    // TODO REMOVE
+    // TODO MOVE APPROPIATELY
+    // This is for the cloud functions to get everyone around the user
+    // TODO so the user actually needs to poll their information maybe every 5 minutes or so? in order to see other users...
     Map<dynamic, dynamic> arguments = Map<dynamic, dynamic>();
     arguments['lat'] = l.latitude;
     arguments['lng'] = l.longitude;
-    Meetup.getEveryoneAround(arguments);
+    final response = await Meetup.getEveryoneAround(arguments);
+    print("Get everyone arround: ${response.data['ids']}");
 
     print("Updating locations...");
     // Update the database with the logged in user's new position & displayName
