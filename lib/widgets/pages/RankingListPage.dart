@@ -5,11 +5,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/widgets/RankCard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class RankingListPage extends StatefulWidget {
-  FirebaseUser firebaseUser;
+  final FirebaseUser firebaseUser;
+  final LatLng loggedInUserLatLng;
+  final List<dynamic> usersNearby;
 
-  RankingListPage({@required firebaseUser});
+  RankingListPage({@required this.firebaseUser, @required this.loggedInUserLatLng, @required this.usersNearby});
 
   @override
   _RankingListPageState createState() => _RankingListPageState();
@@ -18,52 +21,114 @@ class RankingListPage extends StatefulWidget {
 class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAliveClientMixin {
   List<Widget> friendlinessCards = List<Widget>();
   List<Widget> fameCards = List<Widget>();
+  List<dynamic> sortedUsersNearby = List<dynamic>();
 
   @override
   void initState() {
     super.initState();
-    constructCards(friendlinessCards, FirestoreManager.keyFriendliness, Icons.sentiment_very_satisfied);
-    constructCards(fameCards, FirestoreManager.keyFame, Icons.star);
+    sortedUsersNearby = widget.usersNearby.toList();
+    for (int i = 0; i < sortedUsersNearby.length; i++) {
+      print("BEFORE: ${sortedUsersNearby[i]}");
+    }
+
+    _sortRoomByFriendliness(sortedUsersNearby, ascending: false);
+    for (int i = 0; i < sortedUsersNearby.length; i++) {
+      print("AFTER: ${sortedUsersNearby[i]}");
+    }
+    constructCards2(friendlinessCards, Icons.sentiment_very_satisfied);
+    //constructCards(fameCards, FirestoreManager.keyFame, Icons.star);
   }
 
-  void constructCards(List<Widget> cards, String orderBy, IconData icon) {
-    // Give the card a bit of gap in the beginning
-    cards.add(SizedBox(width: 20.0));
-    try {
-      // Go into our database and order by the key.
-      Firestore.instance.collection("users").orderBy(orderBy, descending: true).getDocuments().then((snapshot) {
-        // Now that it's ordered by the key, construct a card for everyone in the database in order
-        snapshot.documents.forEach((data) {
-          String url = data[FirestoreManager.keyPhotos][0]; // Network URL to image
-          Key key = UniqueKey(); // Used for the dot hero animation
-          String dotHeroName = key.toString() + "rankedDot";
-          String imageHeroName = key.toString() + "rankedToHero";
+  _sortRoomByFriendliness(List<Map<dynamic, dynamic>> unsortedFriendliness, {bool ascending = true}) {
+    int minIndex;
+    for (int i = 0; i < unsortedFriendliness.length; i++) {
+      minIndex = i;
+      for (int j = i + 1; j < unsortedFriendliness.length; j++) {
+        int min = unsortedFriendliness[minIndex]['friendliness'];
+        int recentJ = unsortedFriendliness[j]['friendliness'];
+        if (ascending) {
+          if (recentJ < min) {
+            minIndex = j;
+          }
+        } else {
+          if (recentJ > min) {
+            minIndex = j;
+          }
+        }
+      }
+      // Swap min and I
+      Map<dynamic, dynamic> pointerI = unsortedFriendliness[i];
+      Map<dynamic, dynamic> pointerMin = unsortedFriendliness[minIndex];
 
-          // Create the card
-          RankCard card = RankCard(
-            firebaseUser: widget.firebaseUser,
-            documentSnapshot: data,
-            heroName: dotHeroName,
-            //imageHeroName: imageHeroName,
-            image: url,
-            name: data[FirestoreManager.keyDisplayName],
-            icon: icon,
-            rarityBorder: data[FirestoreManager.keyRarityBorder],
-            value: data[orderBy],
-            dotIsOn: true,
-            key: UniqueKey(),
-          );
-
-          // Trigger rebuild when adding each card (bad?)
-          setState(() {
-            cards.add(card);
-          });
-        });
-      });
-    } catch (e) {
-      print(e);
+      unsortedFriendliness[i] = pointerMin;
+      unsortedFriendliness[minIndex] = pointerI;
     }
   }
+
+  void constructCards2(List<Widget> cards, IconData icon) {
+    // Give the card a bit of gap in the beginning
+    cards.add(SizedBox(width: 20.0));
+
+    for (int i = 0; i < sortedUsersNearby.length; i++) {
+      // Now that it's ordered by the key, construct a card for everyone in the database in order
+      String url = sortedUsersNearby[i]['circleImageUrl']; // Network URL to image
+
+      // Create the card
+      RankCard card = RankCard(
+        firebaseUser: widget.firebaseUser,
+        documentSnapshot: sortedUsersNearby[i]['snapshot'],
+        image: url,
+        name: sortedUsersNearby[i]['displayName'],
+        icon: icon,
+        rarityBorder: sortedUsersNearby[i]['rarityBorder'],
+        value: sortedUsersNearby[i]['friendliness'],
+        dotIsOn: true,
+        key: UniqueKey(),
+      );
+
+      // Trigger rebuild when adding each card (bad?)
+      setState(() {
+        cards.add(card);
+      });
+    }
+  }
+
+//  void constructCards(List<Widget> cards, String orderBy, IconData icon) {
+//    // Give the card a bit of gap in the beginning
+//    cards.add(SizedBox(width: 20.0));
+//    try {
+//      // Go into our database and order by the key.
+//      Firestore.instance.collection("users").orderBy(orderBy, descending: true).getDocuments().then((snapshot) {
+//        // Now that it's ordered by the key, construct a card for everyone in the database in order
+//        snapshot.documents.forEach((data) {
+//          String url = data[FirestoreManager.keyPhotos][0]; // Network URL to image
+//          Key key = UniqueKey(); // Used for the dot hero animation
+//          String dotHeroName = key.toString() + "rankedDot";
+//          String imageHeroName = key.toString() + "rankedToHero";
+//
+//          // Create the card
+//          RankCard card = RankCard(
+//            firebaseUser: widget.firebaseUser,
+//            documentSnapshot: data,
+//            image: url,
+//            name: data[FirestoreManager.keyDisplayName],
+//            icon: icon,
+//            rarityBorder: data[FirestoreManager.keyRarityBorder],
+//            value: data[orderBy],
+//            dotIsOn: true,
+//            key: UniqueKey(),
+//          );
+//
+//          // Trigger rebuild when adding each card (bad?)
+//          setState(() {
+//            cards.add(card);
+//          });
+//        });
+//      });
+//    } catch (e) {
+//      print(e);
+//    }
+//  }
 
 //  void onRankCardTap(Key key, DocumentSnapshot data) {
 //    // Construct HeroProfile widget from the information on the clicked avatar

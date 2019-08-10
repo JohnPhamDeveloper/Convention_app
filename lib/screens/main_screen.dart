@@ -21,6 +21,7 @@ import 'package:cosplay_app/widgets/pages/MessagePage.dart';
 import 'package:cosplay_app/classes/Location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:cosplay_app/classes/Location.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -34,7 +35,6 @@ class _MainScreenState extends State<MainScreen> {
   PreloadPageController preloadPageController;
   CircularBottomNavigationController _navigationController;
   FirebaseUser firebaseUser;
-  //bool playProfilePageCarousel = false;
   int navIndex = 0;
   PreloadPageView pageView;
 
@@ -51,17 +51,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     loggedInUser = LoggedInUser();
-    // Get data from database for logged in user when it changes
-    // Set loading is called if data is successfuly updated into loggedInUser
-
-    //createSingleUser();
-    //createMockUser();
-
-    // Get users position...
-
     _startMe();
-    //createSinglePhotographer();
-    // Main page needs to get all nearby users...
   }
 
   _startMe() async {
@@ -75,7 +65,48 @@ class _MainScreenState extends State<MainScreen> {
     List<dynamic> usersNearby = response['ids'];
     usersNearby = usersNearby.reversed.toList(); // Reverse to make it show nearby at top
 
-    _initAfterLoggedIn(usersNearby);
+    // START
+    List<Map<dynamic, dynamic>> sortedUsersNerby = List<Map<dynamic, dynamic>>();
+    for (int i = 0; i < usersNearby.length; i++) {
+      var uid;
+      var distance;
+
+      usersNearby[i].forEach((key, value) {
+        uid = key;
+        distance = value;
+      });
+
+      await Firestore.instance.collection('users').document(uid).get().then((snapshot) {
+        Map<dynamic, dynamic> userData = Map<dynamic, dynamic>();
+        String circleImageUrl = snapshot.data[FirestoreManager.keyPhotos][0];
+        String displayName = snapshot.data[FirestoreManager.keyDisplayName];
+        String seriesName = snapshot.data[FirestoreManager.keySeriesName];
+        String cosplayName = snapshot.data[FirestoreManager.keyCosplayName];
+        int friendliness = snapshot.data[FirestoreManager.keyFriendliness];
+        int rarityBorder = snapshot.data[FirestoreManager.keyRarityBorder];
+        bool isCosplayer = snapshot.data[FirestoreManager.keyIsCosplayer];
+        bool isPhotographer = snapshot.data[FirestoreManager.keyIsPhotographer];
+        DocumentSnapshot docSnapshot = snapshot;
+
+        userData = {
+          'circleImageUrl': circleImageUrl,
+          'displayName': displayName,
+          'seriesName': seriesName,
+          'cosplayName': cosplayName,
+          'friendliness': friendliness,
+          'rarityBorder': rarityBorder,
+          'isCosplayer': isCosplayer,
+          'isPhotographer': isPhotographer,
+          'distance': distance,
+          'snapshot': docSnapshot
+        };
+
+        sortedUsersNerby.add(userData);
+      });
+    }
+    // END
+
+    _initAfterLoggedIn(sortedUsersNerby);
     _setLoading();
   }
 
@@ -140,6 +171,7 @@ class _MainScreenState extends State<MainScreen> {
       if (firebaseUser != null) {
         //   _initAfterLoggedIn();
         FirestoreManager.streamUserData(loggedInUser, user.uid);
+        // createSinglePhotographer();
       }
     }).catchError((error) {
       print('unable to login');
@@ -147,7 +179,7 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  _initAfterLoggedIn(List<dynamic> usersNearby) {
+  _initAfterLoggedIn(List<dynamic> sortedUsersNearby) {
     loggedInUser = LoggedInUser();
     preloadPageController = PreloadPageController(initialPage: navIndex);
     _navigationController = CircularBottomNavigationController(navIndex);
@@ -161,8 +193,8 @@ class _MainScreenState extends State<MainScreen> {
       physics: NeverScrollableScrollPhysics(),
       controller: preloadPageController,
       children: <Widget>[
-//        RankingListPage(),
-        SearchPage(firebaseUser: firebaseUser, loggedInUserLatLng: loggedInUserLatLng, usersNearby: usersNearby),
+        RankingListPage(firebaseUser: firebaseUser, loggedInUserLatLng: loggedInUserLatLng, usersNearby: sortedUsersNearby),
+        SearchPage(firebaseUser: firebaseUser, loggedInUserLatLng: loggedInUserLatLng, usersNearby: sortedUsersNearby),
 //        FamePage(),
         NotificationPage(firebaseUser: firebaseUser),
         MessagePage(firebaseUser: firebaseUser)
@@ -215,6 +247,8 @@ class _MainScreenState extends State<MainScreen> {
       cosplayMonthsExperience: 0,
       cosplayYearsExperience: 0,
     );
+    final loc = await Location.getCurrentLocation();
+    await Location.updateLocationToDatabase(loc, loggedInUser, firebaseUser.uid);
   }
 
   // TODO DELEETE THIS MOCK USER

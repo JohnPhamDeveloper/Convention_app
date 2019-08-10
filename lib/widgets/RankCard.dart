@@ -5,14 +5,11 @@ import 'package:cosplay_app/widgets/notification/NotificationDot.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/HeroCreator.dart';
-import 'package:cosplay_app/widgets/HeroProfileDetails.dart';
-import 'package:cosplay_app/widgets/HeroProfileStart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class RankCard extends StatefulWidget {
   final FirebaseUser firebaseUser;
   final DocumentSnapshot documentSnapshot;
-  final String heroName;
   final String image;
   final String name;
   final int value;
@@ -20,12 +17,9 @@ class RankCard extends StatefulWidget {
   final IconData icon;
   final bool dotIsOn;
   final Key key;
-  final String imageHeroName;
 
   RankCard({
     @required this.firebaseUser,
-    this.heroName = "",
-    this.imageHeroName = "",
     @required this.documentSnapshot,
     @required this.image,
     @required this.name,
@@ -43,22 +37,7 @@ class RankCard extends StatefulWidget {
 }
 
 class _RankCardState extends State<RankCard> {
-  HeroProfileDetails _details;
-
-  HeroProfileStart _start;
-
   Widget renderHeroDot() {
-    if (widget.heroName.isNotEmpty) {
-      return Hero(
-        tag: widget.heroName,
-        child: NotificationDot(
-          outerSize: 25.0,
-          innerSize: 25.0,
-          innerColor: widget.dotIsOn ? Colors.pinkAccent : Colors.grey[50],
-        ),
-      );
-    }
-
     return NotificationDot(
       outerSize: 25.0,
       innerSize: 25.0,
@@ -78,8 +57,6 @@ class _RankCardState extends State<RankCard> {
         splashColor: Colors.transparent,
         hoverColor: Colors.transparent,
         onTap: () {
-          ///onTap();
-          // HeroCreator.pushProfileIntoView2(_start, _details, context);
           createClickedProfileOnlyOnTap(context);
         },
         child: Stack(

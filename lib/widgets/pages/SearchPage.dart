@@ -52,42 +52,9 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
   _initUsers() async {
     for (int i = 0; i < widget.usersNearby.length; i++) {
-      var uid;
-      var distance;
-
-      widget.usersNearby[i].forEach((key, value) {
-        uid = key;
-        distance = value;
-      });
-
-      await Firestore.instance.collection('users').document(uid).get().then((snapshot) {
-        Map<dynamic, dynamic> userData = Map<dynamic, dynamic>();
-        String circleImageUrl = snapshot.data[FirestoreManager.keyPhotos][0];
-        String displayName = snapshot.data[FirestoreManager.keyDisplayName];
-        String seriesName = snapshot.data[FirestoreManager.keySeriesName];
-        String cosplayName = snapshot.data[FirestoreManager.keyCosplayName];
-        int friendliness = snapshot.data[FirestoreManager.keyFriendliness];
-        int rarityBorder = snapshot.data[FirestoreManager.keyRarityBorder];
-        bool isCosplayer = snapshot.data[FirestoreManager.keyIsCosplayer];
-        bool isPhotographer = snapshot.data[FirestoreManager.keyIsPhotographer];
-        DocumentSnapshot docSnapshot = snapshot;
-
-        userData = {
-          'circleImageUrl': circleImageUrl,
-          'displayName': displayName,
-          'seriesName': seriesName,
-          'cosplayName': cosplayName,
-          'friendliness': friendliness,
-          'rarityBorder': rarityBorder,
-          'isCosplayer': isCosplayer,
-          'distance': distance,
-          'snapshot': docSnapshot
-        };
-
-        if (isCosplayer)
-          cosplayersNearby.add(userData);
-        else if (isPhotographer) photographersNearby.add(userData);
-      });
+      if (widget.usersNearby[i]['isCosplayer'])
+        cosplayersNearby.add(widget.usersNearby[i]);
+      else if (widget.usersNearby[i]['isPhotographer']) photographersNearby.add(widget.usersNearby[i]);
     }
 
     _createPages();

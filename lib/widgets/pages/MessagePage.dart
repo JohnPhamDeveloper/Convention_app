@@ -100,14 +100,10 @@ class _MessagePageState extends State<MessagePage> {
     for (int i = 0; i < unsortedChatRooms.length; i++) {
       minIndex = i;
       for (int j = i + 1; j < unsortedChatRooms.length; j++) {
-        Timestamp recentI = unsortedChatRooms[i]['recent'];
+        Timestamp min = unsortedChatRooms[minIndex]['recent'];
         Timestamp recentJ = unsortedChatRooms[j]['recent'];
-        // J timestamp is greater than I timestamp (J is more recent); mark J as min
-//        print(recentJ.millisecondsSinceEpoch);
-//        print(recentI.millisecondsSinceEpoch);
-        if (recentJ.millisecondsSinceEpoch > recentI.millisecondsSinceEpoch) minIndex = j;
+        if (recentJ.millisecondsSinceEpoch > min.millisecondsSinceEpoch) minIndex = j;
       }
-      // Swap min and I
       Map<dynamic, dynamic> pointerI = unsortedChatRooms[i];
       Map<dynamic, dynamic> pointerMin = unsortedChatRooms[minIndex];
 
