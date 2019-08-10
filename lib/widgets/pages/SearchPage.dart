@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:cosplay_app/widgets/FireMap.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cosplay_app/widgets/ChipNavigator.dart';
 
 class SearchPage extends StatefulWidget {
   final FirebaseUser firebaseUser;
@@ -24,15 +25,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   PageView pageView;
   bool loadedUsers = false;
   int navIndex = 0;
-
-  final Color enabledColor = Colors.pinkAccent;
-  final Color enabledTextColor = Colors.white;
-  final double enabledPressElevation = 0.0;
-  final double enabledElevation = 5.0;
-  final Color disabledColor = Colors.white;
-  final Color disabledTextColor = Colors.black54;
-  final double disabledPressElevation = 5.0;
-  final double disabledElevation = 0.0;
 
   @override
   bool get wantKeepAlive => true;
@@ -104,24 +96,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     }
   }
 
-  Widget _actionChipWrap(String text, int index) {
-    return ActionChip(
-        label: Text(
-          text,
-          style: TextStyle(color: navIndex == index ? enabledTextColor : disabledTextColor),
-        ),
-        onPressed: () {
-          pageController.animateToPage(
-            index,
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.easeInOut,
-          );
-        },
-        backgroundColor: navIndex == index ? enabledColor : disabledColor,
-        pressElevation: navIndex == index ? enabledPressElevation : disabledPressElevation,
-        elevation: navIndex == index ? enabledElevation : disabledElevation);
-  }
-
   @override
   void dispose() {
     pageController.dispose();
@@ -161,17 +135,15 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 //                      );
 //                    },
 //                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15.0),
-                    child: Row(
-                      children: <Widget>[
-                        _actionChipWrap("Cosplayers", 0),
-                        _actionChipWrap("Photographers", 1),
-                        _actionChipWrap("Con-goers", 2)
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                    ),
+                  ChipNavigator(
+                    onPressed: (index) {
+                      pageController.animateToPage(
+                        index,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                    navIndex: navIndex,
                   ),
                   _renderPages()
                 ],

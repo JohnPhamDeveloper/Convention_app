@@ -125,11 +125,6 @@ class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAli
             title: Text("Highest Fame", style: kCardTitleStyle),
             child: fameCards,
           ),
-//          SizedBox(height: kCardGap + 10),
-//          ScrollableTitle(
-//            title: Text("Most Daily Selfies(probably remove this)",
-//                style: kCardTitleStyle),
-//          ),
           SizedBox(height: 100),
         ],
       ),
