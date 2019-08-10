@@ -17,6 +17,11 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
     super.initState();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
   // Generate image widgets for the carousel from the logged in users image references
   void updateUserImageWidgets(LoggedInUser loggedInUser) {
     userImageUrls = loggedInUser.getHashMap[FirestoreManager.keyPhotos];
@@ -24,10 +29,6 @@ class _ProfileStartPageState extends State<ProfileStartPage> {
 
   @override
   Widget build(BuildContext context) {
-    final loggedInUser = Provider.of<LoggedInUser>(context);
-    print(
-        "--------------------------------------------------------------------");
-    print(loggedInUser);
     return Consumer<LoggedInUser>(builder: (context, loggedInUser, child) {
       updateUserImageWidgets(loggedInUser);
       return HeroProfileStart(

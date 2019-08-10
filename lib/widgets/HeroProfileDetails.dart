@@ -118,6 +118,7 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
             ),
             SizedBox(height: 30.0),
             // Medals
+            // TODO REMOVE OR LEAVE MEDALS
             CircularBox(
               child: Column(
                 children: <Widget>[
@@ -154,6 +155,33 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
                 ],
               ),
             ),
+            // BIO
+//            Padding(
+//              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+//              child: CircularBox(
+//                child: Column(
+//                  children: <Widget>[
+//                    Text(
+//                      "Bio",
+//                      style: TextStyle(
+//                        fontSize: 18.0,
+//                        color: Colors.black54,
+//                        fontWeight: FontWeight.w600,
+//                      ),
+//                    ),
+//                    SizedBox(height: 15.0),
+//                    Padding(
+//                      padding: const EdgeInsets.only(bottom: 8.0),
+//                      child: Text(
+//                        "Is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+//                        style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w400),
+//                        textAlign: TextAlign.center,
+//                      ),
+//                    ),
+//                  ],
+//                ),
+//              ),
+//            ),
             SizedBox(height: 40.0),
             // Options
             ActionButton(

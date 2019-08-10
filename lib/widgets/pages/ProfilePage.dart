@@ -9,8 +9,7 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage>
-    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
+class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   PreloadPageController pageController;
   PreloadPageView pageView;
   AnimationController animationControllerArrow;
@@ -37,18 +36,15 @@ class _ProfilePageState extends State<ProfilePage>
       ],
     );
 
-    animationControllerArrow =
-        AnimationController(duration: Duration(milliseconds: 700), vsync: this);
+    animationControllerArrow = AnimationController(duration: Duration(milliseconds: 700), vsync: this);
   }
 
   void moveToDetailsPage() {
-    pageController.animateToPage(1,
-        duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+    pageController.animateToPage(1, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
   }
 
   void moveToFirstPage() {
-    pageController.animateToPage(0,
-        duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+    pageController.animateToPage(0, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
   }
 
   @override
@@ -73,8 +69,7 @@ class _ProfilePageState extends State<ProfilePage>
             alignment: Alignment.bottomRight,
             child: RotationTransition(
               turns: Tween(begin: 0.0, end: 0.5).animate(
-                CurvedAnimation(
-                    parent: animationControllerArrow, curve: Curves.easeInOut),
+                CurvedAnimation(parent: animationControllerArrow, curve: Curves.easeInOut),
               ),
               child: RoundButton(
                 icon: Icons.arrow_downward,

@@ -12,9 +12,6 @@ class ProfileDetailsPage extends StatelessWidget {
     // Gets updated everytime loggedInUser changes
     return Consumer<LoggedInUser>(builder: (context, loggedInUser, child) {
       return HeroProfileDetails(
-        //TODO FIX THIS
-        //isInLoggedInUserSelfieIncomingRequestList: false,
-        // isInLoggedInUserSelfieOutgoingRequestList: false,
         displayAcceptButton: false,
         displayFinishButton: false,
         displayRequestButton: false,

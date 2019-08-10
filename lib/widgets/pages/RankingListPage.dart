@@ -21,31 +21,27 @@ class RankingListPage extends StatefulWidget {
 class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAliveClientMixin {
   List<Widget> friendlinessCards = List<Widget>();
   List<Widget> fameCards = List<Widget>();
-  List<dynamic> sortedUsersNearby = List<dynamic>();
+  List<dynamic> sortedUsersNearbyFriendliness = List<dynamic>();
+  List<dynamic> sortedUsersNearbyFame = List<dynamic>();
 
   @override
   void initState() {
     super.initState();
-    sortedUsersNearby = widget.usersNearby.toList();
-    for (int i = 0; i < sortedUsersNearby.length; i++) {
-      print("BEFORE: ${sortedUsersNearby[i]}");
-    }
-
-    _sortRoomByFriendliness(sortedUsersNearby, ascending: false);
-    for (int i = 0; i < sortedUsersNearby.length; i++) {
-      print("AFTER: ${sortedUsersNearby[i]}");
-    }
-    constructCards2(friendlinessCards, Icons.sentiment_very_satisfied);
-    //constructCards(fameCards, FirestoreManager.keyFame, Icons.star);
+    sortedUsersNearbyFriendliness = widget.usersNearby.toList();
+    sortedUsersNearbyFame = widget.usersNearby.toList();
+    _sortRoomBy(sortedUsersNearbyFriendliness, 'friendliness', ascending: false);
+    _sortRoomBy(sortedUsersNearbyFame, 'fame', ascending: false);
+    constructCards2(friendlinessCards, Icons.sentiment_very_satisfied, sortedUsersNearbyFriendliness, 'friendliness');
+    constructCards2(fameCards, Icons.star, sortedUsersNearbyFame, 'fame');
   }
 
-  _sortRoomByFriendliness(List<Map<dynamic, dynamic>> unsortedFriendliness, {bool ascending = true}) {
+  _sortRoomBy(List<Map<dynamic, dynamic>> toBeSorted, String sortByKey, {bool ascending = true}) {
     int minIndex;
-    for (int i = 0; i < unsortedFriendliness.length; i++) {
+    for (int i = 0; i < toBeSorted.length; i++) {
       minIndex = i;
-      for (int j = i + 1; j < unsortedFriendliness.length; j++) {
-        int min = unsortedFriendliness[minIndex]['friendliness'];
-        int recentJ = unsortedFriendliness[j]['friendliness'];
+      for (int j = i + 1; j < toBeSorted.length; j++) {
+        int min = toBeSorted[minIndex][sortByKey];
+        int recentJ = toBeSorted[j][sortByKey];
         if (ascending) {
           if (recentJ < min) {
             minIndex = j;
@@ -57,31 +53,31 @@ class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAli
         }
       }
       // Swap min and I
-      Map<dynamic, dynamic> pointerI = unsortedFriendliness[i];
-      Map<dynamic, dynamic> pointerMin = unsortedFriendliness[minIndex];
+      Map<dynamic, dynamic> pointerI = toBeSorted[i];
+      Map<dynamic, dynamic> pointerMin = toBeSorted[minIndex];
 
-      unsortedFriendliness[i] = pointerMin;
-      unsortedFriendliness[minIndex] = pointerI;
+      toBeSorted[i] = pointerMin;
+      toBeSorted[minIndex] = pointerI;
     }
   }
 
-  void constructCards2(List<Widget> cards, IconData icon) {
+  void constructCards2(List<Widget> cards, IconData icon, List<dynamic> sortedUsers, String valueType) {
     // Give the card a bit of gap in the beginning
     cards.add(SizedBox(width: 20.0));
 
-    for (int i = 0; i < sortedUsersNearby.length; i++) {
+    for (int i = 0; i < sortedUsers.length; i++) {
       // Now that it's ordered by the key, construct a card for everyone in the database in order
-      String url = sortedUsersNearby[i]['circleImageUrl']; // Network URL to image
+      String url = sortedUsers[i]['circleImageUrl']; // Network URL to image
 
       // Create the card
       RankCard card = RankCard(
         firebaseUser: widget.firebaseUser,
-        documentSnapshot: sortedUsersNearby[i]['snapshot'],
+        documentSnapshot: sortedUsers[i]['snapshot'],
         image: url,
-        name: sortedUsersNearby[i]['displayName'],
+        name: sortedUsers[i]['displayName'],
         icon: icon,
-        rarityBorder: sortedUsersNearby[i]['rarityBorder'],
-        value: sortedUsersNearby[i]['friendliness'],
+        rarityBorder: sortedUsers[i]['rarityBorder'],
+        value: sortedUsers[i][valueType],
         dotIsOn: true,
         key: UniqueKey(),
       );
@@ -92,43 +88,6 @@ class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAli
       });
     }
   }
-
-//  void constructCards(List<Widget> cards, String orderBy, IconData icon) {
-//    // Give the card a bit of gap in the beginning
-//    cards.add(SizedBox(width: 20.0));
-//    try {
-//      // Go into our database and order by the key.
-//      Firestore.instance.collection("users").orderBy(orderBy, descending: true).getDocuments().then((snapshot) {
-//        // Now that it's ordered by the key, construct a card for everyone in the database in order
-//        snapshot.documents.forEach((data) {
-//          String url = data[FirestoreManager.keyPhotos][0]; // Network URL to image
-//          Key key = UniqueKey(); // Used for the dot hero animation
-//          String dotHeroName = key.toString() + "rankedDot";
-//          String imageHeroName = key.toString() + "rankedToHero";
-//
-//          // Create the card
-//          RankCard card = RankCard(
-//            firebaseUser: widget.firebaseUser,
-//            documentSnapshot: data,
-//            image: url,
-//            name: data[FirestoreManager.keyDisplayName],
-//            icon: icon,
-//            rarityBorder: data[FirestoreManager.keyRarityBorder],
-//            value: data[orderBy],
-//            dotIsOn: true,
-//            key: UniqueKey(),
-//          );
-//
-//          // Trigger rebuild when adding each card (bad?)
-//          setState(() {
-//            cards.add(card);
-//          });
-//        });
-//      });
-//    } catch (e) {
-//      print(e);
-//    }
-//  }
 
 //  void onRankCardTap(Key key, DocumentSnapshot data) {
 //    // Construct HeroProfile widget from the information on the clicked avatar

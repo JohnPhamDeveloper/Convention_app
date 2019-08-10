@@ -86,10 +86,12 @@ class _MainScreenState extends State<MainScreen> {
         int rarityBorder = snapshot.data[FirestoreManager.keyRarityBorder];
         bool isCosplayer = snapshot.data[FirestoreManager.keyIsCosplayer];
         bool isPhotographer = snapshot.data[FirestoreManager.keyIsPhotographer];
+        int fame = snapshot.data[FirestoreManager.keyFame];
         DocumentSnapshot docSnapshot = snapshot;
 
         userData = {
           'circleImageUrl': circleImageUrl,
+          'fame': fame,
           'displayName': displayName,
           'seriesName': seriesName,
           'cosplayName': cosplayName,
@@ -105,9 +107,8 @@ class _MainScreenState extends State<MainScreen> {
       });
     }
     // END
-
-    _initAfterLoggedIn(sortedUsersNerby);
     _setLoading();
+    _initAfterLoggedIn(sortedUsersNerby);
   }
 
 //  _loadAuthUser() async {
@@ -180,7 +181,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _initAfterLoggedIn(List<dynamic> sortedUsersNearby) {
-    loggedInUser = LoggedInUser();
     preloadPageController = PreloadPageController(initialPage: navIndex);
     _navigationController = CircularBottomNavigationController(navIndex);
     pageView = PreloadPageView(
@@ -196,9 +196,9 @@ class _MainScreenState extends State<MainScreen> {
         RankingListPage(firebaseUser: firebaseUser, loggedInUserLatLng: loggedInUserLatLng, usersNearby: sortedUsersNearby),
         SearchPage(firebaseUser: firebaseUser, loggedInUserLatLng: loggedInUserLatLng, usersNearby: sortedUsersNearby),
 //        FamePage(),
+        MessagePage(firebaseUser: firebaseUser),
         NotificationPage(firebaseUser: firebaseUser),
-        MessagePage(firebaseUser: firebaseUser)
-        //  ProfilePage(),
+        ProfilePage(),
       ],
     );
   }
@@ -429,8 +429,9 @@ class _MainScreenState extends State<MainScreen> {
     print("Finished creating mock user");
   }
 
-  void _setLoading() {
+  _setLoading() {
     //print("how many times is this called?");
+    print("NOTIFYING!!!!!!!!!!!!!!!!!!");
     loggedInUser.updateWidgetsListeningToThis();
     setState(() {
       loadedUserData = true; // Stop showing spinner
@@ -444,7 +445,7 @@ class _MainScreenState extends State<MainScreen> {
     super.dispose();
   }
 
-  void moveToSelectedPage(int index) {
+  moveToSelectedPage(int index) {
     setState(() {
       navIndex = index;
     });

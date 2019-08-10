@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cosplay_app/widgets/TopNavBarWithLines.dart';
 import 'package:cosplay_app/widgets/SearchSectionItem.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:cosplay_app/widgets/RoundButton.dart';
-import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:cosplay_app/widgets/FireMap.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SearchPage extends StatefulWidget {
   final FirebaseUser firebaseUser;
