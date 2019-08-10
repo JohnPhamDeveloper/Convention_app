@@ -71,8 +71,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
           firebaseUser: widget.firebaseUser,
           loggedInUserLatLng: widget.loggedInUserLatLng,
         ),
-        //SearchSection(userType: FirestoreManager.keyIsPhotographer, firebaseUser: widget.firebaseUser),
-        // PhotographerSearchSection(),
       ],
     );
   }
@@ -145,6 +143,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                     },
                     navIndex: navIndex,
                   ),
+                  SizedBox(height: 6.0),
                   _renderPages()
                 ],
               ),

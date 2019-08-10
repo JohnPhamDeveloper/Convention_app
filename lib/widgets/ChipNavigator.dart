@@ -36,16 +36,30 @@ class _ChipNavigatorState extends State<ChipNavigator> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15.0),
-      child: Row(
-        children: <Widget>[
-          _actionChipWrap("Cosplayers", 0),
-          _actionChipWrap("Photographers", 1),
-          _actionChipWrap("Con-goers", 2)
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.cyan[400],
+        //border: new Border.all(color: Colors.green, width: 5.0, style: BorderStyle.solid),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 5.0,
+            spreadRadius: 5.0,
+            offset: Offset(0.0, 3.0),
+          )
         ],
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        child: Row(
+          children: <Widget>[
+            _actionChipWrap("Cosplayers", 0),
+            _actionChipWrap("Photographers", 1),
+            _actionChipWrap("Con-goers", 2)
+          ],
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+        ),
       ),
     );
   }

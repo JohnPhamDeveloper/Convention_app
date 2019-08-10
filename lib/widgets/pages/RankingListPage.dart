@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/widgets/RankCard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cosplay_app/widgets/ChipNavigator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class RankingListPage extends StatefulWidget {
@@ -19,20 +20,60 @@ class RankingListPage extends StatefulWidget {
 }
 
 class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAliveClientMixin {
-  List<Widget> friendlinessCards = List<Widget>();
-  List<Widget> fameCards = List<Widget>();
-  List<dynamic> sortedUsersNearbyFriendliness = List<dynamic>();
-  List<dynamic> sortedUsersNearbyFame = List<dynamic>();
+  PageController pageController;
+  PageView pageView;
+
+  // Cards
+  List<Widget> cosplayersFriendlinessCards = List<Widget>();
+  List<Widget> cosplayersFameCard = List<Widget>();
+  List<Widget> photographersFriendlinessCards = List<Widget>();
+  List<Widget> photographersFameCards = List<Widget>();
+  List<Widget> congoersFriendlinessCards = List<Widget>();
+  List<Widget> congoersFameCards = List<Widget>();
+
+  // Sorted containing map of data
+  List<Map<dynamic, dynamic>> sortedCosplayersFriendliness = List<Map<dynamic, dynamic>>();
+  List<Map<dynamic, dynamic>> sortedCosplayersFame = List<Map<dynamic, dynamic>>();
+  List<Map<dynamic, dynamic>> sortedPhotographersFriendliness = List<Map<dynamic, dynamic>>();
+  List<Map<dynamic, dynamic>> sortedPhotographersFame = List<Map<dynamic, dynamic>>();
+  List<Map<dynamic, dynamic>> sortedCongoersFriendliness = List<Map<dynamic, dynamic>>();
+  List<Map<dynamic, dynamic>> sortedCongoersFame = List<Map<dynamic, dynamic>>();
+
+  int navIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    sortedUsersNearbyFriendliness = widget.usersNearby.toList();
-    sortedUsersNearbyFame = widget.usersNearby.toList();
-    _sortRoomBy(sortedUsersNearbyFriendliness, 'friendliness', ascending: false);
-    _sortRoomBy(sortedUsersNearbyFame, 'fame', ascending: false);
-    constructCards2(friendlinessCards, Icons.sentiment_very_satisfied, sortedUsersNearbyFriendliness, 'friendliness');
-    constructCards2(fameCards, Icons.star, sortedUsersNearbyFame, 'fame');
+    _filter(sortedCosplayersFriendliness, widget.usersNearby.toList(), "isCosplayer");
+    _filter(sortedCosplayersFame, widget.usersNearby.toList(), "isCosplayer");
+    _filter(sortedPhotographersFriendliness, widget.usersNearby.toList(), "isPhotographer");
+    _filter(sortedPhotographersFame, widget.usersNearby.toList(), "isPhotographer");
+    _filter(sortedCongoersFriendliness, widget.usersNearby.toList(), "isCongoer");
+    _filter(sortedCongoersFame, widget.usersNearby.toList(), "isCongoer");
+
+    _sortRoomBy(sortedCosplayersFriendliness, 'friendliness', ascending: false);
+    _sortRoomBy(sortedCosplayersFame, 'fame', ascending: false);
+    _sortRoomBy(sortedPhotographersFriendliness, 'friendliness', ascending: false);
+    _sortRoomBy(sortedPhotographersFame, 'fame', ascending: false);
+    _sortRoomBy(sortedCongoersFriendliness, 'friendliness', ascending: false);
+    _sortRoomBy(sortedCongoersFame, 'fame', ascending: false);
+
+    constructCards2(cosplayersFriendlinessCards, Icons.sentiment_very_satisfied, sortedCosplayersFriendliness, 'friendliness');
+    constructCards2(cosplayersFameCard, Icons.star, sortedCosplayersFame, 'fame');
+    constructCards2(
+        photographersFriendlinessCards, Icons.sentiment_very_satisfied, sortedPhotographersFriendliness, 'friendliness');
+    constructCards2(photographersFameCards, Icons.star, sortedPhotographersFame, 'fame');
+    constructCards2(congoersFriendlinessCards, Icons.sentiment_very_satisfied, sortedCongoersFriendliness, 'friendliness');
+    constructCards2(congoersFameCards, Icons.star, sortedCongoersFame, 'fame');
+    _createPages();
+  }
+
+  _filter(List<Map<dynamic, dynamic>> copyTo, List<Map<dynamic, dynamic>> copyFrom, String filterBy) {
+    for (int i = 0; i < copyFrom.length; i++) {
+      if (copyFrom[i][filterBy] == true) {
+        copyTo.add(copyFrom[i]);
+      }
+    }
   }
 
   _sortRoomBy(List<Map<dynamic, dynamic>> toBeSorted, String sortByKey, {bool ascending = true}) {
@@ -89,19 +130,23 @@ class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAli
     }
   }
 
-//  void onRankCardTap(Key key, DocumentSnapshot data) {
-//    // Construct HeroProfile widget from the information on the clicked avatar
-//    HeroProfileStart heroProfileStart =
-//        HeroCreator.createHeroProfileStart(key, data);
-//    HeroProfileDetails heroProfileDetails =
-//        HeroCreator.createHeroProfileDetails(data);
-//    Widget clickedProfile = HeroCreator.wrapInScaffold(
-//        [heroProfileStart, heroProfileDetails], context);
-//
-//    // Push that profile into view
-//    Navigator.push(
-//        context, MaterialPageRoute(builder: (context) => clickedProfile));
-//  }
+  _createPages() {
+    pageController = PageController(initialPage: navIndex);
+    pageView = PageView(
+      onPageChanged: (index) {
+        setState(() {
+          navIndex = index;
+        });
+      },
+      physics: NeverScrollableScrollPhysics(),
+      controller: pageController,
+      children: <Widget>[
+        Section(friendlinessCards: cosplayersFriendlinessCards, fameCards: cosplayersFameCard),
+        Section(friendlinessCards: photographersFriendlinessCards, fameCards: photographersFameCards),
+        Section(friendlinessCards: congoersFriendlinessCards, fameCards: congoersFameCards),
+      ],
+    );
+  }
 
   @override
   bool get wantKeepAlive => true;
@@ -109,25 +154,69 @@ class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAli
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Padding(
-      padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
-      child: ListView(
-        children: <Widget>[
-          SizedBox(height: 20),
-          // Most Friendly
-          ScrollableTitle(
-            title: Text("Most Friendly", style: kCardTitleStyle),
-            child: friendlinessCards,
+    return Column(
+      children: <Widget>[
+        Flexible(
+          flex: 1,
+          child: ChipNavigator(
+            onPressed: (index) {
+              pageController.animateToPage(
+                index,
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+              );
+            },
+            navIndex: navIndex,
           ),
-          SizedBox(height: kCardGap + 10),
-          // Highest Fame
-          ScrollableTitle(
-            title: Text("Highest Fame", style: kCardTitleStyle),
-            child: fameCards,
-          ),
-          SizedBox(height: 100),
-        ],
-      ),
+        ),
+        Flexible(flex: 7, child: pageView)
+
+//        ListView(
+//          children: <Widget>[
+//            SizedBox(height: 20),
+//            // Most Friendly
+//            ScrollableTitle(
+//              title: Text("Most Friendly", style: kCardTitleStyle),
+//              child: friendlinessCards,
+//            ),
+//            SizedBox(height: kCardGap + 10),
+//            // Highest Fame
+//            ScrollableTitle(
+//              title: Text("Highest Fame", style: kCardTitleStyle),
+//              child: fameCards,
+//            ),
+//            SizedBox(height: 100),
+//          ],
+//        ),
+      ],
+    );
+  }
+}
+
+class Section extends StatelessWidget {
+  final List<Widget> friendlinessCards;
+  final List<Widget> fameCards;
+
+  Section({@required this.friendlinessCards, @required this.fameCards});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: <Widget>[
+        SizedBox(height: 20),
+        // Most Friendly
+        ScrollableTitle(
+          title: Text("Most Friendly", style: kCardTitleStyle),
+          child: friendlinessCards,
+        ),
+        SizedBox(height: kCardGap + 10),
+        // Highest Fame
+        ScrollableTitle(
+          title: Text("Highest Fame", style: kCardTitleStyle),
+          child: fameCards,
+        ),
+        SizedBox(height: 100),
+      ],
     );
   }
 }
