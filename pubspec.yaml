@@ -57,6 +57,8 @@ dev_dependencies:
   cloud_functions: ^0.4.1
   rich_alert: ^0.1.32
   intl: ^0.15.8
+  fluttertoast: ^3.1.0
+
 
 
 # For information on the generic Dart part of this file, see the

@@ -18,6 +18,7 @@ import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 import 'package:cosplay_app/widgets/pages/MessagePage.dart';
 import 'package:cosplay_app/classes/Location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -472,20 +473,49 @@ class _MainScreenState extends State<MainScreen> {
                   },
                 ),
               ),
-              Positioned(
-                top: MediaQuery.of(context).size.height - 72,
-                left: (MediaQuery.of(context).size.width / 2) + 5,
-                child: CircularBox(
-                  width: 13.0,
-                  height: 13.0,
-                  padding: EdgeInsets.all(0.0),
-                  backgroundColor: Colors.pinkAccent,
-                  child: Text(
-                    "",
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10.0),
-                  ),
-                ),
+              FlatButton(
+                onPressed: () {
+                  Fluttertoast.showToast(
+                      msg: "Someone voted you as friendly!",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.TOP,
+                      timeInSecForIos: 1,
+                      backgroundColor: Colors.pinkAccent,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                },
+                child: Text("PRESSS ME"),
               ),
+              // Message dot
+//              Positioned(
+//                bottom: 33,
+//                left: (MediaQuery.of(context).size.width / 1.667) - 33,
+//                child: CircularBox(
+//                  width: 13.0,
+//                  height: 13.0,
+//                  padding: EdgeInsets.all(0.0),
+//                  backgroundColor: Colors.pinkAccent,
+//                  child: Text(
+//                    "",
+//                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10.0),
+//                  ),
+//                ),
+//              ),
+//              // Notifc dot
+//              Positioned(
+//                bottom: 33,
+//                left: (MediaQuery.of(context).size.width / 1.25) - 38,
+//                child: CircularBox(
+//                  width: 13.0,
+//                  height: 13.0,
+//                  padding: EdgeInsets.all(0.0),
+//                  backgroundColor: Colors.pinkAccent,
+//                  child: Text(
+//                    "",
+//                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10.0),
+//                  ),
+//                ),
+//              ),
 //              Align(
 //                alignment: Alignment.topCenter,
 //                child: CircularBoxClipped(
