@@ -15,7 +15,7 @@ class Location {
 
     print("Updating locations...");
     // Update the database with the logged in user's new position & displayName
-    Firestore.instance.collection("locations").document(loggedInUserUid).setData({
+    return Firestore.instance.collection("locations").document(loggedInUserUid).setData({
       FirestoreManager.keyDisplayName: loggedInUser.getHashMap[FirestoreManager.keyDisplayName],
       FirestoreManager.keyPosition: newGeoPoint.data,
       'g': g,

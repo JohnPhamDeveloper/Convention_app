@@ -19,6 +19,7 @@ import 'package:cosplay_app/widgets/pages/MessagePage.dart';
 import 'package:cosplay_app/classes/Location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:async';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -34,6 +35,8 @@ class _MainScreenState extends State<MainScreen> {
   FirebaseUser firebaseUser;
   int navIndex = 0;
   PreloadPageView pageView;
+  List<Map<dynamic, dynamic>> sortedUsersNearby = List<Map<dynamic, dynamic>>();
+  Timer _updateLocationTimer;
 
   List<TabItem> tabItems = List.of([
     TabItem(Icons.home, "Home", Colors.pinkAccent),
@@ -55,15 +58,29 @@ class _MainScreenState extends State<MainScreen> {
     // Only login to _loginUser() and not the other (PHONE)
     //await _loginUser();
     await _loginUser4p();
+
+    // Initial user location update
     loggedInUserLatLng = await Location.getCurrentLocation();
 
-    // Get users nearby
+    // Update user location and get everyone around every 30 seconds
+    _updateLocationTimer = Timer.periodic(Duration(seconds: 30), (Timer t) async {
+      print("Updating user location to database...");
+      LatLng loggedInUserLatLng = await Location.getCurrentLocation();
+      await Location.updateLocationToDatabase(loggedInUserLatLng, loggedInUser, firebaseUser.uid);
+      await _getUsersNearby();
+    });
+    await _getUsersNearby();
+
+    // END
+    _setLoading(); // Remove loading screen
+    _createPages(); // Home, message, notif, etc...
+  }
+
+  _getUsersNearby() async {
+    sortedUsersNearby.clear();
     final Map<dynamic, dynamic> response = await Location.getUsersNearby(loggedInUserLatLng);
     List<dynamic> usersNearby = response['ids'];
     usersNearby = usersNearby.reversed.toList(); // Reverse to make it show nearby at top
-
-    // START
-    List<Map<dynamic, dynamic>> sortedUsersNerby = List<Map<dynamic, dynamic>>();
     for (int i = 0; i < usersNearby.length; i++) {
       var uid;
       var distance;
@@ -73,7 +90,7 @@ class _MainScreenState extends State<MainScreen> {
         distance = value;
       });
 
-      await Firestore.instance.collection('users').document(uid).get().then((snapshot) {
+      return Firestore.instance.collection('users').document(uid).get().then((snapshot) {
         Map<dynamic, dynamic> userData = Map<dynamic, dynamic>();
         String circleImageUrl = snapshot.data[FirestoreManager.keyPhotos][0];
         String displayName = snapshot.data[FirestoreManager.keyDisplayName];
@@ -100,12 +117,11 @@ class _MainScreenState extends State<MainScreen> {
           'snapshot': docSnapshot
         };
 
-        sortedUsersNerby.add(userData);
+        setState(() {
+          sortedUsersNearby.add(userData);
+        });
       });
     }
-    // END
-    _setLoading();
-    _initAfterLoggedIn(sortedUsersNerby);
   }
 
 //  _loadAuthUser() async {
@@ -177,7 +193,7 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  _initAfterLoggedIn(List<dynamic> sortedUsersNearby) {
+  _createPages() {
     preloadPageController = PreloadPageController(initialPage: navIndex);
     _navigationController = CircularBottomNavigationController(navIndex);
     pageView = PreloadPageView(
@@ -437,6 +453,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void dispose() {
+    _updateLocationTimer.cancel();
     _navigationController.dispose();
     preloadPageController.dispose();
     super.dispose();

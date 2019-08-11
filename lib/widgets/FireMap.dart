@@ -16,28 +16,11 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:cosplay_app/classes/Meetup.dart';
 import 'package:cosplay_app/classes/Location.dart';
 
-/// Structure:
-/// 1) _startQuery()
-/// Gets user location and center point and subscribe to radius which
-/// user can change with the slider. Then go to database and only find
-/// documents around that radius. Calls _updateMarker() everytime radius changes.
-///
-/// 2) _updateMarkers()
-/// Clear all markers from screen. Then go through each document around
-/// the radius of the user and create a marker using the documents position.
-/// Add that marker to the "markers" state and it'll display onto map
-///
-/// 3) _updateQuery()
-/// Called on the slider's onChange.
-/// Whenever the slider changes, it will setState the radius variable.
-/// As a result, radius.switchMap will be called again and find all
-/// documents around that new radius.
-
-/// How to make it so loggedInUser gets the information of the "usersToShareLocationWIth" every 10 seconds?
-/// 1) loggedInUser.getusersToSharelOcationsWith[i].getLocation
-/// 2) where to create timer? What does this timer do? Get a reference to each usersToshareLocWith
-/// 3) For each reference, get currentLocation in database
 class FireMap extends StatefulWidget {
+  FirebaseUser loggedInUserAuth;
+
+  FireMap({@required this.loggedInUserAuth});
+
   @override
   _FireMapState createState() => _FireMapState();
 }
@@ -55,7 +38,6 @@ class _FireMapState extends State<FireMap> {
   BitmapDescriptor otherUserIconOnMap;
   LatLng _lastTap;
   StreamSubscription subscription;
-  FirebaseUser loggedInUserAuth;
 
   // Stateful
   BehaviorSubject<double> radius = BehaviorSubject<double>.seeded(1.0);
@@ -71,12 +53,9 @@ class _FireMapState extends State<FireMap> {
   }
 
   void _startListenToMatchedUsers() async {
-    loggedInUserAuth = await FirebaseAuth.instance.currentUser();
-
-    Firestore.instance.collection('selfie').document(loggedInUserAuth.uid).snapshots().listen((snapshot) {
+    Firestore.instance.collection('selfie').document(widget.loggedInUserAuth.uid).snapshots().listen((snapshot) {
       print("RE--------------------------------------------------------------------");
       if (snapshot.data[FirestoreManager.keyMatchedUsers] != null) {
-        // Stop updating map & sending location since match list is empty
         //TODO WARNING: IF A MAP BECOMES EMPTY, IT TURNS INTO AN ARRAY IN FIRESTORE. isEmpty covers both "Array" and "Map" type
         if (snapshot.data[FirestoreManager.keyMatchedUsers].isEmpty) {
           print("STOP TIMER");
@@ -108,7 +87,7 @@ class _FireMapState extends State<FireMap> {
       _markers.clear();
       print("Timer ran AGAIN");
       LatLng loggedInUserLatLng = await Location.getCurrentLocation();
-      Location.updateLocationToDatabase(loggedInUserLatLng, loggedInUser, loggedInUserAuth.uid);
+      Location.updateLocationToDatabase(loggedInUserLatLng, loggedInUser, widget.loggedInUserAuth.uid);
       _updateMatchedUsersOnMap(loggedInUserLatLng);
     });
   }
