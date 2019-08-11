@@ -6,6 +6,7 @@ import 'package:cosplay_app/constants/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cosplay_app/classes/HeroCreator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shimmer/shimmer.dart';
 
 class RankCard extends StatefulWidget {
   final FirebaseUser firebaseUser;

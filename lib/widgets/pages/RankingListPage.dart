@@ -159,6 +159,7 @@ class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAli
         Flexible(
           flex: 1,
           child: ChipNavigator(
+            chipNames: <String>['Cosplayers', 'Photographers', 'Con-goers'],
             onPressed: (index) {
               pageController.animateToPage(
                 index,

@@ -14,14 +14,10 @@ import 'package:provider/provider.dart';
 import 'package:cosplay_app/widgets/LoadingIndicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cosplay_app/widgets/native_shapes/CircularBoxClipped.dart';
 import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cosplay_app/widgets/pages/MessagePage.dart';
 import 'package:cosplay_app/classes/Location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
-import 'package:cosplay_app/classes/Location.dart';
 
 class MainScreen extends StatefulWidget {
   @override

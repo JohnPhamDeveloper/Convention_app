@@ -20,9 +20,10 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMixin {
   PageController pageController;
+  PageView pageView;
   List<Map<dynamic, dynamic>> cosplayersNearby = List<Map<dynamic, dynamic>>();
   List<Map<dynamic, dynamic>> photographersNearby = List<Map<dynamic, dynamic>>();
-  PageView pageView;
+
   bool loadedUsers = false;
   int navIndex = 0;
 
@@ -134,6 +135,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 //                    },
 //                  ),
                   ChipNavigator(
+                    chipNames: <String>['Cosplayers', 'Photographers', 'Con-goers'],
                     onPressed: (index) {
                       pageController.animateToPage(
                         index,

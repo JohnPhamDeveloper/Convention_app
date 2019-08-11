@@ -3,12 +3,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cosplay_app/widgets/ImageContainer.dart';
 import 'package:cosplay_app/widgets/RoundButton.dart';
 import 'package:cosplay_app/widgets/medals/medals.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:cosplay_app/widgets/ActionButton.dart';
 import 'package:cosplay_app/widgets/TitleData.dart';
+import 'package:firebase_auth/firebase_auth.dart';+
 import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:cosplay_app/widgets/ChipNavigator.dart';
+import 'package:cosplay_app/widgets/ProfileSection.dart';
 
 class HeroProfileDetails extends StatefulWidget {
   final bool isLoggedInUser;
@@ -47,6 +49,9 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
   bool _clickedOnSelfieRequestButton = false;
   bool _clickedOnAcceptSelfieButton = false;
   bool _clickedOnFinishSelfieButton = false;
+  PageController pageController;
+  PageView pageView;
+  int navIndex = 0;
 
   Widget _renderPage(BuildContext context) {
     print(widget.isLoggedInUser);
@@ -56,169 +61,156 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
     return _renderOtherUserPage(context);
   }
 
+  _createPages() {
+    pageController = PageController(initialPage: navIndex);
+    pageView = PageView(
+      onPageChanged: (index) {
+        setState(() {
+          navIndex = index;
+        });
+      },
+      controller: pageController,
+      children: <Widget>[
+        ProfileSection(
+          isLoggedInUser: widget.isLoggedInUser,
+          rarityBorder: widget.rarityBorder,
+          userCircleImage: widget.userCircleImage,
+          displayName: widget.displayName,
+          friendliness: widget.friendliness,
+          fame: widget.fame,
+        ),
+        ProfileSection(
+          isLoggedInUser: widget.isLoggedInUser,
+          rarityBorder: widget.rarityBorder,
+          userCircleImage: widget.userCircleImage,
+          displayName: widget.displayName,
+          friendliness: widget.friendliness,
+          fame: widget.fame,
+        ),
+        ProfileSection(
+          isLoggedInUser: widget.isLoggedInUser,
+          rarityBorder: widget.rarityBorder,
+          userCircleImage: widget.userCircleImage,
+          displayName: widget.displayName,
+          friendliness: widget.friendliness,
+          fame: widget.fame,
+        ),
+      ],
+    );
+  }
+
   _renderLoggedInUserPage(BuildContext context) {
     return ListView(
       children: <Widget>[
-        Column(
+        SizedBox(height: 40.0),
+        // user image
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10.0),
+          child: Align(
+            alignment: Alignment.center,
+            child: ImageContainer(
+                enableStatusDot: false,
+                enableSelfieDot: widget.isLoggedInUser ? false : true,
+                statusDotOuterSize: 25.0,
+                statusDotRight: 15,
+                statusDotBottom: 10,
+                selfieDotOuterSize: 25.0,
+                selfieDotLeft: 15,
+                selfieDotBottom: 10,
+                borderWidth: 3.5,
+                rarityBorderColor: kRarityBorders[widget.rarityBorder],
+                borderRadius: 500.0,
+                imageURL: widget.userCircleImage,
+                width: 160.0,
+                height: 160.0),
+          ),
+        ),
+        SizedBox(height: 20.0),
+        // Name
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            widget.displayName,
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0),
+          ),
+        ),
+        SizedBox(height: 15.0),
+        // Socials
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 40.0),
-            // user image
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: ImageContainer(
-                  enableStatusDot: false,
-                  enableSelfieDot: widget.isLoggedInUser ? false : true,
-                  statusDotOuterSize: 25.0,
-                  statusDotRight: 15,
-                  statusDotBottom: 10,
-                  selfieDotOuterSize: 25.0,
-                  selfieDotLeft: 15,
-                  selfieDotBottom: 10,
-                  borderWidth: 3.5,
-                  rarityBorderColor: kRarityBorders[widget.rarityBorder],
-                  borderRadius: 500.0,
-                  imageURL: widget.userCircleImage,
-                  width: 160.0,
-                  height: 160.0),
-            ),
-            SizedBox(height: 20.0),
-            // Name
-            Text(
-              widget.displayName,
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0),
-            ),
-            SizedBox(height: 15.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                RoundButton(
-                    size: 45.0,
-                    icon: FontAwesomeIcons.instagram,
-                    iconSize: 25.0,
-                    padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
-                    onTap: () {}),
-                SizedBox(width: 20.0),
-                RoundButton(
-                    size: 45.0,
-                    icon: FontAwesomeIcons.twitter,
-                    iconSize: 25.0,
-                    padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
-                    onTap: () {}),
-              ],
-            ),
-            SizedBox(height: 30.0),
-            // Friendliness
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                TitleData(title: "Friendliness", number: widget.friendliness, width: 150.0),
-                SizedBox(width: 30),
-                TitleData(title: "Fame", number: widget.fame, width: 150.0)
-              ],
-            ),
-            SizedBox(height: 30.0),
-            // Medals
-            // TODO REMOVE OR LEAVE MEDALS
-            CircularBox(
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    "Medals",
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 15.0),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Wrap(
-                      runAlignment: WrapAlignment.spaceEvenly,
-                      crossAxisAlignment: WrapCrossAlignment.start,
-                      runSpacing: 15.0,
-                      spacing: 15.0,
-                      children: <Widget>[
-                        TrustMedal(),
-                        MetDeveloperMedal(),
-                        PurpleHeartMedal(),
-                        VerifiedPhoneMedal(),
-                        HundredSelfieMedal(),
-                        ThreeHundredSelfieMedal(),
-                        FriendlyHundredMedal(),
-                        FriendlyTwoHundredMedal(),
-                        FriendlyFiveHundredMedal(),
-                        FiftySelfieWithOnePersonMedal(),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // BIO
-//            Padding(
-//              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-//              child: CircularBox(
-//                child: Column(
-//                  children: <Widget>[
-//                    Text(
-//                      "Bio",
-//                      style: TextStyle(
-//                        fontSize: 18.0,
-//                        color: Colors.black54,
-//                        fontWeight: FontWeight.w600,
-//                      ),
-//                    ),
-//                    SizedBox(height: 15.0),
-//                    Padding(
-//                      padding: const EdgeInsets.only(bottom: 8.0),
-//                      child: Text(
-//                        "Is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-//                        style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w400),
-//                        textAlign: TextAlign.center,
-//                      ),
-//                    ),
-//                  ],
-//                ),
-//              ),
-//            ),
-            SizedBox(height: 40.0),
-            // Options
-            ActionButton(
-              fillColor: kButtonNormalFillColor,
-              icon: FontAwesomeIcons.cog,
-              text: Text("Options", style: kButtonNormalTextStyle),
-              onTap: () {},
-              iconColor: kButtonNormalIconColor,
-            ),
-            SizedBox(height: 25.0),
-            // Logout button
-            ActionButton(
-              fillColor: kButtonNormalFillColor,
-              icon: Icons.directions_run,
-              text: Text("Log Out", style: kButtonNormalTextStyle),
-              onTap: () async {
-                print("Logging Out");
-                FirebaseUser user = await FirebaseAuth.instance.currentUser();
-
-                // They were not signed in the first place (how did the get in?)
-                if (user == null) Navigator.pushNamed(context, '/');
-
-                print(user.email);
-                print(user.isEmailVerified);
-                print(user.displayName);
-                try {
-                  FirebaseAuth.instance.signOut();
-                  Navigator.pushNamed(context, "/");
-                } catch (e) {
-                  print(e);
-                }
-              },
-              iconColor: kButtonNormalIconColor,
-            ),
-            SizedBox(height: 250),
+            RoundButton(
+                size: 45.0,
+                icon: FontAwesomeIcons.instagram,
+                iconSize: 25.0,
+                padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
+                onTap: () {}),
+            SizedBox(width: 20.0),
+            RoundButton(
+                size: 45.0,
+                icon: FontAwesomeIcons.twitter,
+                iconSize: 25.0,
+                padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0, bottom: 7.1),
+                onTap: () {}),
           ],
-        )
+        ),
+        SizedBox(height: 25.0),
+        ChipNavigator(
+          actionPadding: EdgeInsets.symmetric(horizontal: 8.0),
+          padding: EdgeInsets.all(0.0),
+          mainAxisAlignment: MainAxisAlignment.center,
+          enableShadows: false,
+          containerColor: Colors.cyan[300],
+          onPressed: (index) {
+            setState(() {
+              navIndex = index;
+            });
+            pageController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeInOut,
+            );
+          },
+          navIndex: navIndex,
+          chipNames: <String>['Profile', 'Selfies', 'Portfolio'],
+        ),
+
+        Container(height: 310, width: MediaQuery.of(context).size.width, child: pageView),
+        SizedBox(height: 40.0),
+        // Options
+        ActionButton(
+          fillColor: kButtonNormalFillColor,
+          icon: FontAwesomeIcons.cog,
+          text: Text("Options", style: kButtonNormalTextStyle),
+          onTap: () {},
+          iconColor: kButtonNormalIconColor,
+        ),
+        SizedBox(height: 25.0),
+        // Logout button
+        ActionButton(
+          fillColor: kButtonNormalFillColor,
+          icon: Icons.directions_run,
+          text: Text("Log Out", style: kButtonNormalTextStyle),
+          onTap: () async {
+            print("Logging Out");
+            FirebaseUser user = await FirebaseAuth.instance.currentUser();
+
+            // They were not signed in the first place (how did the get in?)
+            if (user == null) Navigator.pushNamed(context, '/');
+
+            print(user.email);
+            print(user.isEmailVerified);
+            print(user.displayName);
+            try {
+              FirebaseAuth.instance.signOut();
+              Navigator.pushNamed(context, "/");
+            } catch (e) {
+              print(e);
+            }
+          },
+          iconColor: kButtonNormalIconColor,
+        ),
+        SizedBox(height: 250),
       ],
     );
   }
@@ -379,6 +371,12 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
         _showFinishedSelfieOptions(context);
       });
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _createPages();
   }
 
   @override
