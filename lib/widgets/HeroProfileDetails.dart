@@ -6,7 +6,7 @@ import 'package:cosplay_app/widgets/medals/medals.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'package:cosplay_app/widgets/ActionButton.dart';
 import 'package:cosplay_app/widgets/TitleData.dart';
-import 'package:firebase_auth/firebase_auth.dart';+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:cosplay_app/widgets/ChipNavigator.dart';
@@ -100,6 +100,7 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
   }
 
   _renderLoggedInUserPage(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return ListView(
       children: <Widget>[
         SizedBox(height: 40.0),
@@ -174,8 +175,23 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
           navIndex: navIndex,
           chipNames: <String>['Profile', 'Selfies', 'Portfolio'],
         ),
+        // AAA
 
-        Container(height: 310, width: MediaQuery.of(context).size.width, child: pageView),
+        Wrap(
+          runSpacing: 2.0,
+          spacing: 2.0,
+          children: <Widget>[
+            _imageContainerWrap(width),
+            _imageContainerWrap(width),
+            _imageContainerWrap(width),
+            _imageContainerWrap(width),
+            _imageContainerWrap(width),
+            _imageContainerWrap(width),
+            _imageContainerWrap(width),
+          ],
+        ),
+        // AAA
+        Container(height: 350, width: MediaQuery.of(context).size.width, child: pageView),
         SizedBox(height: 40.0),
         // Options
         ActionButton(
@@ -213,6 +229,14 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
         SizedBox(height: 250),
       ],
     );
+  }
+
+  _imageContainerWrap(double width) {
+    return ImageContainer(
+        borderWidth: 1.5,
+        width: (width - 5.0) / 3,
+        height: width / 3,
+        imageURL: 'https://c.pxhere.com/photos/5e/e8/portrait_people_anime_cute_girl_face_35mm_comic-507487.jpg!d');
   }
 
   _renderOtherUserPage(BuildContext context) {
