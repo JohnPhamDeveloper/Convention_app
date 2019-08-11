@@ -11,6 +11,7 @@ import 'package:cosplay_app/widgets/native_shapes/CircularBox.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:cosplay_app/widgets/ChipNavigator.dart';
 import 'package:cosplay_app/widgets/ProfileSection.dart';
+import 'package:cosplay_app/widgets/SelfieSection.dart';
 
 class HeroProfileDetails extends StatefulWidget {
   final bool isLoggedInUser;
@@ -79,22 +80,8 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
           friendliness: widget.friendliness,
           fame: widget.fame,
         ),
-        ProfileSection(
-          isLoggedInUser: widget.isLoggedInUser,
-          rarityBorder: widget.rarityBorder,
-          userCircleImage: widget.userCircleImage,
-          displayName: widget.displayName,
-          friendliness: widget.friendliness,
-          fame: widget.fame,
-        ),
-        ProfileSection(
-          isLoggedInUser: widget.isLoggedInUser,
-          rarityBorder: widget.rarityBorder,
-          userCircleImage: widget.userCircleImage,
-          displayName: widget.displayName,
-          friendliness: widget.friendliness,
-          fame: widget.fame,
-        ),
+        SelfieSection(),
+        SelfieSection(),
       ],
     );
   }
@@ -175,24 +162,15 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
           navIndex: navIndex,
           chipNames: <String>['Profile', 'Selfies', 'Portfolio'],
         ),
-        // AAA
+//        Padding(
+//          padding: const EdgeInsets.symmetric(vertical: 30.0),
+//          child: Container(height: width - 80.0, width: width, child: pageView),
+//        ),
 
-        Wrap(
-          runSpacing: 2.0,
-          spacing: 2.0,
-          children: <Widget>[
-            _imageContainerWrap(width),
-            _imageContainerWrap(width),
-            _imageContainerWrap(width),
-            _imageContainerWrap(width),
-            _imageContainerWrap(width),
-            _imageContainerWrap(width),
-            _imageContainerWrap(width),
-          ],
-        ),
-        // AAA
-        Container(height: 350, width: MediaQuery.of(context).size.width, child: pageView),
-        SizedBox(height: 40.0),
+        //Test
+
+        //test
+        //SizedBox(height: 40.0),
         // Options
         ActionButton(
           fillColor: kButtonNormalFillColor,
@@ -229,14 +207,6 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
         SizedBox(height: 250),
       ],
     );
-  }
-
-  _imageContainerWrap(double width) {
-    return ImageContainer(
-        borderWidth: 1.5,
-        width: (width - 5.0) / 3,
-        height: width / 3,
-        imageURL: 'https://c.pxhere.com/photos/5e/e8/portrait_people_anime_cute_girl_face_35mm_comic-507487.jpg!d');
   }
 
   _renderOtherUserPage(BuildContext context) {

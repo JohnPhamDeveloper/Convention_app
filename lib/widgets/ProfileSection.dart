@@ -29,8 +29,9 @@ class ProfileSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        SizedBox(height: 25.0),
+        //SizedBox(height: 25.0),
         // Friendliness
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -40,7 +41,7 @@ class ProfileSection extends StatelessWidget {
             TitleData(title: "Fame", number: fame, width: 150.0)
           ],
         ),
-        SizedBox(height: 30.0),
+        //SizedBox(height: 30.0),
         // Medals
         // TODO REMOVE OR LEAVE MEDALS
         CircularBox(
