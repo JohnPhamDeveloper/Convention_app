@@ -37,7 +37,7 @@ class _ChipNavigatorState extends State<ChipNavigator> {
 
   _renderContainerColor() {
     if (widget.containerColor == null) {
-      return Colors.cyan[400];
+      return Colors.cyan[300];
     } else {
       return widget.containerColor;
     }

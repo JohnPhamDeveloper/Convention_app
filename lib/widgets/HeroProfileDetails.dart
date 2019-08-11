@@ -50,9 +50,9 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
   bool _clickedOnSelfieRequestButton = false;
   bool _clickedOnAcceptSelfieButton = false;
   bool _clickedOnFinishSelfieButton = false;
-  PageController pageController;
-  PageView pageView;
-  int navIndex = 0;
+  // PageController pageController;
+  //PageView pageView;
+  //int navIndex = 0;
 
   Widget _renderPage(BuildContext context) {
     print(widget.isLoggedInUser);
@@ -62,29 +62,29 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
     return _renderOtherUserPage(context);
   }
 
-  _createPages() {
-    pageController = PageController(initialPage: navIndex);
-    pageView = PageView(
-      onPageChanged: (index) {
-        setState(() {
-          navIndex = index;
-        });
-      },
-      controller: pageController,
-      children: <Widget>[
-        ProfileSection(
-          isLoggedInUser: widget.isLoggedInUser,
-          rarityBorder: widget.rarityBorder,
-          userCircleImage: widget.userCircleImage,
-          displayName: widget.displayName,
-          friendliness: widget.friendliness,
-          fame: widget.fame,
-        ),
-        SelfieSection(),
-        SelfieSection(),
-      ],
-    );
-  }
+//  _createPages() {
+//    pageController = PageController(initialPage: navIndex);
+//    pageView = PageView(
+//      onPageChanged: (index) {
+//        setState(() {
+//          navIndex = index;
+//        });
+//      },
+//      controller: pageController,
+//      children: <Widget>[
+//        ProfileSection(
+//          isLoggedInUser: widget.isLoggedInUser,
+//          rarityBorder: widget.rarityBorder,
+//          userCircleImage: widget.userCircleImage,
+//          displayName: widget.displayName,
+//          friendliness: widget.friendliness,
+//          fame: widget.fame,
+//        ),
+//        SelfieSection(),
+//        SelfieSection(),
+//      ],
+//    );
+//  }
 
   _renderLoggedInUserPage(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -142,35 +142,39 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
                 onTap: () {}),
           ],
         ),
-        SizedBox(height: 25.0),
-        ChipNavigator(
-          actionPadding: EdgeInsets.symmetric(horizontal: 8.0),
-          padding: EdgeInsets.all(0.0),
-          mainAxisAlignment: MainAxisAlignment.center,
-          enableShadows: false,
-          containerColor: Colors.cyan[300],
-          onPressed: (index) {
-            setState(() {
-              navIndex = index;
-            });
-            pageController.animateToPage(
-              index,
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeInOut,
-            );
-          },
-          navIndex: navIndex,
-          chipNames: <String>['Profile', 'Selfies', 'Portfolio'],
-        ),
+        SizedBox(height: 20.0),
+//        ChipNavigator(
+//          actionPadding: EdgeInsets.symmetric(horizontal: 8.0),
+//          padding: EdgeInsets.all(0.0),
+//          mainAxisAlignment: MainAxisAlignment.center,
+//          enableShadows: false,
+//          containerColor: Colors.cyan[300],
+//          onPressed: (index) {
+//            setState(() {
+//              navIndex = index;
+//            });
+//            pageController.animateToPage(
+//              index,
+//              duration: const Duration(milliseconds: 400),
+//              curve: Curves.easeInOut,
+//            );
+//          },
+//          navIndex: navIndex,
+//          chipNames: <String>['Profile', 'Selfies', 'Portfolio'],
+//        ),
 //        Padding(
 //          padding: const EdgeInsets.symmetric(vertical: 30.0),
 //          child: Container(height: width - 80.0, width: width, child: pageView),
 //        ),
-
-        //Test
-
-        //test
-        //SizedBox(height: 40.0),
+        ProfileSection(
+          isLoggedInUser: widget.isLoggedInUser,
+          rarityBorder: widget.rarityBorder,
+          userCircleImage: widget.userCircleImage,
+          displayName: widget.displayName,
+          friendliness: widget.friendliness,
+          fame: widget.fame,
+        ),
+        SizedBox(height: 40.0),
         // Options
         ActionButton(
           fillColor: kButtonNormalFillColor,
@@ -370,7 +374,7 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
   @override
   void initState() {
     super.initState();
-    _createPages();
+    //_createPages();
   }
 
   @override
