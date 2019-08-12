@@ -8,9 +8,7 @@ void main() {
     expect(invalidMessage, null);
   });
 
-  test(
-      'validateEmail should return a string error message for an invalid email',
-      () {
+  test('validateEmail should return a string error message for an invalid email', () {
     String badEmail = "bob@hotmail.";
     String badEmail2 = "bob@";
     String badEmail3 = "bob@";
@@ -30,12 +28,13 @@ void main() {
     String invalidMessage = validatePassword(goodPassword);
     expect(invalidMessage, null);
   });
+
   test('validatePassword should ask for password if empty', () {
     String invalidMessage = validatePassword(badPassword);
     expect(invalidMessage, "Please enter your password");
   });
-  test("validatePassword should ask for more than 5 characters for password",
-      () {
+
+  test("validatePassword should ask for more than 5 characters for password", () {
     String invalidMessage = validatePassword(badPassword2);
     expect(invalidMessage, "Password must be greater than 5 characters");
   });

@@ -10,19 +10,19 @@ import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class SearchSection extends StatefulWidget {
+class SearchSectionItem extends StatefulWidget {
   //final String userType;
   final FirebaseUser firebaseUser;
   final LatLng loggedInUserLatLng;
   final List<Map<dynamic, dynamic>> usersNearby;
 
-  SearchSection({@required this.firebaseUser, @required this.loggedInUserLatLng, @required this.usersNearby});
+  SearchSectionItem({@required this.firebaseUser, @required this.loggedInUserLatLng, @required this.usersNearby});
 
   @override
-  _SearchSectionState createState() => _SearchSectionState();
+  _SearchSectionItemState createState() => _SearchSectionItemState();
 }
 
-class _SearchSectionState extends State<SearchSection> with AutomaticKeepAliveClientMixin {
+class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKeepAliveClientMixin {
   List<Widget> searchInfoWidgets = List<Widget>();
   @override
   bool get wantKeepAlive => true;

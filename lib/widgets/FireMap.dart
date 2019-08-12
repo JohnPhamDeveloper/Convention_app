@@ -441,6 +441,7 @@ class _FireMapState extends State<FireMap> {
     return Stack(
       children: <Widget>[
         GoogleMap(
+          key: Key('googlemap'),
           markers: Set<Marker>.of(_markers.values),
           onTap: _onTap,
           myLocationButtonEnabled: true,
@@ -451,30 +452,30 @@ class _FireMapState extends State<FireMap> {
             zoom: 12.0,
           ),
         ),
-        Positioned(
-          right: 0,
-          bottom: 0,
-          child: Slider(
-            min: 1,
-            max: 5,
-            divisions: 4,
-            value: radius.value,
-            label: 'Radius ${radius.value} km',
-            activeColor: Colors.cyan[300],
-            inactiveColor: Colors.cyan[300].withOpacity(0.2),
-            onChanged: _updateQuery,
-          ),
-        ),
-        Positioned(
-          bottom: 20,
-          left: 20,
-          child: InkWell(
-            onTap: () {
-//              _addGeoPointAt(37.315616, -121.831424);
-            },
-            child: Icon(Icons.my_location, size: 30),
-          ),
-        ),
+//        Positioned(
+//          right: 0,
+//          bottom: 0,
+//          child: Slider(
+//            min: 1,
+//            max: 5,
+//            divisions: 4,
+//            value: radius.value,
+//            label: 'Radius ${radius.value} km',
+//            activeColor: Colors.cyan[300],
+//            inactiveColor: Colors.cyan[300].withOpacity(0.2),
+//            onChanged: _updateQuery,
+//          ),
+//        ),
+//        Positioned(
+//          bottom: 20,
+//          left: 20,
+//          child: InkWell(
+//            onTap: () {
+////              _addGeoPointAt(37.315616, -121.831424);
+//            },
+//            child: Icon(Icons.my_location, size: 30),
+//          ),
+//        ),
       ],
     );
   }

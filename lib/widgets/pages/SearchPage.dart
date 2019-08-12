@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:cosplay_app/widgets/TopNavBarWithLines.dart';
-import 'package:cosplay_app/widgets/SearchSectionItem.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:cosplay_app/widgets/FireMap.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:cosplay_app/widgets/ChipNavigator.dart';
 import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:provider/provider.dart';
+import 'package:cosplay_app/widgets/SearchSection.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -16,22 +12,12 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMixin {
   LoggedInUser loggedInUser;
-  PageController pageController;
-  PageView pageView;
-  List<Map<dynamic, dynamic>> cosplayersNearby = List<Map<dynamic, dynamic>>();
-  List<Map<dynamic, dynamic>> photographersNearby = List<Map<dynamic, dynamic>>();
-
-  bool loadedUsers = false;
-  int navIndex = 0;
-
   @override
   bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
-    //_loginUser();
-
     _checkPermission();
   }
 
@@ -39,50 +25,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   void didChangeDependencies() {
     super.didChangeDependencies();
     loggedInUser = Provider.of<LoggedInUser>(context);
-    _initUsers();
-  }
-
-  _initUsers() async {
-    cosplayersNearby.clear();
-    photographersNearby.clear();
-    for (int i = 0; i < loggedInUser.getUsersNearby.length; i++) {
-      if (loggedInUser.getUsersNearby[i]['isCosplayer'])
-        cosplayersNearby.add(loggedInUser.getUsersNearby[i]);
-      else if (loggedInUser.getUsersNearby[i]['isPhotographer']) photographersNearby.add(loggedInUser.getUsersNearby[i]);
-      //TODO need congoer section
-    }
-
-    _createPages();
-
-    //TODO Delete not needed since main page does the loading...?
-    setState(() {
-      loadedUsers = true;
-    });
-  }
-
-  _createPages() {
-    pageController = PageController(initialPage: navIndex);
-    pageView = PageView(
-      onPageChanged: (index) {
-        setState(() {
-          navIndex = index;
-        });
-      },
-      controller: pageController,
-      children: <Widget>[
-        SearchSection(
-          usersNearby: cosplayersNearby,
-          firebaseUser: loggedInUser.getFirebaseUser,
-          loggedInUserLatLng: loggedInUser.getPosition,
-        ),
-        SearchSection(
-          usersNearby: photographersNearby,
-          firebaseUser: loggedInUser.getFirebaseUser,
-          loggedInUserLatLng: loggedInUser.getPosition,
-        ),
-        //TODO congoer section
-      ],
-    );
   }
 
   _checkPermission() async {
@@ -99,55 +41,19 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     }
   }
 
-  Widget _renderPages() {
-    if (loadedUsers) {
-      return Expanded(child: pageView);
-    } else {
-      return Text("loading...");
-    }
-  }
-
-  @override
-  void dispose() {
-    pageController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
-      children: <Widget>[
-        Flexible(
-          flex: 2,
-          child: FireMap(loggedInUserAuth: loggedInUser.getFirebaseUser),
-        ),
-        Flexible(
-          flex: 3,
-          child: Stack(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  ChipNavigator(
-                    chipNames: <String>['Cosplayers', 'Photographers', 'Con-goers'],
-                    onPressed: (index) {
-                      pageController.animateToPage(
-                        index,
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut,
-                      );
-                    },
-                    navIndex: navIndex,
-                  ),
-                  SizedBox(height: 6.0),
-                  _renderPages()
-                ],
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
+    return Column(children: <Widget>[
+      Flexible(
+        flex: 2,
+        child: FireMap(loggedInUserAuth: loggedInUser.getFirebaseUser),
+      ),
+      Flexible(
+        flex: 3,
+        child: SearchSection(),
+      ),
+    ]);
   }
 }
 

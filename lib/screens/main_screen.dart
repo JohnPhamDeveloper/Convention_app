@@ -124,14 +124,10 @@ class _MainScreenState extends State<MainScreen> {
         };
 
         newUsersNearby.add(userData);
-//        setState(() {
-//          sortedUsersNearby.add(userData);
-//        });
       });
     }
 
     setState(() {
-      //loggedInUser.getUsersNearby.clear();
       loggedInUser.setUsersNearby(newUsersNearby);
       loggedInUser.updateListeners();
     });
