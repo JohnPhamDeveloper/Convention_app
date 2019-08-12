@@ -39,12 +39,12 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   void didChangeDependencies() {
     super.didChangeDependencies();
     loggedInUser = Provider.of<LoggedInUser>(context);
-    print("GET USERS");
-    print(loggedInUser.getUsersNearby);
     _initUsers();
   }
 
   _initUsers() async {
+    cosplayersNearby.clear();
+    photographersNearby.clear();
     for (int i = 0; i < loggedInUser.getUsersNearby.length; i++) {
       if (loggedInUser.getUsersNearby[i]['isCosplayer'])
         cosplayersNearby.add(loggedInUser.getUsersNearby[i]);
@@ -53,6 +53,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     }
 
     _createPages();
+
+    //TODO Delete not needed since main page does the loading...?
     setState(() {
       loadedUsers = true;
     });

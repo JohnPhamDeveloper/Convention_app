@@ -48,7 +48,7 @@ class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAli
   void didChangeDependencies() {
     super.didChangeDependencies();
     loggedInUser = Provider.of<LoggedInUser>(context);
-    print("Didchangedepencies being caled rank list page");
+    // print("Didchangedepencies being caled rank list page");
 
     _filter(sortedCosplayersFriendliness, loggedInUser.getUsersNearby.toList(), "isCosplayer");
     _filter(sortedCosplayersFame, loggedInUser.getUsersNearby.toList(), "isCosplayer");
