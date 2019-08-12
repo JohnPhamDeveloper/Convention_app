@@ -1,11 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'dart:collection';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LoggedInUser extends ChangeNotifier {
   // Database information
-  HashMap<String, dynamic> _hashMap = HashMap<String, dynamic>();
+  Map<String, dynamic> _hashMap = Map<String, dynamic>();
   LatLng _position;
   List<Map<dynamic, dynamic>> _usersNearby = List<Map<dynamic, dynamic>>();
   FirebaseUser _firebaseUser;
@@ -29,7 +28,7 @@ class LoggedInUser extends ChangeNotifier {
     _firebaseUser = user;
   }
 
-  HashMap<String, dynamic> get getHashMap => _hashMap;
+  Map<String, dynamic> get getHashMap => _hashMap;
   List<Map<dynamic, dynamic>> get getUsersNearby => _usersNearby;
   LatLng get getPosition => _position;
   FirebaseUser get getFirebaseUser => _firebaseUser;

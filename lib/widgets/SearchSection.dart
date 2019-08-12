@@ -85,6 +85,7 @@ class _SearchSectionState extends State<SearchSection> {
         Column(
           children: <Widget>[
             ChipNavigator(
+              key: Key("searchSectionChipNavigator"),
               chipNames: <String>['Cosplayers', 'Photographers', 'Con-goers'],
               onPressed: (index) {
                 pageController.animateToPage(
@@ -96,7 +97,7 @@ class _SearchSectionState extends State<SearchSection> {
               navIndex: navIndex,
             ),
             SizedBox(height: 6.0),
-            Expanded(child: pageView)
+            Expanded(key: Key('searchSectionPageView'), child: pageView)
           ],
         ),
       ],

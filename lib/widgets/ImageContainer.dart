@@ -51,7 +51,7 @@ class ImageContainer extends StatelessWidget {
       this.enableShadows = true,
       this.borderWidth = 0,
       this.rarityBorderColor = Colors.white,
-      @required this.imageURL});
+      this.imageURL = ''});
 
   BoxShadow renderShadow() {
     if (enableShadows)
@@ -75,9 +75,26 @@ class ImageContainer extends StatelessWidget {
     );
   }
 
+  Widget renderImage() {
+    if (imageURL != '') {
+      return FadeInImage.memoryNetwork(
+        width: width,
+        height: height,
+        fadeInDuration: Duration(seconds: 1),
+        fadeInCurve: Curves.easeInOut,
+        fit: BoxFit.cover,
+        placeholder: kTransparentImage,
+        image: imageURL,
+      );
+    } else {
+      return Container(width: 0, height: 0);
+    }
+  }
+
   Widget renderStatusDot() {
     if (enableStatusDot) {
       return Positioned(
+        key: Key('imageContainerStatusDot'),
         left: statusDotLeft,
         right: statusDotRight,
         top: statusDotTop,
@@ -96,6 +113,7 @@ class ImageContainer extends StatelessWidget {
   Widget renderSelfieDot() {
     if (enableSelfieDot) {
       return Positioned(
+        key: Key('imageContainerSelfieDot'),
         left: selfieDotLeft,
         right: selfieDotRight,
         top: selfieDotTop,
@@ -115,22 +133,12 @@ class ImageContainer extends StatelessWidget {
     return Stack(
       children: <Widget>[
         Container(
+          key: Key('imageContainerBorderRadius'),
           foregroundDecoration: BoxDecoration(
             border: Border.all(width: borderWidth, color: rarityBorderColor),
             borderRadius: BorderRadius.circular(borderRadius),
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(borderRadius),
-            child: FadeInImage.memoryNetwork(
-              width: width,
-              height: height,
-              fadeInDuration: Duration(seconds: 1),
-              fadeInCurve: Curves.easeInOut,
-              fit: BoxFit.cover,
-              placeholder: kTransparentImage,
-              image: imageURL,
-            ),
-          ),
+          child: ClipRRect(borderRadius: BorderRadius.circular(borderRadius), child: renderImage()),
         ),
         renderStatusDot(),
         renderSelfieDot(),

@@ -8,7 +8,7 @@ import 'package:cosplay_app/classes/FirestoreManager.dart';
 import 'package:cosplay_app/widgets/MiniUser.dart';
 
 // COSPLAYER
-class SearchUserItem extends StatefulWidget {
+class UserSearchInfo extends StatefulWidget {
   final String imageHeroName;
   final String backgroundImage;
   final String name;
@@ -20,7 +20,7 @@ class SearchUserItem extends StatefulWidget {
   final int friendliness;
   final Key key;
 
-  SearchUserItem({
+  UserSearchInfo({
     this.backgroundImage =
         "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/300px-Icon-round-Question_mark.svg.png",
     this.imageHeroName = "",
@@ -35,10 +35,10 @@ class SearchUserItem extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SearchUserItemState createState() => _SearchUserItemState();
+  _UserSearchInfoState createState() => _UserSearchInfoState();
 }
 
-class _SearchUserItemState extends State<SearchUserItem> {
+class _UserSearchInfoState extends State<UserSearchInfo> {
   bool _isLoggedInUser = false;
 //  Color _selfieDotColor = Colors.pinkAccent;
 
@@ -164,117 +164,117 @@ class _SearchUserItemState extends State<SearchUserItem> {
   }
 }
 
-// Photographer
-class PhotographerSearchInfo extends StatelessWidget {
-  final String backgroundImage;
-  final String name;
-  final int yearsExperience;
-  final int monthsExperience;
-  final String cost;
-  final int friendliness;
-
-  PhotographerSearchInfo(
-      {this.backgroundImage,
-      this.name,
-      this.yearsExperience = 0,
-      this.monthsExperience = 0,
-      this.cost = "Free",
-      this.friendliness});
-
-  Text renderTextIfNoImage() {
-    if (backgroundImage == null) {
-      return Text("?");
-    } else {
-      return Text("");
-    }
-  }
-
-  String renderImage() {
-    if (backgroundImage == null)
-      return "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/1024px-Icon-round-Question_mark.svg.png";
-    return backgroundImage;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      splashColor: Colors.grey[100],
-      onTap: () {
-        print("Tapped search item");
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(left: 16.0, right: 0.0, bottom: 8.0, top: 8.0),
-        child: Row(
-          children: <Widget>[
-            // Image container
-            Padding(
-              padding: const EdgeInsets.only(bottom: 0.0),
-              child: ImageContainer(
-                  borderWidth: 2.5,
-                  rarityBorderColor: kRarityBorders[0],
-                  borderRadius: 500.0,
-                  imageURL: renderImage(),
-                  width: 60.0,
-                  height: 60.0),
-            ),
-            SizedBox(width: 20.0),
-            // Middle information
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  CircularBox(
-                    padding: EdgeInsets.symmetric(vertical: 2, horizontal: 6.5),
-                    hasShadow: false,
-                    child: Text(name,
-                        style: TextStyle(
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black87,
-                        )),
-                  ),
-                  SizedBox(height: 3.0),
-                  Text(
-                    "${yearsExperience.toString()} year(s) and ${monthsExperience.toString()} month(s)",
-                    style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.grey[50]),
-                  ),
-                  SizedBox(height: 1.5),
-                  Text(
-                    cost,
-                    style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.grey[50]),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 25.0),
-            // Friendliness
-            Container(
-              width: 85,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.sentiment_very_satisfied, color: Colors.grey[50]),
-                      SizedBox(width: 5.0),
-                      Text(friendliness.toString()),
-                    ],
-                  ),
-                  SizedBox(height: 6),
-                  CircularBox(
-                    padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
-                    hasShadow: false,
-                    child: Text(
-                      "\$42/hr",
-                      style: TextStyle(color: Colors.black87, fontSize: 11.0, fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//// Photographer
+//class PhotographerSearchInfo extends StatelessWidget {
+//  final String backgroundImage;
+//  final String name;
+//  final int yearsExperience;
+//  final int monthsExperience;
+//  final String cost;
+//  final int friendliness;
+//
+//  PhotographerSearchInfo(
+//      {this.backgroundImage,
+//      this.name,
+//      this.yearsExperience = 0,
+//      this.monthsExperience = 0,
+//      this.cost = "Free",
+//      this.friendliness});
+//
+//  Text renderTextIfNoImage() {
+//    if (backgroundImage == null) {
+//      return Text("?");
+//    } else {
+//      return Text("");
+//    }
+//  }
+//
+//  String renderImage() {
+//    if (backgroundImage == null)
+//      return "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Icon-round-Question_mark.svg/1024px-Icon-round-Question_mark.svg.png";
+//    return backgroundImage;
+//  }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return InkWell(
+//      splashColor: Colors.grey[100],
+//      onTap: () {
+//        print("Tapped search item");
+//      },
+//      child: Padding(
+//        padding: const EdgeInsets.only(left: 16.0, right: 0.0, bottom: 8.0, top: 8.0),
+//        child: Row(
+//          children: <Widget>[
+//            // Image container
+//            Padding(
+//              padding: const EdgeInsets.only(bottom: 0.0),
+//              child: ImageContainer(
+//                  borderWidth: 2.5,
+//                  rarityBorderColor: kRarityBorders[0],
+//                  borderRadius: 500.0,
+//                  imageURL: renderImage(),
+//                  width: 60.0,
+//                  height: 60.0),
+//            ),
+//            SizedBox(width: 20.0),
+//            // Middle information
+//            Expanded(
+//              child: Column(
+//                crossAxisAlignment: CrossAxisAlignment.start,
+//                children: <Widget>[
+//                  CircularBox(
+//                    padding: EdgeInsets.symmetric(vertical: 2, horizontal: 6.5),
+//                    hasShadow: false,
+//                    child: Text(name,
+//                        style: TextStyle(
+//                          fontSize: 15.0,
+//                          fontWeight: FontWeight.w500,
+//                          color: Colors.black87,
+//                        )),
+//                  ),
+//                  SizedBox(height: 3.0),
+//                  Text(
+//                    "${yearsExperience.toString()} year(s) and ${monthsExperience.toString()} month(s)",
+//                    style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.grey[50]),
+//                  ),
+//                  SizedBox(height: 1.5),
+//                  Text(
+//                    cost,
+//                    style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Colors.grey[50]),
+//                  ),
+//                ],
+//              ),
+//            ),
+//            SizedBox(width: 25.0),
+//            // Friendliness
+//            Container(
+//              width: 85,
+//              child: Column(
+//                crossAxisAlignment: CrossAxisAlignment.start,
+//                children: <Widget>[
+//                  Row(
+//                    children: <Widget>[
+//                      Icon(Icons.sentiment_very_satisfied, color: Colors.grey[50]),
+//                      SizedBox(width: 5.0),
+//                      Text(friendliness.toString()),
+//                    ],
+//                  ),
+//                  SizedBox(height: 6),
+//                  CircularBox(
+//                    padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
+//                    hasShadow: false,
+//                    child: Text(
+//                      "\$42/hr",
+//                      style: TextStyle(color: Colors.black87, fontSize: 11.0, fontWeight: FontWeight.w700),
+//                    ),
+//                  ),
+//                ],
+//              ),
+//            ),
+//          ],
+//        ),
+//      ),
+//    );
+//  }
+//}

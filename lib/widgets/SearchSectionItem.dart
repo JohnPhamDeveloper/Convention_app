@@ -39,7 +39,7 @@ class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKee
   }
 
   void _createOneSearchUser(FirebaseUser firebaseUser, Map<dynamic, dynamic> cosplayersNearby) {
-    SearchUserItem widget = SearchUserItem(
+    UserSearchInfo widget = UserSearchInfo(
       backgroundImage: cosplayersNearby['circleImageUrl'],
       name: cosplayersNearby['displayName'],
       title: cosplayersNearby['cosplayName'],
@@ -139,7 +139,7 @@ class _SearchSectionItemState extends State<SearchSectionItem> with AutomaticKee
     DocumentSnapshot docSnapshot,
     BuildContext context,
   ) {
-    SearchUserItem widget = SearchUserItem(
+    UserSearchInfo widget = UserSearchInfo(
       backgroundImage: circleImageUrl,
       name: name,
       subtitle: "",

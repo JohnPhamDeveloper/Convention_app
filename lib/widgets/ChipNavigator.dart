@@ -9,9 +9,11 @@ class ChipNavigator extends StatefulWidget {
   final EdgeInsets padding;
   final MainAxisAlignment mainAxisAlignment;
   final EdgeInsets actionPadding;
+  final Key key;
 
   ChipNavigator({
     @required this.navIndex,
+    this.key,
     @required this.onPressed,
     this.mainAxisAlignment = MainAxisAlignment.spaceEvenly,
     this.actionPadding = const EdgeInsets.all(0.0),
@@ -19,7 +21,7 @@ class ChipNavigator extends StatefulWidget {
     this.containerColor,
     @required this.chipNames,
     this.padding = const EdgeInsets.symmetric(vertical: 10),
-  });
+  }) : super(key: key);
 
   @override
   _ChipNavigatorState createState() => _ChipNavigatorState();
