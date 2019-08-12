@@ -19,6 +19,7 @@ class MessagePage extends StatefulWidget {
 class _MessagePageState extends State<MessagePage> {
   // Message page will first show the chat rooms...
   // So we need to listen to the private collection for the current user and check the chatrooms
+  bool listenerStarted = false;
   List<Widget> roomPreviews = List<Widget>();
   List<StreamSubscription> subscriptionList = List<StreamSubscription>();
   LoggedInUser loggedInUser;
@@ -32,7 +33,13 @@ class _MessagePageState extends State<MessagePage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     loggedInUser = Provider.of<LoggedInUser>(context);
+    if (!listenerStarted) {
+      listenerStarted = true;
+      _beginStream();
+    }
+  }
 
+  _beginStream() {
     print("================================== MESSAGE ==================================================");
 
     // Find chatrooms this user is in
@@ -42,9 +49,7 @@ class _MessagePageState extends State<MessagePage> {
         .snapshots()
         .listen((snapshot) async {
       List<Map<dynamic, dynamic>> unsortedChatRooms = List<Map<dynamic, dynamic>>();
-
       roomPreviews.clear();
-      // Get all chatrooms and create a preview
       for (DocumentSnapshot snapshot in snapshot.documents) {
         if (snapshot.data['messages'].length <= 0) return;
         await _getOtherUserPublicInformation(snapshot, unsortedChatRooms);

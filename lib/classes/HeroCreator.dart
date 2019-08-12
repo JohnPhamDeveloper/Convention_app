@@ -15,7 +15,7 @@ class HeroCreator {
   // Construct HeroProfile widget from the information on the clicked avatar
   static pushProfileIntoView(DocumentReference otherUserDataReference, BuildContext context, FirebaseUser firebaseUser) async {
     // Get latest snapshot of the user from the database
-    print("getting latest database information?");
+    //  print("getting latest database information?");
 
     // Get other user data for profile display
     DocumentSnapshot otherUserDataSnapshot = await otherUserDataReference.get().catchError((error) {
@@ -72,9 +72,9 @@ class HeroCreator {
       loggedInUserOutgoingSelfie = snapshot.data[FirestoreManager.keyOutgoingSelfieRequests];
     });
 
-    print("YES");
-    print(loggedInUserOutgoingSelfie);
-    print(loggedInUserIncomingSelfie);
+    //  print("YES");
+    // print(loggedInUserOutgoingSelfie);
+    // print(loggedInUserIncomingSelfie);
 
     // If current user sent and recieved a selfie request from other user
     if (loggedInUserIncomingSelfie.contains(otherUserDocumentSnapshot.documentID) &&
@@ -130,7 +130,7 @@ class HeroCreator {
 
   static void _onSelfieAcceptTap(DocumentSnapshot otherUserData) async {
 //    final response = await Meetup.sendSelfieRequestTo(otherUserData);
-//    print(response.data);
+    //  print(response.data);
     final response2 = await Meetup.acceptSelfieFrom(otherUserData);
     print(response2.data);
   }

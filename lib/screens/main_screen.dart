@@ -217,7 +217,7 @@ class _MainScreenState extends State<MainScreen> {
         });
       },
       preloadPagesCount: 5,
-      physics: NeverScrollableScrollPhysics(),
+      //  physics: NeverScrollableScrollPhysics(),
       controller: preloadPageController,
       children: <Widget>[
         RankingListPage(),
@@ -453,7 +453,7 @@ class _MainScreenState extends State<MainScreen> {
 //      FirestoreManager.keyRealName: "Bobby Jones",
 //      FirestoreManager.keyDateRegistered: DateTime.now(),
 //    }, merge: true);
-    print("Finished creating mock user");
+    // print("Finished creating mock user");
   }
 
   _setLoading() {

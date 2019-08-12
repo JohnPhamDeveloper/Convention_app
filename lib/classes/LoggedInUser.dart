@@ -14,7 +14,7 @@ class LoggedInUser extends ChangeNotifier {
 
   updateListeners() {
     notifyListeners();
-    print("CALLED NOTIFIED LISTENER");
+    //   print("CALLED NOTIFIED LISTENER");
   }
 
   setPosition(LatLng pos) {

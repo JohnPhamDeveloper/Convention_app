@@ -263,7 +263,7 @@ class FirestoreManager {
 
   static _sendPositionToDatabase(DocumentSnapshot documentSnapshot) async {
     // TODO NOT OPTIMIZED!
-    print("Creating position to send to database");
+    // print("Creating position to send to database");
     //final Location location = Location();
     Position location = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high).catchError((error) {
       print(error);
@@ -274,16 +274,16 @@ class FirestoreManager {
 //      print("ERROR IN SENDPOSITIONTODATABASE");
 //      return Future.error(error);
 //    });
-    print("After creating position to send to database");
+    // print("After creating position to send to database");
     double lat = location.latitude;
     double lng = location.longitude;
 
     GeoFirePoint newGeoPoint = geo.point(latitude: lat, longitude: lng);
-    print("newGeoPoint: ${newGeoPoint.longitude} ${newGeoPoint.latitude}");
+    // print("newGeoPoint: ${newGeoPoint.longitude} ${newGeoPoint.latitude}");
     // TODO uncomment this for database update location, also need to handle errors here
     //await documentSnapshot.reference.setData({FirestoreManager.keyPosition: newGeoPoint.data}, merge: true);
     // Update users location to the database
-    print("Added location to locations database for ${documentSnapshot.documentID}");
+    // print("Added location to locations database for ${documentSnapshot.documentID}");
 
     // TODO this should be initially made to point to google headquarters to make sure each users have this enabled on creation
     // TODO change to updata data since each users will already have it by default (updateData)
@@ -304,7 +304,7 @@ class FirestoreManager {
       snapshot.data.forEach((key, value) {
         store[key] = value;
       });
-      print(store);
+      //   print(store);
       Firestore.instance.collection("users").document('jdrl5Xe0kcNOuW6UCyu4svbjfjg2').setData(store);
     });
   }

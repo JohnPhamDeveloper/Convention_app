@@ -18,6 +18,7 @@ class NotificationPage extends StatefulWidget {
 
 class _NotificationPageState extends State<NotificationPage> with AutomaticKeepAliveClientMixin {
   Timer timer;
+  bool initAsyncCalled;
   LoggedInUser loggedInUser;
   Queue<Widget> notifications = Queue<Widget>();
   Queue<Widget> prevNotifications = Queue<Widget>();
@@ -26,6 +27,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
   @override
   void initState() {
     super.initState();
+    initAsyncCalled = false;
   }
 
   _initAsync() async {
@@ -57,6 +59,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
 
   _listenToNotifications() {
     Firestore.instance.collection("private").document(loggedInUser.getFirebaseUser.uid).snapshots().listen((snapshot) async {
+      print("This is how many times the notification listen is being called.................................");
       // Prevent this from being called on the initial page load
       // When we load the previous notifications, this will run on start, which causes the most recent notification
       // To be duplicated
@@ -118,7 +121,10 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
   void didChangeDependencies() {
     super.didChangeDependencies();
     loggedInUser = Provider.of<LoggedInUser>(context);
-    _initAsync();
+    if (!initAsyncCalled) {
+      initAsyncCalled = true;
+      _initAsync();
+    }
   }
 
   @override
