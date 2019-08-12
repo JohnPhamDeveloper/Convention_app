@@ -37,6 +37,7 @@ class _FireMapState extends State<FireMap> {
   BitmapDescriptor otherUserIconOnMap;
   LatLng _lastTap;
   StreamSubscription subscription;
+  bool startedListener = false;
 
   // Stateful
   BehaviorSubject<double> radius = BehaviorSubject<double>.seeded(1.0);
@@ -47,7 +48,6 @@ class _FireMapState extends State<FireMap> {
   void initState() {
     super.initState();
     _initOtherUserIcon(); // Other user icons on the map (green dot)
-    _startListenToMatchedUsers();
   }
 
   void _startListenToMatchedUsers() async {
@@ -72,6 +72,10 @@ class _FireMapState extends State<FireMap> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     loggedInUser = Provider.of<LoggedInUser>(context);
+    if (!startedListener) {
+      startedListener = true;
+      _startListenToMatchedUsers();
+    }
   }
 
   _startMapUpdateTimer() {
