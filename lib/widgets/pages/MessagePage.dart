@@ -42,9 +42,8 @@ class _MessagePageState extends State<MessagePage> {
         .snapshots()
         .listen((snapshot) async {
       List<Map<dynamic, dynamic>> unsortedChatRooms = List<Map<dynamic, dynamic>>();
-      setState(() {
-        roomPreviews.clear();
-      });
+
+      roomPreviews.clear();
       // Get all chatrooms and create a preview
       for (DocumentSnapshot snapshot in snapshot.documents) {
         if (snapshot.data['messages'].length <= 0) return;

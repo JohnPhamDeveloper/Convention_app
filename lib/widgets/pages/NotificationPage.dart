@@ -33,13 +33,13 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
     await Firestore.instance.collection('private').document(loggedInUser.getFirebaseUser.uid).get().then((snapshot) async {
       if (snapshot.data['notifications'] != null) {
         final notificationLength = snapshot.data['notifications'].length;
-        print('NotificationLength: $notificationLength');
+        //print('NotificationLength: $notificationLength');
         var start = notificationLength - 20 - 1;
         if (start < 0) start = 0;
-        print('Start: $start');
+        //print('Start: $start');
         var numberOfNotificationsToShow = 15;
         if (notificationLength < numberOfNotificationsToShow) numberOfNotificationsToShow = notificationLength;
-        print('number of notifications to show: $numberOfNotificationsToShow');
+        //print('number of notifications to show: $numberOfNotificationsToShow');
 
         // Load the recent 15 notifications only
         for (int i = start; i < start + numberOfNotificationsToShow; i++) {
@@ -61,7 +61,6 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
       // When we load the previous notifications, this will run on start, which causes the most recent notification
       // To be duplicated
       if (loadedPreviousNotifications) {
-        print("DID THIS RUN?");
         // notifications.clear();
         //if (!snapshot.exists) return Text("Nothing loaded...");
         final lastItemIndex = snapshot.data['notifications'].length - 1;
@@ -136,10 +135,11 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
 
     // Normal notification
     if (uid == 'null') {
+      print("null uid.......");
     }
     // User notification
     else {
-      return Firestore.instance.collection('users').document(uid).get().then((snapshot) {
+      await Firestore.instance.collection('users').document(uid).get().then((snapshot) {
         String imageUrl = snapshot.data['photos'][0];
         int rarity = snapshot.data['rarityBorder'];
         // Add item
