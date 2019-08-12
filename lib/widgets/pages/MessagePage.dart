@@ -253,7 +253,7 @@ class ChatView extends StatefulWidget {
   _ChatViewState createState() => _ChatViewState();
 }
 
-class _ChatViewState extends State<ChatView> {
+class _ChatViewState extends State<ChatView> with AutomaticKeepAliveClientMixin {
   // Belongs to chatview
   TextEditingController textController = TextEditingController();
   List<Widget> messages = List<Widget>();
@@ -444,6 +444,10 @@ class _ChatViewState extends State<ChatView> {
     if (sub != null) sub.cancel();
     super.dispose();
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
