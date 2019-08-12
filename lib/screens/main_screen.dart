@@ -51,6 +51,8 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     loggedInUser = LoggedInUser();
+    preloadPageController = PreloadPageController(initialPage: navIndex);
+    _navigationController = CircularBottomNavigationController(navIndex);
     _startMe();
   }
 
@@ -210,8 +212,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _createPages() {
-    preloadPageController = PreloadPageController(initialPage: navIndex);
-    _navigationController = CircularBottomNavigationController(navIndex);
     pageView = PreloadPageView(
       onPageChanged: (index) {
         setState(() {
@@ -219,7 +219,7 @@ class _MainScreenState extends State<MainScreen> {
         });
       },
       preloadPagesCount: 5,
-      //  physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       controller: preloadPageController,
       children: <Widget>[
         RankingListPage(),
@@ -492,11 +492,7 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: Theme.of(context).primaryColor,
           body: SafeArea(
             child: Stack(children: <Widget>[
-              PageView.builder(
-                  itemCount: 5,
-                  itemBuilder: (context, position) {
-                    return pageView;
-                  }),
+              pageView,
               // pageView,
               Align(
                 alignment: Alignment.bottomCenter,
