@@ -6,19 +6,16 @@ import 'package:cosplay_app/widgets/FireMap.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cosplay_app/widgets/ChipNavigator.dart';
+import 'package:cosplay_app/classes/LoggedInUser.dart';
+import 'package:provider/provider.dart';
 
 class SearchPage extends StatefulWidget {
-  final FirebaseUser firebaseUser;
-  final LatLng loggedInUserLatLng;
-  final List<dynamic> usersNearby;
-
-  SearchPage({@required this.firebaseUser, @required this.loggedInUserLatLng, @required this.usersNearby});
-
   @override
   _SearchPageState createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMixin {
+  LoggedInUser loggedInUser;
   PageController pageController;
   PageView pageView;
   List<Map<dynamic, dynamic>> cosplayersNearby = List<Map<dynamic, dynamic>>();
@@ -36,14 +33,23 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     //_loginUser();
 
     _checkPermission();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    loggedInUser = Provider.of<LoggedInUser>(context);
+    print("GET USERS");
+    print(loggedInUser.getUsersNearby);
     _initUsers();
   }
 
   _initUsers() async {
-    for (int i = 0; i < widget.usersNearby.length; i++) {
-      if (widget.usersNearby[i]['isCosplayer'])
-        cosplayersNearby.add(widget.usersNearby[i]);
-      else if (widget.usersNearby[i]['isPhotographer']) photographersNearby.add(widget.usersNearby[i]);
+    for (int i = 0; i < loggedInUser.getUsersNearby.length; i++) {
+      if (loggedInUser.getUsersNearby[i]['isCosplayer'])
+        cosplayersNearby.add(loggedInUser.getUsersNearby[i]);
+      else if (loggedInUser.getUsersNearby[i]['isPhotographer']) photographersNearby.add(loggedInUser.getUsersNearby[i]);
+      //TODO need congoer section
     }
 
     _createPages();
@@ -64,26 +70,30 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       children: <Widget>[
         SearchSection(
           usersNearby: cosplayersNearby,
-          firebaseUser: widget.firebaseUser,
-          loggedInUserLatLng: widget.loggedInUserLatLng,
+          firebaseUser: loggedInUser.getFirebaseUser,
+          loggedInUserLatLng: loggedInUser.getPosition,
         ),
         SearchSection(
           usersNearby: photographersNearby,
-          firebaseUser: widget.firebaseUser,
-          loggedInUserLatLng: widget.loggedInUserLatLng,
+          firebaseUser: loggedInUser.getFirebaseUser,
+          loggedInUserLatLng: loggedInUser.getPosition,
         ),
+        //TODO congoer section
       ],
     );
   }
 
   _checkPermission() async {
+    print("Trying to ask for permission...");
     PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.locationAlways);
     if (permission == PermissionStatus.disabled ||
         permission == PermissionStatus.unknown ||
         permission == PermissionStatus.disabled) {
-      print("-------LOCATION DISABLED--------");
+      print("-------LOCATION DISABLED-----------");
       Map<PermissionGroup, PermissionStatus> permissions =
           await PermissionHandler().requestPermissions([PermissionGroup.location]);
+    } else {
+      print("Permisson already granted");
     }
   }
 
@@ -108,7 +118,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       children: <Widget>[
         Flexible(
           flex: 2,
-          child: FireMap(),
+          child: FireMap(loggedInUserAuth: loggedInUser.getFirebaseUser),
         ),
         Flexible(
           flex: 3,
@@ -116,24 +126,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             children: <Widget>[
               Column(
                 children: <Widget>[
-//                  TopNavBarWithLines(
-//                    context: context,
-//                    index: navIndex,
-//                    onCosplayersTap: () {
-//                      pageController.animateToPage(
-//                        0,
-//                        duration: const Duration(milliseconds: 400),
-//                        curve: Curves.easeInOut,
-//                      );
-//                    },
-//                    onPhotographersTap: () {
-//                      pageController.animateToPage(
-//                        1,
-//                        duration: const Duration(milliseconds: 400),
-//                        curve: Curves.easeInOut,
-//                      );
-//                    },
-//                  ),
                   ChipNavigator(
                     chipNames: <String>['Cosplayers', 'Photographers', 'Con-goers'],
                     onPressed: (index) {
@@ -149,19 +141,6 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   _renderPages()
                 ],
               ),
-              // Setting icon
-//              Padding(
-//                padding: const EdgeInsets.only(right: 15.0, bottom: 100.0),
-//                child: Align(
-//                  alignment: Alignment.bottomRight,
-//                  child: RoundButton(
-//                    icon: FontAwesomeIcons.cog,
-//                    iconColor: Colors.white,
-//                    fillColor: Colors.pinkAccent,
-//                    onTap: () {},
-//                  ),
-//                ),
-//              )
             ],
           ),
         ),

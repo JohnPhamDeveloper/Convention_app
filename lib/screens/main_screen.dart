@@ -28,14 +28,14 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   LoggedInUser loggedInUser;
-  LatLng loggedInUserLatLng;
+  LatLng loggedInUserLatLawdawdng;
   bool loadedUserData = false;
   PreloadPageController preloadPageController;
   CircularBottomNavigationController _navigationController;
   FirebaseUser firebaseUser;
   int navIndex = 0;
   PreloadPageView pageView;
-  List<Map<dynamic, dynamic>> sortedUsersNearby = List<Map<dynamic, dynamic>>();
+  List<Map<dynamic, dynamic>> sortedUsersNearwdby = List<Map<dynamic, dynamic>>();
   Timer _updateLocationTimer;
 
   List<TabItem> tabItems = List.of([
@@ -59,26 +59,28 @@ class _MainScreenState extends State<MainScreen> {
     //await _loginUser();
     await _loginUser4p();
 
-    // Initial user location update
-    loggedInUserLatLng = await Location.getCurrentLocation();
+    // Initial update
+    LatLng newPos = await Location.getCurrentLocation();
+    loggedInUser.setPosition(newPos);
+
+    await _getUsersNearby();
 
     // Update user location and get everyone around every 30 seconds
     _updateLocationTimer = Timer.periodic(Duration(seconds: 30), (Timer t) async {
-      print("Updating user location to database...");
+      print("Updating user location to database... (PASSIVE 30 SECONDS).........");
       LatLng loggedInUserLatLng = await Location.getCurrentLocation();
       await Location.updateLocationToDatabase(loggedInUserLatLng, loggedInUser, firebaseUser.uid);
       await _getUsersNearby();
     });
-    await _getUsersNearby();
 
     // END
-    _setLoading(); // Remove loading screen
+    _setLoading(); // Remove loading screen and alert loggedInuserListener
     _createPages(); // Home, message, notif, etc...
   }
 
   _getUsersNearby() async {
-    sortedUsersNearby.clear();
-    final Map<dynamic, dynamic> response = await Location.getUsersNearby(loggedInUserLatLng);
+    List<Map<dynamic, dynamic>> newUsersNearby = List<Map<dynamic, dynamic>>();
+    final Map<dynamic, dynamic> response = await Location.getUsersNearby(loggedInUser.getPosition);
     List<dynamic> usersNearby = response['ids'];
     usersNearby = usersNearby.reversed.toList(); // Reverse to make it show nearby at top
     for (int i = 0; i < usersNearby.length; i++) {
@@ -90,7 +92,7 @@ class _MainScreenState extends State<MainScreen> {
         distance = value;
       });
 
-      return Firestore.instance.collection('users').document(uid).get().then((snapshot) {
+      await Firestore.instance.collection('users').document(uid).get().then((snapshot) {
         Map<dynamic, dynamic> userData = Map<dynamic, dynamic>();
         String circleImageUrl = snapshot.data[FirestoreManager.keyPhotos][0];
         String displayName = snapshot.data[FirestoreManager.keyDisplayName];
@@ -117,11 +119,18 @@ class _MainScreenState extends State<MainScreen> {
           'snapshot': docSnapshot
         };
 
-        setState(() {
-          sortedUsersNearby.add(userData);
-        });
+        newUsersNearby.add(userData);
+//        setState(() {
+//          sortedUsersNearby.add(userData);
+//        });
       });
     }
+
+    setState(() {
+      //loggedInUser.getUsersNearby.clear();
+      loggedInUser.setUsersNearby(newUsersNearby);
+      loggedInUser.updateListeners();
+    });
   }
 
 //  _loadAuthUser() async {
@@ -134,6 +143,7 @@ class _MainScreenState extends State<MainScreen> {
     return FirebaseAuth.instance.signInWithEmailAndPassword(email: 'bob@hotmail.com', password: '123456').then((user) async {
       print("Successfully logged in");
       firebaseUser = await FirebaseAuth.instance.currentUser();
+      loggedInUser.setFirebaseUser(firebaseUser);
       //_initAfterLoggedIn();
       if (firebaseUser != null) {
         // _initAfterLoggedIn();
@@ -151,6 +161,7 @@ class _MainScreenState extends State<MainScreen> {
     return FirebaseAuth.instance.signInWithEmailAndPassword(email: 'bob2@hotmail.com', password: '123456').then((user) async {
       print("Successfully logged in");
       firebaseUser = await FirebaseAuth.instance.currentUser();
+      loggedInUser.setFirebaseUser(firebaseUser);
       if (firebaseUser != null) {
         //   _initAfterLoggedIn();
         FirestoreManager.streamUserData(loggedInUser, user.uid);
@@ -167,6 +178,7 @@ class _MainScreenState extends State<MainScreen> {
     return FirebaseAuth.instance.signInWithEmailAndPassword(email: 'bob3@hotmail.com', password: '123456').then((user) async {
       print("Successfully logged in");
       firebaseUser = await FirebaseAuth.instance.currentUser();
+      loggedInUser.setFirebaseUser(firebaseUser);
       if (firebaseUser != null) {
         //   _initAfterLoggedIn();
         FirestoreManager.streamUserData(loggedInUser, user.uid);
@@ -182,6 +194,8 @@ class _MainScreenState extends State<MainScreen> {
     return FirebaseAuth.instance.signInWithEmailAndPassword(email: 'bob4@hotmail.com', password: '123456').then((user) async {
       print("Successfully logged in");
       firebaseUser = await FirebaseAuth.instance.currentUser();
+      loggedInUser.setFirebaseUser(firebaseUser);
+
       if (firebaseUser != null) {
         //   _initAfterLoggedIn();
         FirestoreManager.streamUserData(loggedInUser, user.uid);
@@ -206,11 +220,11 @@ class _MainScreenState extends State<MainScreen> {
       physics: NeverScrollableScrollPhysics(),
       controller: preloadPageController,
       children: <Widget>[
-        RankingListPage(firebaseUser: firebaseUser, loggedInUserLatLng: loggedInUserLatLng, usersNearby: sortedUsersNearby),
-        SearchPage(firebaseUser: firebaseUser, loggedInUserLatLng: loggedInUserLatLng, usersNearby: sortedUsersNearby),
+        RankingListPage(),
+        SearchPage(),
 //        FamePage(),
-        MessagePage(firebaseUser: firebaseUser),
-        NotificationPage(firebaseUser: firebaseUser),
+        MessagePage(),
+        NotificationPage(),
         ProfilePage(),
       ],
     );
@@ -443,9 +457,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _setLoading() {
-    //print("how many times is this called?");
-    print("NOTIFYING!!!!!!!!!!!!!!!!!!");
-    loggedInUser.updateWidgetsListeningToThis();
+    loggedInUser.updateListeners();
     setState(() {
       loadedUserData = true; // Stop showing spinner
     });
@@ -478,7 +490,12 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: Theme.of(context).primaryColor,
           body: SafeArea(
             child: Stack(children: <Widget>[
-              pageView,
+              PageView.builder(
+                  itemCount: 5,
+                  itemBuilder: (context, position) {
+                    return pageView;
+                  }),
+              // pageView,
               Align(
                 alignment: Alignment.bottomCenter,
                 child: CircularBottomNavigation(

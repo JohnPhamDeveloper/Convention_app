@@ -1,45 +1,36 @@
 import 'package:flutter/foundation.dart';
-import 'package:cosplay_app/classes/FirestoreManager.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:collection';
-
-//enum SetActions {
-//  SET_PHOTOS_URL,
-//  SET_RARITY_BORDER,
-//  SET_FRIENDLINESS,
-//  SET_FAME,
-//  SET_DISPLAY_NAME,
-//  SET_IS_COSPLAYER,
-//  SET_IS_PHOTOGRAPHER,
-//  SET_REAL_NAME,
-//}
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoggedInUser extends ChangeNotifier {
-//  List<dynamic> _photosURL; // The reference to all of the user's photos
-//  String _displayName;
-//  int _rarityBorder;
-//  int _friendliness;
-//  int _fame;
-//  bool _isCosplayer;
-//  bool _isPhotographer;
-//  String _realName;
+  // Database information
   HashMap<String, dynamic> _hashMap = HashMap<String, dynamic>();
+  LatLng _position;
+  List<Map<dynamic, dynamic>> _usersNearby = List<Map<dynamic, dynamic>>();
+  FirebaseUser _firebaseUser;
 
   LoggedInUser();
-//
-//  printKeys() {
-//    print("IS THERE SOMETHING HEE");
-//    _hashMap.forEach((string, key) {
-//      print("TTTTTTTTTTTTTTT");
-//      print(string);
-//      print(key);
-//    });
-//  }
 
-  updateWidgetsListeningToThis() {
+  updateListeners() {
     notifyListeners();
     print("CALLED NOTIFIED LISTENER");
   }
 
+  setPosition(LatLng pos) {
+    _position = pos;
+  }
+
+  setUsersNearby(List<Map<dynamic, dynamic>> newUsersNearby) {
+    _usersNearby = newUsersNearby;
+  }
+
+  setFirebaseUser(FirebaseUser user) {
+    _firebaseUser = user;
+  }
+
   HashMap<String, dynamic> get getHashMap => _hashMap;
+  List<Map<dynamic, dynamic>> get getUsersNearby => _usersNearby;
+  LatLng get getPosition => _position;
+  FirebaseUser get getFirebaseUser => _firebaseUser;
 }

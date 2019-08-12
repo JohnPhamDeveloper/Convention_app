@@ -6,21 +6,19 @@ import 'package:cosplay_app/classes/HeroCreator.dart';
 import 'package:cosplay_app/widgets/MiniUser.dart';
 import 'package:cosplay_app/constants/constants.dart';
 import 'dart:async';
+import 'package:cosplay_app/classes/LoggedInUser.dart';
+import 'package:provider/provider.dart';
 import 'dart:collection';
 import 'dart:math';
 
 class NotificationPage extends StatefulWidget {
-  final FirebaseUser firebaseUser;
-  Timestamp t;
-
-  NotificationPage({@required this.firebaseUser});
-
   @override
   _NotificationPageState createState() => _NotificationPageState();
 }
 
 class _NotificationPageState extends State<NotificationPage> with AutomaticKeepAliveClientMixin {
   Timer timer;
+  LoggedInUser loggedInUser;
   Queue<Widget> notifications = Queue<Widget>();
   Queue<Widget> prevNotifications = Queue<Widget>();
   bool loadedPreviousNotifications = false; // First launch app so need to load previous 20 notifications from database
@@ -28,12 +26,11 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
   @override
   void initState() {
     super.initState();
-    _initAsync();
   }
 
   _initAsync() async {
     // TODO First time loading this, push the 20 latest notification to the notifications queue
-    await Firestore.instance.collection('private').document(widget.firebaseUser.uid).get().then((snapshot) async {
+    await Firestore.instance.collection('private').document(loggedInUser.getFirebaseUser.uid).get().then((snapshot) async {
       if (snapshot.data['notifications'] != null) {
         final notificationLength = snapshot.data['notifications'].length;
         print('NotificationLength: $notificationLength');
@@ -59,7 +56,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
   }
 
   _listenToNotifications() {
-    Firestore.instance.collection("private").document(widget.firebaseUser.uid).snapshots().listen((snapshot) async {
+    Firestore.instance.collection("private").document(loggedInUser.getFirebaseUser.uid).snapshots().listen((snapshot) async {
       // Prevent this from being called on the initial page load
       // When we load the previous notifications, this will run on start, which causes the most recent notification
       // To be duplicated
@@ -119,6 +116,13 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    loggedInUser = Provider.of<LoggedInUser>(context);
+    _initAsync();
+  }
+
+  @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 
@@ -141,7 +145,7 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
         // Add item
         item = NotificationItem(
           onTap: () {
-            HeroCreator.pushProfileIntoView(snapshot.reference, context, widget.firebaseUser);
+            HeroCreator.pushProfileIntoView(snapshot.reference, context, loggedInUser.getFirebaseUser);
           },
           name: name,
           miniUser: MiniUser(

@@ -7,13 +7,11 @@ import 'package:cosplay_app/widgets/MiniUser.dart';
 import 'dart:async';
 import 'package:cosplay_app/widgets/native_shapes/CircularBoxClipped.dart';
 import 'package:cosplay_app/widgets/RoundButton.dart';
+import 'package:provider/provider.dart';
+import 'package:cosplay_app/classes/LoggedInUser.dart';
 import 'package:cosplay_app/classes/Meetup.dart';
 
 class MessagePage extends StatefulWidget {
-  FirebaseUser firebaseUser;
-
-  MessagePage({@required this.firebaseUser});
-
   @override
   _MessagePageState createState() => _MessagePageState();
 }
@@ -23,17 +21,24 @@ class _MessagePageState extends State<MessagePage> {
   // So we need to listen to the private collection for the current user and check the chatrooms
   List<Widget> roomPreviews = List<Widget>();
   List<StreamSubscription> subscriptionList = List<StreamSubscription>();
+  LoggedInUser loggedInUser;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    loggedInUser = Provider.of<LoggedInUser>(context);
 
     print("================================== MESSAGE ==================================================");
 
     // Find chatrooms this user is in
     StreamSubscription subscription = Firestore.instance
         .collection('chatrooms')
-        .where('users.${widget.firebaseUser.uid}', isEqualTo: true)
+        .where('users.${loggedInUser.getFirebaseUser.uid}', isEqualTo: true)
         .snapshots()
         .listen((snapshot) async {
       List<Map<dynamic, dynamic>> unsortedChatRooms = List<Map<dynamic, dynamic>>();
@@ -64,7 +69,7 @@ class _MessagePageState extends State<MessagePage> {
     // Look for everyone that's not the logged in user and fetch their image
     for (String userId in snapshot.data['users'].keys) {
       // If the user isn't the logged in user...
-      if (userId != widget.firebaseUser.uid) {
+      if (userId != loggedInUser.getFirebaseUser.uid) {
         // Get the user's photo
         await Firestore.instance.collection('users').document(userId).get().then((snapshot) {
           circlePhotoUrl = snapshot.data['photos'][0];
@@ -142,7 +147,7 @@ class _MessagePageState extends State<MessagePage> {
             builder: (context) => ChatView(
               loggedInUserName: displayName,
               docId: roomId,
-              firebaseUser: widget.firebaseUser,
+              firebaseUser: loggedInUser.getFirebaseUser,
             ),
           ),
         );

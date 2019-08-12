@@ -28,11 +28,10 @@ class FireMap extends StatefulWidget {
 class _FireMapState extends State<FireMap> {
   GoogleMapController _mapController;
   Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
-  LoggedInUser loggedInUser;
+  LoggedInUser loggedInUser = LoggedInUser();
   Position position = Position();
   Timer _updateMapTimer;
   bool isMatched = false;
-//  Location location = Location();
   Firestore firestore = Firestore.instance;
   Geoflutterfire geo = Geoflutterfire();
   BitmapDescriptor otherUserIconOnMap;
@@ -48,7 +47,6 @@ class _FireMapState extends State<FireMap> {
   void initState() {
     super.initState();
     _initOtherUserIcon(); // Other user icons on the map (green dot)
-    // _startQuery();
     _startListenToMatchedUsers();
   }
 
@@ -73,7 +71,6 @@ class _FireMapState extends State<FireMap> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    loggedInUser = LoggedInUser();
     loggedInUser = Provider.of<LoggedInUser>(context);
   }
 
@@ -81,11 +78,11 @@ class _FireMapState extends State<FireMap> {
     // Update map every 10 seconds
     _updateMapTimer = Timer.periodic(Duration(seconds: 10), (Timer t) async {
       if (!isMatched) {
-        print("Timer stopped");
+        print("Timer stopped due to no matches...");
         t.cancel();
       }
       _markers.clear();
-      print("Timer ran AGAIN");
+      print("Timer to update location AND match locations every 10 seconds is running....");
       LatLng loggedInUserLatLng = await Location.getCurrentLocation();
       Location.updateLocationToDatabase(loggedInUserLatLng, loggedInUser, widget.loggedInUserAuth.uid);
       _updateMatchedUsersOnMap(loggedInUserLatLng);
@@ -105,12 +102,11 @@ class _FireMapState extends State<FireMap> {
       }
     }).catchError((error) {
       print(error.toString());
-      print("Meetup.getSelfieMatchedLocation failed to execute");
+      print("Meetup.getSelfieMatchedLocation failed to execute (probably due to having no matches)");
     });
   }
 
   _stopMapUpdate() {
-    // Stop the timer
     if (_updateMapTimer != null) {
       _updateMapTimer.cancel();
       _updateMapTimer = null;

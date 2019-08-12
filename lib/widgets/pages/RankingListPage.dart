@@ -7,14 +7,10 @@ import 'package:cosplay_app/widgets/RankCard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cosplay_app/widgets/ChipNavigator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cosplay_app/classes/LoggedInUser.dart';
+import 'package:provider/provider.dart';
 
 class RankingListPage extends StatefulWidget {
-  final FirebaseUser firebaseUser;
-  final LatLng loggedInUserLatLng;
-  final List<dynamic> usersNearby;
-
-  RankingListPage({@required this.firebaseUser, @required this.loggedInUserLatLng, @required this.usersNearby});
-
   @override
   _RankingListPageState createState() => _RankingListPageState();
 }
@@ -22,6 +18,7 @@ class RankingListPage extends StatefulWidget {
 class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAliveClientMixin {
   PageController pageController;
   PageView pageView;
+  LoggedInUser loggedInUser;
 
   // Cards
   List<Widget> cosplayersFriendlinessCards = List<Widget>();
@@ -44,12 +41,21 @@ class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAli
   @override
   void initState() {
     super.initState();
-    _filter(sortedCosplayersFriendliness, widget.usersNearby.toList(), "isCosplayer");
-    _filter(sortedCosplayersFame, widget.usersNearby.toList(), "isCosplayer");
-    _filter(sortedPhotographersFriendliness, widget.usersNearby.toList(), "isPhotographer");
-    _filter(sortedPhotographersFame, widget.usersNearby.toList(), "isPhotographer");
-    _filter(sortedCongoersFriendliness, widget.usersNearby.toList(), "isCongoer");
-    _filter(sortedCongoersFame, widget.usersNearby.toList(), "isCongoer");
+    pageController = PageController(initialPage: navIndex);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    loggedInUser = Provider.of<LoggedInUser>(context);
+    print("Didchangedepencies being caled rank list page");
+
+    _filter(sortedCosplayersFriendliness, loggedInUser.getUsersNearby.toList(), "isCosplayer");
+    _filter(sortedCosplayersFame, loggedInUser.getUsersNearby.toList(), "isCosplayer");
+    _filter(sortedPhotographersFriendliness, loggedInUser.getUsersNearby.toList(), "isPhotographer");
+    _filter(sortedPhotographersFame, loggedInUser.getUsersNearby.toList(), "isPhotographer");
+    _filter(sortedCongoersFriendliness, loggedInUser.getUsersNearby.toList(), "isCongoer");
+    _filter(sortedCongoersFame, loggedInUser.getUsersNearby.toList(), "isCongoer");
 
     _sortRoomBy(sortedCosplayersFriendliness, 'friendliness', ascending: false);
     _sortRoomBy(sortedCosplayersFame, 'fame', ascending: false);
@@ -65,10 +71,12 @@ class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAli
     constructCards2(photographersFameCards, Icons.star, sortedPhotographersFame, 'fame');
     constructCards2(congoersFriendlinessCards, Icons.sentiment_very_satisfied, sortedCongoersFriendliness, 'friendliness');
     constructCards2(congoersFameCards, Icons.star, sortedCongoersFame, 'fame');
+
     _createPages();
   }
 
   _filter(List<Map<dynamic, dynamic>> copyTo, List<Map<dynamic, dynamic>> copyFrom, String filterBy) {
+    copyTo.clear();
     for (int i = 0; i < copyFrom.length; i++) {
       if (copyFrom[i][filterBy] == true) {
         copyTo.add(copyFrom[i]);
@@ -77,6 +85,7 @@ class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAli
   }
 
   _sortRoomBy(List<Map<dynamic, dynamic>> toBeSorted, String sortByKey, {bool ascending = true}) {
+    // toBeSorted.clear();
     int minIndex;
     for (int i = 0; i < toBeSorted.length; i++) {
       minIndex = i;
@@ -103,6 +112,7 @@ class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAli
   }
 
   void constructCards2(List<Widget> cards, IconData icon, List<dynamic> sortedUsers, String valueType) {
+    cards.clear();
     // Give the card a bit of gap in the beginning
     cards.add(SizedBox(width: 20.0));
 
@@ -112,7 +122,7 @@ class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAli
 
       // Create the card
       RankCard card = RankCard(
-        firebaseUser: widget.firebaseUser,
+        firebaseUser: loggedInUser.getFirebaseUser,
         documentSnapshot: sortedUsers[i]['snapshot'],
         image: url,
         name: sortedUsers[i]['displayName'],
@@ -131,7 +141,6 @@ class _RankingListPageState extends State<RankingListPage> with AutomaticKeepAli
   }
 
   _createPages() {
-    pageController = PageController(initialPage: navIndex);
     pageView = PageView(
       onPageChanged: (index) {
         setState(() {

@@ -54,7 +54,7 @@ class FirestoreManager {
   static Timer _locationUpdateTimer;
 
   // (delete) not useful
-  static HashMap<String, String> keys = HashMap<String, String>();
+  //static HashMap<String, String> keys = HashMap<String, String>();
 
   static Future<void> createUserInDatabase({
     String documentName,
