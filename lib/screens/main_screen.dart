@@ -67,10 +67,12 @@ class _MainScreenState extends State<MainScreen> {
 
     // Update user location and get everyone around every 30 seconds
     _updateLocationTimer = Timer.periodic(Duration(seconds: 30), (Timer t) async {
-      print("Updating user location to database... (PASSIVE 30 SECONDS).........");
+      print(
+          "Updating user location to database... (PASSIVE 30 SECONDS) +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
       LatLng loggedInUserLatLng = await Location.getCurrentLocation();
       await Location.updateLocationToDatabase(loggedInUserLatLng, loggedInUser, firebaseUser.uid);
       await _getUsersNearby();
+      print("Updating user location to database... (END) +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     });
 
     // END

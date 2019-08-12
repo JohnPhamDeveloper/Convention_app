@@ -82,10 +82,11 @@ class _FireMapState extends State<FireMap> {
         t.cancel();
       }
       _markers.clear();
-      print("Timer to update location AND match locations every 10 seconds is running....");
+      print("Timer to update location AND match locations every 10 seconds is running ----------------------------------------");
       LatLng loggedInUserLatLng = await Location.getCurrentLocation();
       Location.updateLocationToDatabase(loggedInUserLatLng, loggedInUser, widget.loggedInUserAuth.uid);
       _updateMatchedUsersOnMap(loggedInUserLatLng);
+      print("Timer to update location AND match locations every 10 END ----------------------------------------");
     });
   }
 
