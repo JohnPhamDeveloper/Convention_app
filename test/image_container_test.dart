@@ -24,7 +24,6 @@ final Map<String, dynamic> testUser = {
   'isCosplayer': true,
   'isPhotographer': false,
   'distance': 3.687838025928577,
-//  'snapshot': 'Instance of'
 };
 
 void main() {
@@ -37,10 +36,6 @@ void main() {
   Finder selfieDot = find.byKey(Key('imageContainerSelfieDot'));
 
   testWidgets('Image container default has border radius, no selfie or status dot', (WidgetTester tester) async {
-    LatLng latLng = LatLng(0.0, 0.0);
-//    when(logUser.getUsersNearby).thenReturn(nearbyUsers);
-//    expect(logUser.getUsersNearby, nearbyUsers);
-//
     when(logUser.getHashMap).thenReturn(nearbyUsers[0]);
     expect(logUser.getHashMap, nearbyUsers[0]);
 
@@ -64,10 +59,6 @@ void main() {
 
   testWidgets('Image container default has border radius, selfie dot (enabled), and no status dot (default disable)',
       (WidgetTester tester) async {
-    LatLng latLng = LatLng(0.0, 0.0);
-//    when(logUser.getUsersNearby).thenReturn(nearbyUsers);
-//    expect(logUser.getUsersNearby, nearbyUsers);
-//
     when(logUser.getHashMap).thenReturn(nearbyUsers[0]);
     expect(logUser.getHashMap, nearbyUsers[0]);
 

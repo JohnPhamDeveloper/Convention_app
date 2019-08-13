@@ -19,6 +19,7 @@ import 'package:cosplay_app/widgets/pages/MessagePage.dart';
 import 'package:cosplay_app/classes/Location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:cosplay_app/widgets/MyAlertDialogue.dart';
 import 'dart:async';
 
 class MainScreen extends StatefulWidget {
@@ -513,6 +514,12 @@ class _MainScreenState extends State<MainScreen> {
                       fontSize: 16.0);
                 },
                 child: Text("PRESSS ME"),
+              ),
+              FlatButton(
+                onPressed: () {
+                  MyAlertDialogue.showDialogue(context);
+                },
+                child: Text("PRESSS ME ALERT"),
               ),
               // Message dot
 //              Positioned(
