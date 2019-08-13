@@ -346,7 +346,8 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
       return _selfieButtonWrapper("Requested Selfie", () {}, fillColor: Colors.grey[300]);
     } else if (_clickedOnAcceptSelfieButton) {
       return _selfieButtonWrapper("Finish/Cancel Selfie", () {
-        _showFinishedSelfieOptions(context);
+        //_showFinishedSelfieOptions(context);
+        widget.onSelfieFinishTap(context);
       });
     }
     // Buttons that load up first time into details page
@@ -366,7 +367,8 @@ class _HeroProfileDetailsState extends State<HeroProfileDetails> {
       });
     } else if (widget.displayFinishButton && !widget.displayRequestButton && !widget.displayAcceptButton) {
       return _selfieButtonWrapper("Finish/Cancel Selfie", () {
-        _showFinishedSelfieOptions(context);
+//        _showFinishedSelfieOptions(context);
+        widget.onSelfieFinishTap(context);
       });
     }
   }

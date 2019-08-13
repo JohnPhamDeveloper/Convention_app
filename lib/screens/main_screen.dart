@@ -60,7 +60,7 @@ class _MainScreenState extends State<MainScreen> {
   _startMe() async {
     // Only login to _loginUser() and not the other (PHONE)
     //await _loginUser();
-    await _loginUser4p();
+    await _loginUser();
 
     // Initial update
     LatLng newPos = await Location.getCurrentLocation();
@@ -515,12 +515,12 @@ class _MainScreenState extends State<MainScreen> {
                 },
                 child: Text("PRESSS ME"),
               ),
-              FlatButton(
-                onPressed: () {
-                  MyAlertDialogue.showDialogue(context);
-                },
-                child: Text("PRESSS ME ALERT"),
-              ),
+//              FlatButton(
+//                onPressed: () {
+//                  MyAlertDialogue.showDialogue(context);
+//                },
+//                child: Text("PRESSS ME ALERT"),
+//              ),
               // Message dot
 //              Positioned(
 //                bottom: 33,

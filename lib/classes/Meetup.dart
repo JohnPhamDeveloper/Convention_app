@@ -12,6 +12,10 @@ class Meetup {
     return CloudFunction.call(CloudFunction.acceptButtonVerify, key: 'otherUserUid', value: otherUserData.documentID);
   }
 
+  static Future<HttpsCallableResult> cancelSelfie(DocumentSnapshot otherUserData) {
+    return CloudFunction.call(CloudFunction.cancelSelfie, key: 'otherUserUid', value: otherUserData.documentID);
+  }
+
   static Future<HttpsCallableResult> getSelfieMatchedLocation() {
     return CloudFunction.call(CloudFunction.getSelfieMatchedLocation);
   }

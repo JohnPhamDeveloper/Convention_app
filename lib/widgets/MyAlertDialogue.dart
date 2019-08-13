@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MyAlertDialogue {
-  static showDialogue(BuildContext context) {
+  static showDialogue(BuildContext context, Function onAccept, Function onDecline) {
     String text = "• Finish - Confirms selfie with other person \n\n"
         "• End - Cancels selfie \n\n";
 
@@ -73,7 +73,10 @@ class MyAlertDialogue {
                             borderRadius: BorderRadius.only(bottomLeft: Radius.circular(32.0), bottomRight: Radius.circular(0.0)),
                           ),
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              onAccept();
+                              Navigator.pop(context);
+                            },
                             child: Text(
                               "Finish",
                               style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
@@ -90,7 +93,10 @@ class MyAlertDialogue {
                             borderRadius: BorderRadius.only(bottomLeft: Radius.circular(0.0), bottomRight: Radius.circular(32.0)),
                           ),
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              onDecline();
+                              Navigator.pop(context);
+                            },
                             splashColor: Colors.white,
                             child: Text(
                               "End",

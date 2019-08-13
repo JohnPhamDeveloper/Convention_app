@@ -10,6 +10,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cosplay_app/classes/FirestoreReadcheck.dart';
 import 'package:cosplay_app/classes/Meetup.dart';
+import 'package:cosplay_app/widgets/MyAlertDialogue.dart';
 
 class HeroCreator {
   // Construct HeroProfile widget from the information on the clicked avatar
@@ -99,8 +100,8 @@ class HeroCreator {
       onSelfieAcceptTap: () {
         _onSelfieAcceptTap(otherUserDocumentSnapshot);
       },
-      onSelfieFinishTap: () {
-        _onSelfieFinishTap(otherUserDocumentSnapshot);
+      onSelfieFinishTap: (context) {
+        _onSelfieFinishTap(otherUserDocumentSnapshot, context);
       },
       displayAcceptButton: displayAcceptButton,
       displayRequestButton: displayRequestButton,
@@ -135,9 +136,27 @@ class HeroCreator {
     print(response2.data);
   }
 
-  static void _onSelfieFinishTap(DocumentSnapshot otherUserData) async {
-    final response = await Meetup.finishSelfie(otherUserData);
-    print(response.data);
+  static void _onSelfieFinishTap(DocumentSnapshot otherUserData, BuildContext context) async {
+    MyAlertDialogue.showDialogue(context, () async {
+      final response = await Meetup.finishSelfie(otherUserData);
+      print('--------');
+      print(response.data);
+    }, () async {
+      final response = await Meetup.cancelSelfie(otherUserData);
+      print('--------');
+      print(response.data);
+    });
+    //final response = await Meetup.finishSelfie(otherUserData);
+    //print(response.data);
+
+    // Should send a verification to the other person and if the other person confirms, then approve selfie
+    // 1) Send verification to the other person via notifications...
+    // 2) Notification puts them into the hero page and they need to click finish selfie...
+    // 3) Approve selfie since both ppl confirmed
+
+    // In private database, need to have an array containing who they confirmed selfie with...
+    // If they confirmed selfie and the other person also confiemd selfie, then approve with notification fame
+    // If they confirmed selfie, but the other person didnt then send notification to other
   }
 
   static _checkSame(LoggedInUser loggedInUser, DocumentSnapshot otherUser) {

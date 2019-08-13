@@ -51,28 +51,44 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
 
       // Add a box at the end of the notifications so the last notification doesn't get blocked off
       notifications.add(SizedBox(height: 150));
-
-      // Add new notifications every time they come in
-      _listenToNotifications();
     });
+    // Add new notifications every time they come in
+    _listenToNotifications();
   }
 
   _listenToNotifications() {
     Firestore.instance.collection("private").document(loggedInUser.getFirebaseUser.uid).snapshots().listen((snapshot) async {
-      print("This is how many times the notification listen is being called.................................");
-      // Prevent this from being called on the initial page load
-      // When we load the previous notifications, this will run on start, which causes the most recent notification
-      // To be duplicated
       if (loadedPreviousNotifications) {
-        // notifications.clear();
-        //if (!snapshot.exists) return Text("Nothing loaded...");
-        final lastItemIndex = snapshot.data['notifications'].length - 1;
+        print("This is how many times the notification listen is being called.................................");
+        notifications.clear();
+        // Rebuild entire notifications
+        if (snapshot.data['notifications'] != null) {
+          final notificationLength = snapshot.data['notifications'].length;
+          //print('NotificationLength: $notificationLength');
+          var start = notificationLength - 20 - 1;
+          if (start < 0) start = 0;
+          //print('Start: $start');
+          var numberOfNotificationsToShow = 15;
+          if (notificationLength < numberOfNotificationsToShow) numberOfNotificationsToShow = notificationLength;
+          //print('number of notifications to show: $numberOfNotificationsToShow');
 
-        // Empty notification
-        if (lastItemIndex >= 0) {
-          //  Take latest notification and add it to beginning of queue
-          await _buildNotificationItem(snapshot.data['notifications'][lastItemIndex]);
+          // Load the recent 15 notifications only
+          for (int i = start; i < start + numberOfNotificationsToShow; i++) {
+            await _buildNotificationItem(snapshot.data['notifications'][i]);
+          }
         }
+
+        // Add a box at the end of the notifications so the last notification doesn't get blocked off
+        notifications.add(SizedBox(height: 150));
+
+//        // Rebuild only first
+//        final lastItemIndex = snapshot.data['notifications'].length - 1;
+//
+//        // Empty notification
+//        if (lastItemIndex >= 0) {
+//          //  Take latest notification and add it to beginning of queue
+//          await _buildNotificationItem(snapshot.data['notifications'][lastItemIndex]);
+//        }
       }
       loadedPreviousNotifications = true;
     });
@@ -122,6 +138,8 @@ class _NotificationPageState extends State<NotificationPage> with AutomaticKeepA
     super.didChangeDependencies();
     loggedInUser = Provider.of<LoggedInUser>(context);
     if (!initAsyncCalled) {
+      print(
+          'THIS SHOULD ONLY BE CALLED ONCE :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::');
       initAsyncCalled = true;
       _initAsync();
     }
