@@ -2,30 +2,8 @@ import 'package:flutter/material.dart';
 
 class MyAlertDialogue {
   static showDialogue(BuildContext context) {
-    String text = "• Finish - Verifies selfie with other person and then ends selfie\n\n"
-        "• End - Cancels selfie\n\n";
-
-    final button1 = FlatButton(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
-      color: Colors.pinkAccent,
-      child: Text(
-        "Finish",
-        style: TextStyle(color: Colors.white),
-      ),
-      onPressed: () {},
-    );
-    final button2 = FlatButton(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
-      color: Colors.pinkAccent,
-      child: Text("End", style: TextStyle(color: Colors.white)),
-      onPressed: () {},
-    );
-//    final button3 = FlatButton(
-//      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
-//      color: Colors.pinkAccent,
-//      child: Text("Go Back", style: TextStyle(color: Colors.white)),
-//      onPressed: () {},
-//    );
+    String text = "• Finish - Confirms selfie with other person \n\n"
+        "• End - Cancels selfie \n\n";
 
     final myColor = Colors.pinkAccent;
 
@@ -35,81 +13,96 @@ class MyAlertDialogue {
         contentPadding: EdgeInsets.only(top: 10.0),
         content: Container(
           width: 300.0,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
+          child: Stack(
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              Positioned(
+                right: 15,
+                top: -7,
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.black87,
+                      size: 20.0,
+                    ),
+                  ),
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Text(
-                    "Rate",
-                    style: TextStyle(fontSize: 24.0),
-                  ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Icon(
-                        Icons.star_border,
-                        color: myColor,
-                        size: 30.0,
+                      Text(
+                        "Finish Selfie",
+                        style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w600, color: Colors.black87),
                       ),
-                      Icon(
-                        Icons.star_border,
-                        color: myColor,
-                        size: 30.0,
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  Divider(
+                    color: Colors.grey,
+                    height: 4.0,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 15.0),
+                    child: Text(
+                      text,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                          decoration: BoxDecoration(
+                            color: myColor,
+                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(32.0), bottomRight: Radius.circular(0.0)),
+                          ),
+                          child: InkWell(
+                            onTap: () {},
+                            child: Text(
+                              "Finish",
+                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
                       ),
-                      Icon(
-                        Icons.star_border,
-                        color: myColor,
-                        size: 30.0,
-                      ),
-                      Icon(
-                        Icons.star_border,
-                        color: myColor,
-                        size: 30.0,
-                      ),
-                      Icon(
-                        Icons.star_border,
-                        color: myColor,
-                        size: 30.0,
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[400],
+                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(0.0), bottomRight: Radius.circular(32.0)),
+                          ),
+                          child: InkWell(
+                            onTap: () {},
+                            splashColor: Colors.white,
+                            child: Text(
+                              "End",
+                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ],
-              ),
-              SizedBox(
-                height: 5.0,
-              ),
-              Divider(
-                color: Colors.grey,
-                height: 4.0,
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 30.0, right: 30.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: "Add Review",
-                    border: InputBorder.none,
-                  ),
-                  maxLines: 8,
-                ),
-              ),
-              InkWell(
-                child: Container(
-                  padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                  decoration: BoxDecoration(
-                    color: myColor,
-                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(32.0), bottomRight: Radius.circular(32.0)),
-                  ),
-                  child: Text(
-                    "Rate Product",
-                    style: TextStyle(color: Colors.white),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
               ),
             ],
           ),
