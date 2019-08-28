@@ -9,7 +9,7 @@ import "package:cosplay_app/animations/AnimationBounceIn.dart";
 import 'package:cosplay_app/verification/verification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cosplay_app/classes/FirestoreManager.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisterForm extends StatefulWidget {
   final Function onSavedData;
@@ -105,15 +105,29 @@ class _RegisterFormState extends State<RegisterForm> with SingleTickerProviderSt
                 return _formKey.currentState.validate(); // All form fields are valid?
               },
               onPress: () async {
-                // Register user
-//                try {
-//                  FirebaseUser user = await _auth.createUserWithEmailAndPassword(
-//                      email: _phoneController.text, password: _passwordController.text);
-//                  print("-------------------user successfully registered------------------------------------");
-//                } catch (e) {
-//                  print("----------------RegisterForm: $e----------------------");
-//                  print(e.code);
-//                }
+                FirebaseAuth.instance.verifyPhoneNumber(
+                    phoneNumber: _phoneController.text,
+                    timeout: const Duration(seconds: 5),
+                    verificationCompleted: (user) {
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Verified!'),
+                        ),
+                      );
+                    },
+                    verificationFailed: (authException) {
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Failed to register, please try again! ' + authException.message),
+                        ),
+                      );
+                    },
+                    codeSent: (String verificationId, [int token]) {
+                      print('Code sent to ${_phoneController.text}');
+                    },
+                    codeAutoRetrievalTimeout: (String verificationId) {
+                      print('Code timed out');
+                    });
 
                 // Debug
                 Scaffold.of(context).showSnackBar(
@@ -141,20 +155,27 @@ class _RegisterFormState extends State<RegisterForm> with SingleTickerProviderSt
                   isPhotographer: false,
                   isCongoer: false,
                   rarityBorder: 0,
- //                 cosplayerCost: "\$52.00/hr",
+                  //                 cosplayerCost: "\$52.00/hr",
                   photographerCost: "\$42.00/hr",
 //                  photographyMonthsExperience: 2,
 //                  photographyYearsExperience: 5,
 //                  cosplayMonthsExperience: 0,
 //                  cosplayYearsExperience: 0,
-                ).catchError((error) {
+                ).then((user) {
+                  print('success');
+                }).catchError((error) {
                   print('Failed to register, please try again!' + error);
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Failed to register, please try again!'),
+                    ),
+                  );
                 });
 
                 // Then push to question screens which can be optionally skipped
 
                 // Go to login screen
-               // Navigator.pushNamed(context, '/');
+                // Navigator.pushNamed(context, '/');
               },
             ),
           ),
@@ -171,8 +192,6 @@ class _RegisterFormState extends State<RegisterForm> with SingleTickerProviderSt
                 HyperButton(
                   text: "Sign In",
                   onTap: () {
-
-
                     Navigator.pushNamed(context, '/');
                   },
                 ),

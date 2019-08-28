@@ -242,13 +242,13 @@ class _MainScreenState extends State<MainScreen> {
       isCosplayer: true,
       isPhotographer: false,
       rarityBorder: 3,
-      realName: "Bobby Jones", // Wont use this field
-      cosplayerCost: "\$52.00/hr",
+      // realName: "Bobby Jones", // Wont use this field
+      // cosplayerCost: "\$52.00/hr",
       photographerCost: "\$42.00/hr",
-      photographyMonthsExperience: 2,
-      photographyYearsExperience: 5,
-      cosplayMonthsExperience: 0,
-      cosplayYearsExperience: 0,
+      // photographyMonthsExperience: 2,
+      // photographyYearsExperience: 5,
+      //cosplayMonthsExperience: 0,
+      //cosplayYearsExperience: 0,
     );
   }
 
@@ -265,13 +265,13 @@ class _MainScreenState extends State<MainScreen> {
       isCosplayer: false,
       isPhotographer: true,
       rarityBorder: 2,
-      realName: "Bobby Jones", // Wont use this field
-      cosplayerCost: "\$52.00/hr",
+//      realName: "Bobby Jones", // Wont use this field
+//      cosplayerCost: "\$52.00/hr",
       photographerCost: "\$800.00/hr",
-      photographyMonthsExperience: 0,
-      photographyYearsExperience: 0,
-      cosplayMonthsExperience: 0,
-      cosplayYearsExperience: 0,
+//      photographyMonthsExperience: 0,
+//      photographyYearsExperience: 0,
+//      cosplayMonthsExperience: 0,
+//      cosplayYearsExperience: 0,
     );
     final loc = await Location.getCurrentLocation();
     await Location.updateLocationToDatabase(loc, loggedInUser, firebaseUser.uid);
@@ -311,13 +311,13 @@ class _MainScreenState extends State<MainScreen> {
       isCosplayer: false,
       isPhotographer: true,
       rarityBorder: 3,
-      realName: "Bobby Jones",
-      cosplayerCost: "\$52.00/hr",
+//      realName: "Bobby Jones",
+//      cosplayerCost: "\$52.00/hr",
       photographerCost: "\$42.00/hr",
-      photographyMonthsExperience: 2,
-      photographyYearsExperience: 5,
-      cosplayMonthsExperience: 0,
-      cosplayYearsExperience: 0,
+//      photographyMonthsExperience: 2,
+//      photographyYearsExperience: 5,
+//      cosplayMonthsExperience: 0,
+//      cosplayYearsExperience: 0,
     );
 
     await FirestoreManager.createUserInDatabase(
@@ -331,13 +331,13 @@ class _MainScreenState extends State<MainScreen> {
       isCosplayer: false,
       isPhotographer: true,
       rarityBorder: 2,
-      realName: "Bobby Jones",
-      cosplayerCost: "\$12.00/hr",
+//      realName: "Bobby Jones",
+//      cosplayerCost: "\$12.00/hr",
       photographerCost: '\$42.00/hr',
-      photographyMonthsExperience: 3,
-      photographyYearsExperience: 7,
-      cosplayMonthsExperience: 0,
-      cosplayYearsExperience: 0,
+//      photographyMonthsExperience: 3,
+//      photographyYearsExperience: 7,
+//      cosplayMonthsExperience: 0,
+//      cosplayYearsExperience: 0,
     );
 
     await FirestoreManager.createUserInDatabase(
@@ -351,13 +351,13 @@ class _MainScreenState extends State<MainScreen> {
       isCosplayer: false,
       isPhotographer: true,
       rarityBorder: 1,
-      realName: "Bobby Jones",
-      cosplayerCost: "",
+//      realName: "Bobby Jones",
+//      cosplayerCost: "",
       photographerCost: '\$42.00/hr',
-      photographyMonthsExperience: 4,
-      photographyYearsExperience: 1,
-      cosplayMonthsExperience: 0,
-      cosplayYearsExperience: 0,
+//      photographyMonthsExperience: 4,
+//      photographyYearsExperience: 1,
+//      cosplayMonthsExperience: 0,
+//      cosplayYearsExperience: 0,
     );
 
     await FirestoreManager.createUserInDatabase(
@@ -371,13 +371,13 @@ class _MainScreenState extends State<MainScreen> {
       isCosplayer: false,
       isPhotographer: true,
       rarityBorder: 1,
-      realName: "Bobby Jones",
-      cosplayerCost: "\$62.00/hr",
+//      realName: "Bobby Jones",
+//      cosplayerCost: "\$62.00/hr",
       photographerCost: '\$42.00/hr',
-      photographyMonthsExperience: 2,
-      photographyYearsExperience: 6,
-      cosplayMonthsExperience: 0,
-      cosplayYearsExperience: 0,
+//      photographyMonthsExperience: 2,
+//      photographyYearsExperience: 6,
+//      cosplayMonthsExperience: 0,
+//      cosplayYearsExperience: 0,
     );
 
     await FirestoreManager.createUserInDatabase(
@@ -391,13 +391,13 @@ class _MainScreenState extends State<MainScreen> {
       isCosplayer: false,
       isPhotographer: true,
       rarityBorder: 2,
-      realName: "Bobby Jones",
-      cosplayerCost: "",
+//      realName: "Bobby Jones",
+//      cosplayerCost: "",
       photographerCost: '\$42.00/hr',
-      photographyMonthsExperience: 2,
-      photographyYearsExperience: 3,
-      cosplayMonthsExperience: 0,
-      cosplayYearsExperience: 0,
+//      photographyMonthsExperience: 2,
+//      photographyYearsExperience: 3,
+//      cosplayMonthsExperience: 0,
+//      cosplayYearsExperience: 0,
     );
 
     await FirestoreManager.createUserInDatabase(
@@ -411,13 +411,13 @@ class _MainScreenState extends State<MainScreen> {
       isCosplayer: false,
       isPhotographer: true,
       rarityBorder: 3,
-      realName: "Bobby Jones",
-      cosplayerCost: "",
+//      realName: "Bobby Jones",
+//      cosplayerCost: "",
       photographerCost: '\$42.00/hr',
-      photographyMonthsExperience: 4,
-      photographyYearsExperience: 1,
-      cosplayMonthsExperience: 0,
-      cosplayYearsExperience: 0,
+//      photographyMonthsExperience: 4,
+//      photographyYearsExperience: 1,
+//      cosplayMonthsExperience: 0,
+//      cosplayYearsExperience: 0,
     );
 
     await FirestoreManager.createUserInDatabase(
@@ -431,13 +431,13 @@ class _MainScreenState extends State<MainScreen> {
       isCosplayer: false,
       isPhotographer: true,
       rarityBorder: 0,
-      realName: "Bobby Jones",
-      cosplayerCost: "\$24.00/hr",
+//      realName: "Bobby Jones",
+//      cosplayerCost: "\$24.00/hr",
       photographerCost: '\$42.00/hr',
-      photographyMonthsExperience: 3,
-      photographyYearsExperience: 2,
-      cosplayMonthsExperience: 0,
-      cosplayYearsExperience: 0,
+//      photographyMonthsExperience: 3,
+//      photographyYearsExperience: 2,
+//      cosplayMonthsExperience: 0,
+//      cosplayYearsExperience: 0,
     );
 //    await Firestore.instance.collection("users").document("testUser2").setData({
 //      FirestoreManager.keyFame: 45,
