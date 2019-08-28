@@ -29,7 +29,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   LoggedInUser loggedInUser;
-  LatLng loggedInUserLatLawdawdng;
+  // LatLng loggedInUserLatLawdawdng;
   bool loadedUserData = false;
   PreloadPageController preloadPageController;
   CircularBottomNavigationController _navigationController;

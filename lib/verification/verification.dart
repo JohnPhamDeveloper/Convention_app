@@ -17,3 +17,11 @@ String validateEmail(String value) {
   else
     return null;
 }
+
+String validatePhone(String phone) {
+  if (phone.length != 10) {
+    return 'Phone number must be 10 digits (no space or hypen)';
+  } else {
+    return null;
+  }
+}

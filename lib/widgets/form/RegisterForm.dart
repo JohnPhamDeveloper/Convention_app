@@ -8,20 +8,21 @@ import "package:cosplay_app/animations/AnimationWrapper.dart";
 import "package:cosplay_app/animations/AnimationBounceIn.dart";
 import 'package:cosplay_app/verification/verification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cosplay_app/classes/FirestoreManager.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'
 
 class RegisterForm extends StatefulWidget {
-  final Function onRegisterPress;
+  final Function onSavedData;
 
-  RegisterForm({this.onRegisterPress});
+  RegisterForm({this.onSavedData});
   @override
   _RegisterFormState createState() => _RegisterFormState();
 }
 
-class _RegisterFormState extends State<RegisterForm>
-    with SingleTickerProviderStateMixin {
+class _RegisterFormState extends State<RegisterForm> with SingleTickerProviderStateMixin {
   AnimationController animationController;
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   FirebaseAuth _auth;
 
@@ -37,15 +38,14 @@ class _RegisterFormState extends State<RegisterForm>
       print("Current user is null!");
     }
 
-    animationController =
-        AnimationController(duration: Duration(seconds: 2), vsync: this);
+    animationController = AnimationController(duration: Duration(seconds: 2), vsync: this);
     animationController.forward();
   }
 
   @override
   void dispose() {
     animationController.dispose();
-    _emailController.dispose();
+    _phoneController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -63,13 +63,14 @@ class _RegisterFormState extends State<RegisterForm>
             controller: animationController,
             start: 0.0,
             child: IconFormField(
-              hintText: "Email",
-              invalidText: "Invalid Email",
-              icon: Icons.email,
-              controller: _emailController,
-              textInputType: TextInputType.emailAddress,
+              hintText: "Phone Number",
+              invalidText: "Invalid phone number",
+              icon: Icons.phone,
+              controller: _phoneController,
+              textInputType: TextInputType.phone,
               validator: (value) {
-                return validateEmail(value);
+                //return validateEmail(value);
+                return validatePhone(value);
               },
             ),
           ),
@@ -101,31 +102,23 @@ class _RegisterFormState extends State<RegisterForm>
               text: "REGISTER",
               color: Theme.of(context).primaryColor,
               validated: () {
-                return _formKey.currentState
-                    .validate(); // All form fields are valid?
+                return _formKey.currentState.validate(); // All form fields are valid?
               },
               onPress: () async {
-                widget.onRegisterPress();
-
                 // Register user
-                try {
-                  FirebaseUser user =
-                      await _auth.createUserWithEmailAndPassword(
-                          email: _emailController.text,
-                          password: _passwordController.text);
-                  print(
-                      "-------------------user successfully registered------------------------------------");
-                } catch (e) {
-                  print(
-                      "----------------RegisterForm: $e----------------------");
-                  print(e.code);
-                }
+//                try {
+//                  FirebaseUser user = await _auth.createUserWithEmailAndPassword(
+//                      email: _phoneController.text, password: _passwordController.text);
+//                  print("-------------------user successfully registered------------------------------------");
+//                } catch (e) {
+//                  print("----------------RegisterForm: $e----------------------");
+//                  print(e.code);
+//                }
 
                 // Debug
                 Scaffold.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(
-                        'Processing Data for ${_emailController.text} of ${_passwordController.text}'),
+                    content: Text('Processing Data for ${_phoneController.text} of ${_passwordController.text}'),
                   ),
                 );
 
@@ -135,8 +128,33 @@ class _RegisterFormState extends State<RegisterForm>
                 // Artificial wait time
                 await Future.delayed(Duration(seconds: 2), () {});
 
+                // Registers into database and puts default values for user profile
+                await FirestoreManager.createUserInDatabase(
+                  fame: 999,
+                  friendliness: 666,
+                  dateRegistered: Timestamp.now(),
+                  displayName: "Registered",
+                  photoUrls: ['https://c.pxhere.com/photos/fc/88/boy_portrait_people_man_anime_face_35mm_comic-185839.jpg!d'],
+                  cosplayName: "Reg Man",
+                  seriesName: 'Pepsi',
+                  isCosplayer: true,
+                  isPhotographer: false,
+                  isCongoer: false,
+                  rarityBorder: 0,
+ //                 cosplayerCost: "\$52.00/hr",
+                  photographerCost: "\$42.00/hr",
+//                  photographyMonthsExperience: 2,
+//                  photographyYearsExperience: 5,
+//                  cosplayMonthsExperience: 0,
+//                  cosplayYearsExperience: 0,
+                ).catchError((error) {
+                  print('Failed to register, please try again!' + error);
+                });
+
+                // Then push to question screens which can be optionally skipped
+
                 // Go to login screen
-                Navigator.pushNamed(context, '/');
+               // Navigator.pushNamed(context, '/');
               },
             ),
           ),
@@ -153,6 +171,8 @@ class _RegisterFormState extends State<RegisterForm>
                 HyperButton(
                   text: "Sign In",
                   onTap: () {
+
+
                     Navigator.pushNamed(context, '/');
                   },
                 ),

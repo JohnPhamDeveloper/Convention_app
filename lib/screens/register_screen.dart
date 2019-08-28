@@ -18,7 +18,7 @@ class RegisterScreen extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        RegisterForm(onRegisterPress: () {}),
+                        RegisterForm(onSavedData: () {}),
                       ],
                     ),
                   ),
@@ -45,8 +45,7 @@ class ShapesPainter extends CustomPainter {
 
     Path path = Path();
     double subVal = 600.0;
-    if (subVal >= size.height)
-      subVal = size.height; // Prevent drawing into safe area
+    if (subVal >= size.height) subVal = size.height; // Prevent drawing into safe area
     path.lineTo(0, size.height - subVal);
     path.lineTo(size.width, 0);
     // close the path to form a bounded shape

@@ -22,7 +22,7 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> with SingleTickerProviderStateMixin {
   AnimationController animationController;
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _bRememberMe = true;
   bool _isLoading = false;
@@ -58,7 +58,7 @@ class _LoginFormState extends State<LoginForm> with SingleTickerProviderStateMix
   @override
   void dispose() {
     animationController.dispose();
-    _emailController.dispose();
+    _phoneController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -80,13 +80,14 @@ class _LoginFormState extends State<LoginForm> with SingleTickerProviderStateMix
                   controller: animationController,
                   start: 0.0,
                   child: IconFormField(
-                    hintText: "Email",
-                    invalidText: "Invalid Email",
-                    icon: Icons.email,
-                    controller: _emailController,
-                    textInputType: TextInputType.emailAddress,
+                    hintText: "Phone number",
+                    invalidText: "Invalid phone number",
+                    icon: Icons.phone,
+                    controller: _phoneController,
+                    textInputType: TextInputType.phone,
                     validator: (value) {
-                      return validateEmail(value);
+                      return validatePhone(value);
+                      //return validateEmail(value);
                     },
                   ),
                 ),
@@ -158,7 +159,7 @@ class _LoginFormState extends State<LoginForm> with SingleTickerProviderStateMix
 
                       Scaffold.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Attempting signin for ${_emailController.text}'),
+                          content: Text('Attempting signin for ${_phoneController.text}'),
                         ),
                       );
 
@@ -170,7 +171,7 @@ class _LoginFormState extends State<LoginForm> with SingleTickerProviderStateMix
 
                       try {
                         FirebaseUser user = await _auth.signInWithEmailAndPassword(
-                          email: _emailController.text,
+                          email: _phoneController.text,
                           password: _passwordController.text,
                         );
                         print("Sign in successful!");
@@ -205,7 +206,7 @@ class _LoginFormState extends State<LoginForm> with SingleTickerProviderStateMix
             ),
           ),
         ),
-        LoadingIndicator(),
+        //LoadingIndicator(),
       ],
     );
   }

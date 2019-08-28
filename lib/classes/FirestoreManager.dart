@@ -25,20 +25,20 @@ class FirestoreManager {
   static String keyFame = 'fame';
   static String keyIsCosplayer = 'isCosplayer';
   static String keyIsPhotographer = 'isPhotographer';
-  static String keyRealName = 'realName'; // TODO remove real name this isn't required
+//  static String keyRealName = 'realName'; // TODO remove real name this isn't required
   static String keyDateRegistered = 'dateRegistered'; // This should be public that's fine
   static String keyCosplayName = 'cosplayName';
   static String keySeriesName = 'seriesName';
-  static String keyCosplayerCost = 'cosplayerCost';
+//  static String keyCosplayerCost = 'cosplayerCost';
   static String keyPhotographerCost = 'photographerCost';
-  static String keyPhotographyYearsExperience = 'photographyYearsExperience';
-  static String keyPhotographyMonthsExperience = 'photographyMonthsExperience';
-  static String keyCosplayYearsExperience = 'cosplayYearsExperience';
-  static String keyCosplayMonthsExperience = 'cosplayMonthsExperience';
+  // static String keyPhotographyYearsExperience = 'photographyYearsExperience';
+  // static String keyPhotographyMonthsExperience = 'photographyMonthsExperience';
+  // static String keyCosplayYearsExperience = 'cosplayYearsExperience';
+  // static String keyCosplayMonthsExperience = 'cosplayMonthsExperience';
   static String keyIncomingSelfieRequests = 'incomingSelfieRequests'; // TODO this should be private
   static String keyOutgoingSelfieRequests = 'outgoingSelfieRequests'; // TODO this should be private
   static String keyDocumentReference = 'documentReference';
-  static String keyIsSharingLocation = 'isSharingLocation'; // not used? // TODO not used delete>
+//  static String keyIsSharingLocation = 'isSharingLocation'; // not used? // TODO not used delete>
   static String keyDocumentId = 'documentId';
 
   // Selfie collection
@@ -51,11 +51,6 @@ class FirestoreManager {
   static String keyIsInSelfieMode = 'isInSelfieMode';
   static String keyUsersToShareLocationWith = 'usersToShareLocationWith';
 
-  static Timer _locationUpdateTimer;
-
-  // (delete) not useful
-  //static HashMap<String, String> keys = HashMap<String, String>();
-
   static Future<void> createUserInDatabase({
     String documentName,
     int fame,
@@ -65,16 +60,17 @@ class FirestoreManager {
     List<String> photoUrls,
     bool isCosplayer,
     bool isPhotographer,
+    bool isCongoer,
     String cosplayName,
     String seriesName,
     int rarityBorder,
-    String realName,
-    String cosplayerCost,
+    //   String realName,
+//    String cosplayerCost,
     String photographerCost,
-    int photographyYearsExperience,
-    int photographyMonthsExperience,
-    int cosplayYearsExperience,
-    int cosplayMonthsExperience,
+//    int photographyYearsExperience,
+//    int photographyMonthsExperience,
+//    int cosplayYearsExperience,
+//    int cosplayMonthsExperience,
   }) async {
     // PUBLIC
     await Firestore.instance.collection("users").document(documentName).setData({
@@ -85,22 +81,17 @@ class FirestoreManager {
       keyIsCosplayer: isCosplayer,
       keyIsPhotographer: isPhotographer,
       keyRarityBorder: rarityBorder,
-      keyRealName: realName,
+      //   keyRealName: realName,
       keyCosplayName: cosplayName,
       keySeriesName: seriesName,
-      keyCosplayerCost: cosplayerCost,
+      // keyCosplayerCost: cosplayerCost,
       keyPhotographerCost: photographerCost,
-      keyPhotographyYearsExperience: photographyYearsExperience,
-      keyPhotographyMonthsExperience: photographyMonthsExperience,
-      keyCosplayYearsExperience: cosplayMonthsExperience,
-      keyCosplayYearsExperience: cosplayYearsExperience,
+//      keyPhotographyYearsExperience: photographyYearsExperience,
+//      keyPhotographyMonthsExperience: photographyMonthsExperience,
+//      keyCosplayYearsExperience: cosplayMonthsExperience,
+//      keyCosplayYearsExperience: cosplayYearsExperience,
       keyDateRegistered: DateTime.now(),
     }, merge: true);
-
-    // PRIVATE
-//    await Firestore.instance.collection("selfie").document(documentName).setData({
-//      'matchedUsers': {},
-//    }, merge: true);
 
     List<dynamic> empty = List<dynamic>();
     Map<dynamic, dynamic> emptyMap = Map<dynamic, dynamic>();
@@ -109,9 +100,6 @@ class FirestoreManager {
     Firestore.instance.collection('private').document(documentName).setData({"outgoingSelfieRequests": empty}, merge: true);
     Firestore.instance.collection('private').document(documentName).setData({"notifications": empty}, merge: true);
     Firestore.instance.collection('selfie').document(documentName).setData({'matchedUsers': emptyMap}, merge: true);
-    // SELFIE
-    // LOCATION (google)
-    //
   }
 
   // Updates local user information using the database information whenever
