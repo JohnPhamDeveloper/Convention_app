@@ -1,4 +1,4 @@
-# Convention Meetup App
+# Preview
 
 ![Photo](https://res.cloudinary.com/dq1csueyi/image/upload/c_scale,w_300/v1566956935/Screenshot_20190827-182146_wnoxhc.png)
 ![Photo](https://res.cloudinary.com/dq1csueyi/image/upload/c_scale,w_300/v1566956932/Screenshot_20190827-183347_i574kg.png)
